@@ -14,6 +14,10 @@ services:
             - mysql_data:/var/lib/mysql
         networks:
             - snaptale
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+            interval: 10s
+            start_period: 30s
 
     maildev:
         image: maildev/maildev
