@@ -37,7 +37,7 @@ Aplikacja internetowa SnapTale wzorująca się na założeniach aplikacji TikTok
 ![Widok projektu](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale1.png)
 ![Widok projektu](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale3.png)
 
-## Instrukcja instalacji projektu - back-end
+## Instrukcja instalacji projektu – back-end
 
 Pobieramy projekt na lokalne środowisko
 
@@ -65,7 +65,7 @@ Tworzymy bazę danych. Upewniamy się że DB_DATABASE w pliku .env jest taka sam
 php artisan migrate
 ```
 
-## Instrukcja instalacji projektu - front-end
+## Instrukcja instalacji projektu – front-end
 
 Pobieramy projekt na lokalne środowisko
 
