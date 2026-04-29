@@ -3,7 +3,7 @@
     <div class="flex items-center lg:mx-0 mx-auto">
       <Icon :name="icon" :color="colorString" :size="sizeString" />
       <span
-        :class="`text-[${colorString}]`"
+        :style="{ color: colorString }"
         class="lg:block hidden pl-[9px] mt-0.5 font-semibold text-[17px]"
       >
         {{ iconString }}
@@ -13,12 +13,16 @@
 </template>
 
 <script setup>
+import { computed, toRefs } from 'vue';
+
 const props = defineProps(["iconString", "colorString", "sizeString"]);
 const { iconString, colorString, sizeString } = toRefs(props);
 
-let icon = ref("");
-
-if (iconString.value === "For You") icon.value = "mdi:home";
-if (iconString.value === "Following") icon.value = "ci:group";
-if (iconString.value === "LIVE") icon.value = "ri:live-line";
+const icon = computed(() => {
+  if (iconString.value === "Dla Ciebie" || iconString.value === "For You") return "mdi:home";
+  if (iconString.value === "Obserwowani" || iconString.value === "Following") return "ci:group";
+  if (iconString.value === "LIVE") return "ri:live-line";
+  
+  return "mdi:help-circle-outline";
+});
 </script>
