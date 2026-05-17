@@ -1,9 +1,8 @@
-# SnapTale
-## Link: https://snaptale.vertyll.dev
-
 ## Założenia projektu 
 
 Aplikacja internetowa SnapTale wzorująca się na założeniach aplikacji TikTok
+
+## Link: https://snaptale.vertyll.dev
 
 ## Stos technologiczny
 
