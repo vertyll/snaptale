@@ -27,22 +27,30 @@ while ! /usr/bin/nc -z "$DB_HOST" "$DB_PORT" 2>/dev/null; do
 done
 
 echo "Database is up - running migrations"
-
 cd /var/www/html
+
+# Recreate the storage skeleton (mounted volume starts empty!)
+echo "Preparing storage structure..."
+mkdir -p storage/framework/views \
+         storage/framework/cache/data \
+         storage/framework/sessions \
+         storage/logs \
+         storage/app/public \
+         bootstrap/cache
 
 # Set proper permissions for mounted storage volume
 echo "Setting storage permissions..."
-chown -R www-data:www-data /var/www/html/storage
-chmod -R 775 /var/www/html/storage
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Set permissions for bootstrap/cache
-chown -R www-data:www-data /var/www/html/bootstrap/cache
-chmod -R 775 /var/www/html/bootstrap/cache
+# Drop any stale cached config (it may have view.compiled frozen as false)
+php artisan config:clear
+php artisan cache:clear 2>/dev/null || true
 
 # Run migrations
 php artisan migrate --force
 
-# Clear and cache config
+# Cache config/routes/views
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
