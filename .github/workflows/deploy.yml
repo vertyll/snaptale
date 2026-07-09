@@ -1,146 +1,86 @@
-name: Build and Deploy Snaptale
-
+name: Build and Publish Snaptale
 on:
   push:
-    branches: [ main ]
+    tags: ["v*"]
   pull_request:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
-
 env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
+  REGISTRY: zot.vertyll.dev
 jobs:
   build-and-push-backend:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    
+    runs-on: ubuntu-24.04-arm
+    env:
+      IMAGE_NAME: vertyll/snaptale-backend
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to GitHub Container Registry
+      - uses: actions/checkout@v4
+      - name: Derive version from tag
+        id: vars
+        run: |
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=pr-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - name: Log in to Zot
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata for backend
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend
-          tags: |
-            type=ref,event=branch
-            type=sha,prefix={{branch}}-
-            type=raw,value=latest,enable={{is_default_branch}}
-
-      - name: Build and push Backend Docker image
-        uses: docker/build-push-action@v5
+          username: ${{ secrets.ZOT_USERNAME }}
+          password: ${{ secrets.ZOT_PASSWORD }}
+      - name: Build and push backend
+        uses: docker/build-push-action@v6
         with:
           context: ./backend
           file: ./backend/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/arm64
+          push: ${{ github.ref_type == 'tag' }}
           target: production
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:buildcache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:buildcache,mode=max
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.version }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,mode=max,scope=backend
 
   build-and-push-frontend:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    
+    runs-on: ubuntu-24.04-arm
+    env:
+      IMAGE_NAME: vertyll/snaptale-frontend
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to GitHub Container Registry
+      - uses: actions/checkout@v4
+      - name: Derive version from tag
+        id: vars
+        run: |
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=pr-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - name: Log in to Zot
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata for frontend
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend
-          tags: |
-            type=ref,event=branch
-            type=sha,prefix={{branch}}-
-            type=raw,value=latest,enable={{is_default_branch}}
-
-      - name: Build and push Frontend Docker image
-        uses: docker/build-push-action@v5
+          username: ${{ secrets.ZOT_USERNAME }}
+          password: ${{ secrets.ZOT_PASSWORD }}
+      - name: Build and push frontend
+        uses: docker/build-push-action@v6
         with:
           context: ./frontend
           file: ./frontend/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/arm64
+          push: ${{ github.ref_type == 'tag' }}
           target: production
           build-args: |
-            API_BASE_URL=https://api.snaptale.${{ secrets.DOMAIN }}
-            FRONTEND_URL=https://snaptale.${{ secrets.DOMAIN }}
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:buildcache
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:buildcache,mode=max
-
-  deploy:
-    needs: [build-and-push-backend, build-and-push-frontend]
-    runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    
-    steps:
-      - name: Deploy to server
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
-          script: |
-            cd ~/podman/compose
-            
-            echo "${{ secrets.GITHUB_TOKEN }}" | podman login ghcr.io -u ${{ github.actor }} --password-stdin > /dev/null 2>&1
-            
-            # Pull images
-            echo "=== Pulling images ==="
-            podman pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:latest > /dev/null 2>&1
-            podman pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:latest > /dev/null 2>&1
-            
-            # Update containers
-            podman-compose -f snaptale.yml up -d > /dev/null 2>&1
-            
-            sleep 15
-            
-            # Check backend status
-            echo "=== Backend status ==="
-            podman ps | grep snaptale-backend || echo "Backend container not running!"
-            
-            # Check frontend status
-            echo "=== Frontend status ==="
-            podman ps | grep snaptale-frontend || echo "Frontend container not running!"
-            
-            # Healthcheck backend
-            echo "=== Backend healthcheck ==="
-            sleep 5
-            podman exec snaptale-backend curl -f http://localhost/api/health && echo "✓ Backend is healthy!" || echo "✗ Backend health check failed"
-            
-            # Healthcheck frontend
-            echo "=== Frontend healthcheck ==="
-            podman exec snaptale-frontend curl -f http://localhost:3000 && echo "✓ Frontend is healthy!" || echo "✗ Frontend health check failed"
+            API_BASE_URL=https://api.snaptale.vertyll.dev
+            FRONTEND_URL=https://snaptale.vertyll.dev
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.version }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,mode=max,scope=frontend
