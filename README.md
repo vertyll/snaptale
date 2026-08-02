@@ -8,30 +8,30 @@ Aplikacja internetowa SnapTale wzorująca się na założeniach aplikacji TikTok
 
 ### Back-end:
 
-- Laravel
-- PHP
-- MySQL
+- Laravel.
+- PHP.
+- MySQL.
 
 ### Front-end:
 
-- Nuxt.js
-- Vue.js
-- Axios
-- Tailwind CSS do szybkiego stylowania komponentów
-- Pinia do zarządzania stanem aplikacji
+- Nuxt.js.
+- Vue.js.
+- Axios.
+- Tailwind CSS do szybkiego stylowania komponentów.
+- Pinia do zarządzania stanem aplikacji.
 
 ### Uwierzytelnianie:
 
-- uwierzytelnianie za pomocą sesji
-- Laravel Sanctum jako system do uwierzytelniania
+- Uwierzytelnianie za pomocą sesji.
+- Laravel Sanctum jako system do uwierzytelniania.
 
 ### Dodatkowe narzędzia:
 
-- intervention/image jako biblioteka przetwarzania obrazów PHP
+- intervention/image jako biblioteka przetwarzania obrazów PHP.
 
 ### Inne:
 
-- nuxt-icon dla ikon w aplikacji
+- nuxt-icon dla ikon w aplikacji.
 
 ## Zdjęcia poglądowe
 
@@ -67,7 +67,7 @@ Aplikacja internetowa SnapTale wzorująca się na założeniach aplikacji TikTok
 
 ## Instrukcja instalacji projektu – front-end
 
-1. Pobieramy projekt na lokalne środowisko
+1. Pobieramy projekt na lokalne środowisko.
 2. Instalujemy zależności:
     ```bash
     # npm
@@ -86,7 +86,6 @@ Aplikacja internetowa SnapTale wzorująca się na założeniach aplikacji TikTok
 ### Środowisko deweloperskie
 
 Wystartuj serwer deweloperski na `http://localhost:3000`:
-
 ```bash
 # npm
 npm run dev
@@ -104,7 +103,6 @@ bun run dev
 ### Środowisko produkcyjne
 
 Budowanie aplikacji na produkcję:
-
 ```bash
 # npm
 npm run build
@@ -120,7 +118,6 @@ bun run build
 ```
 
 Lokalny podgląd zbudowanej aplikacji produkcyjnej:
-
 ```bash
 # npm
 npm run preview
