@@ -1,17 +1,19 @@
-## Założenia projektu 
+## Założenia projektu
 
-Aplikacja internetowa SnapTale wzorująca się na założeniach aplikacji TikTok
+Aplikacja internetowa SnapTale wzorująca się na założeniach aplikacji TikTok.
 
 ## Link: https://snaptale.vertyll.dev
 
 ## Stos technologiczny
 
 ### Back-end:
+
 - Laravel
 - PHP
 - MySQL
 
 ### Front-end:
+
 - Nuxt.js
 - Vue.js
 - Axios
@@ -19,13 +21,16 @@ Aplikacja internetowa SnapTale wzorująca się na założeniach aplikacji TikTok
 - Pinia do zarządzania stanem aplikacji
 
 ### Uwierzytelnianie:
+
 - uwierzytelnianie za pomocą sesji
 - Laravel Sanctum jako system do uwierzytelniania
 
 ### Dodatkowe narzędzia:
+
 - intervention/image jako biblioteka przetwarzania obrazów PHP
 
 ### Inne:
+
 - nuxt-icon dla ikon w aplikacji
 
 ## Zdjęcia poglądowe
@@ -38,51 +43,45 @@ Aplikacja internetowa SnapTale wzorująca się na założeniach aplikacji TikTok
 
 ## Instrukcja instalacji projektu – back-end
 
-Pobieramy projekt na lokalne środowisko
+1. Pobieramy projekt na lokalne środowisko.
+2. Instalujemy zależności:
+    ```bash
+    composer install 
 
-Instalujemy zależności:
+    cp .env.example .env 
 
-```bash
-composer install 
+    php artisan cache:clear
 
-cp .env.example .env 
+    composer dump-autoload
 
-php artisan cache:clear
+    php artisan key:generate
 
-composer dump-autoload
+    composer require laravel/breeze --dev
 
-php artisan key:generate
-
-composer require laravel/breeze --dev
-
-php artisan serve
-```
-
-Tworzymy bazę danych. Upewniamy się że DB_DATABASE w pliku .env jest taka sama i uruchamiamy migrację
-
-```bash
-php artisan migrate
-```
+    php artisan serve
+    ```
+3. Tworzymy bazę danych. Upewniamy się, że `DB_DATABASE` w pliku `.env` jest taka sama i uruchamiamy migrację:
+    ```bash
+    php artisan migrate
+    ```
 
 ## Instrukcja instalacji projektu – front-end
 
-Pobieramy projekt na lokalne środowisko
-
-Instalujemy zależności:
-
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
+1. Pobieramy projekt na lokalne środowisko
+2. Instalujemy zależności:
+    ```bash
+    # npm
+    npm install
+    
+    # pnpm
+    pnpm install
+    
+    # yarn
+    yarn install
+    
+    # bun
+    bun install
+    ```
 
 ### Środowisko deweloperskie
 
