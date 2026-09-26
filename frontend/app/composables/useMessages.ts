@@ -9,13 +9,22 @@ export function useMessages() {
   const messages = useState<Record<string, string>>("messages", () => ({}));
 
   function t(code: string, args: MessageArgs = {}): string {
-    const text = messages.value[code] ?? messages.value["errors.unknown"] ?? code;
-    let format = cache.get(text);
-    if (!format) {
-      format = new IntlMessageFormat(text, LOCALE);
-      cache.set(text, format);
+    const text = messages.value[code];
+    if (text === undefined) {
+      console.error(`Missing translation: ${code}`);
+      return code;
     }
-    return String(format.format(args));
+    try {
+      let format = cache.get(text);
+      if (!format) {
+        format = new IntlMessageFormat(text, LOCALE);
+        cache.set(text, format);
+      }
+      return String(format.format(args));
+    } catch (error) {
+      console.error(`Invalid translation: ${code}`, error);
+      return code;
+    }
   }
 
   return {
