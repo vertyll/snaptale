@@ -50,6 +50,8 @@
     <rule ref="category/java/documentation.xml">
         <exclude name="CommentRequired"/>
         <exclude name="CommentSize"/>
+        <exclude name="UncommentedEmptyMethodBody"/>
+        <exclude name="UncommentedEmptyConstructor"/>
     </rule>
 
     <!-- Error Prone -->
