@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useMessages();
 const { open, close } = useOverlays();
 </script>
 
@@ -11,7 +12,7 @@ const { open, close } = useOverlays();
   >
     <div class="relative flex min-h-[70%] w-full max-w-[470px] flex-col rounded-lg bg-white p-4">
       <div class="flex w-full justify-end">
-        <button type="button" class="rounded-full bg-gray-100 p-1.5" aria-label="Zamknij" @click="close">
+        <button type="button" class="rounded-full bg-gray-100 p-1.5" :aria-label="t('common.close')" @click="close">
           <Icon name="mdi:close" size="26" />
         </button>
       </div>
@@ -26,14 +27,16 @@ const { open, close } = useOverlays();
         class="absolute bottom-0 left-0 flex w-full items-center justify-center border-t border-gray-200 py-5 text-[14px]"
       >
         <template v-if="open === 'login'">
-          <span class="text-gray-600">Nie masz konta?</span>
+          <span class="text-gray-600">{{ t("auth.noAccount") }}</span>
           <button type="button" class="text-brand-dark pl-1 font-semibold" @click="open = 'register'">
-            Rejestracja
+            {{ t("auth.register") }}
           </button>
         </template>
         <template v-else>
-          <span class="text-gray-600">Masz już konto?</span>
-          <button type="button" class="text-brand-dark pl-1 font-semibold" @click="open = 'login'">Zaloguj</button>
+          <span class="text-gray-600">{{ t("auth.haveAccount") }}</span>
+          <button type="button" class="text-brand-dark pl-1 font-semibold" @click="open = 'login'">
+            {{ t("auth.login") }}
+          </button>
         </template>
       </div>
     </div>

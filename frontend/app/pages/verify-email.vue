@@ -1,11 +1,12 @@
 <script setup lang="ts">
+const { t } = useMessages();
 const route = useRoute();
 const api = useApi();
 const { isSignedIn, refresh } = useSession();
 const { submit, formError } = useForm();
 const state = ref<"verifying" | "verified" | "failed">("verifying");
 
-useHead({ title: "Potwierdzenie adresu e-mail | SnapTale" });
+useHead(() => ({ title: t("verifyEmail.pageTitle") }));
 
 onMounted(async () => {
   const token = typeof route.query.token === "string" ? route.query.token : "";
@@ -21,10 +22,10 @@ onMounted(async () => {
 
 <template>
   <main class="mx-auto w-full max-w-[470px] pt-[110px] text-center">
-    <h1 class="mb-6 text-[28px] font-bold">Potwierdzenie adresu e-mail</h1>
+    <h1 class="mb-6 text-[28px] font-bold">{{ t("verifyEmail.title") }}</h1>
     <Icon v-if="state === 'verifying'" name="mdi:loading" size="48" class="text-brand animate-spin" />
-    <p v-else-if="state === 'verified'" role="status">Adres e-mail został potwierdzony. Dziękujemy!</p>
+    <p v-else-if="state === 'verified'" role="status">{{ t("verifyEmail.done") }}</p>
     <p v-else class="font-semibold text-red-500" role="alert">{{ formError }}</p>
-    <NuxtLink to="/" class="text-brand mt-6 inline-block font-semibold">Przejdź do SnapTale</NuxtLink>
+    <NuxtLink to="/" class="text-brand mt-6 inline-block font-semibold">{{ t("verifyEmail.continue") }}</NuxtLink>
   </main>
 </template>

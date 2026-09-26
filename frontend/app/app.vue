@@ -2,17 +2,12 @@
 import type { Me } from "~/utils/types";
 
 const { me } = useSession();
-const { messages } = useMessages();
 const { open } = useOverlays();
 const requestFetch = useRequestFetch();
 
 await useAsyncData("bootstrap", async () => {
-  const [session, texts] = await Promise.all([
-    requestFetch<{ user: Me | null }>("/api/me"),
-    requestFetch<Record<string, string>>("/api/messages"),
-  ]);
+  const session = await requestFetch<{ user: Me | null }>("/api/me");
   me.value = session.user;
-  messages.value = texts;
   return true;
 });
 

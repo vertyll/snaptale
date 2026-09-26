@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { PostCard } from "~/utils/types";
 
+const { t } = useMessages();
 const props = defineProps<{ post: PostCard }>();
 const { toggle } = useLike();
 const root = useTemplateRef<HTMLElement>("root");
@@ -42,14 +43,14 @@ onBeforeUnmount(() => {
       <p class="max-w-[300px] pb-0.5 text-[15px] break-words md:max-w-[400px]">{{ props.post.text }}</p>
       <div class="flex items-center pb-0.5 text-[14px] font-semibold">
         <Icon name="mdi:music" size="17" />
-        <span class="px-1">oryginalny dźwięk - {{ handleOf(props.post.author.name) }}</span>
+        <span class="px-1">{{ t("common.originalSound", { handle: handleOf(props.post.author.name) }) }}</span>
       </div>
 
       <div class="mt-2.5 flex">
         <NuxtLink
           :to="`/post/${props.post.id}`"
           class="relative flex max-h-[580px] min-h-[480px] max-w-[260px] items-center rounded-xl bg-black"
-          :aria-label="`Otwórz film: ${props.post.text}`"
+          :aria-label="t('post.open', { text: props.post.text })"
         >
           <video
             ref="video"
@@ -75,14 +76,14 @@ onBeforeUnmount(() => {
                 type="button"
                 class="rounded-full bg-gray-200 p-2"
                 :aria-pressed="props.post.likedByMe"
-                aria-label="Polub"
+                :aria-label="t('post.like')"
                 @click="toggle(props.post)"
               >
                 <Icon name="mdi:heart" size="25" :class="props.post.likedByMe ? 'text-like' : ''" />
               </button>
               <span class="block text-xs font-semibold text-gray-800">{{ props.post.likeCount }}</span>
             </div>
-            <NuxtLink :to="`/post/${props.post.id}`" class="block pb-4 text-center" aria-label="Komentarze">
+            <NuxtLink :to="`/post/${props.post.id}`" class="block pb-4 text-center" :aria-label="t('post.comments')">
               <span class="inline-block rounded-full bg-gray-200 p-2"
                 ><Icon name="mdi:comment-processing" size="25"
               /></span>

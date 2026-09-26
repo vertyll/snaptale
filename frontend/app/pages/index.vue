@@ -3,7 +3,7 @@ import type { FeedPage, PostCard } from "~/utils/types";
 
 const requestFetch = useRequestFetch();
 const api = useApi();
-const { errorText } = useMessages();
+const { t, errorText } = useMessages();
 
 const posts = ref<PostCard[]>([]);
 const page = ref(0);
@@ -56,7 +56,7 @@ onBeforeUnmount(() => observer?.disconnect());
   <main class="w-[calc(100%-90px)] max-w-[690px] pt-[80px]">
     <EmailVerificationBanner />
     <PostMain v-for="post in posts" :key="post.id" :post="post" />
-    <p v-if="posts.length === 0" class="pt-10 text-center text-gray-500">Nie ma jeszcze żadnych filmów.</p>
+    <p v-if="posts.length === 0" class="pt-10 text-center text-gray-500">{{ t("feed.empty") }}</p>
     <p v-if="error" class="py-4 text-center font-semibold text-red-500" role="alert">{{ error }}</p>
     <div ref="sentinel" class="flex justify-center py-6">
       <Icon v-if="loading" name="mdi:loading" size="40" class="text-brand animate-spin" />

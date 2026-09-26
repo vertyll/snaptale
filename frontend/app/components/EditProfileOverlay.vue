@@ -2,6 +2,7 @@
 import { CircleStencil, Cropper } from "vue-advanced-cropper";
 import "vue-advanced-cropper/dist/style.css";
 
+const { t } = useMessages();
 const NAME_MAX = 50;
 const BIO_MAX = 160;
 
@@ -80,8 +81,10 @@ async function saveProfile() {
   >
     <div class="relative mx-3 mb-10 h-fit w-full max-w-[700px] rounded-lg bg-white">
       <div class="flex items-center justify-between border-b border-gray-300 p-5">
-        <h2 id="edit-profile-title" class="text-[22px] font-medium">Edytuj profil</h2>
-        <button type="button" aria-label="Zamknij" @click="close"><Icon name="mdi:close" size="25" /></button>
+        <h2 id="edit-profile-title" class="text-[22px] font-medium">{{ t("profile.edit") }}</h2>
+        <button type="button" :aria-label="t('common.close')" @click="close">
+          <Icon name="mdi:close" size="25" />
+        </button>
       </div>
 
       <div v-if="preview" class="p-4">
@@ -95,7 +98,7 @@ async function saveProfile() {
             class="rounded-sm border border-gray-300 px-5 py-[6px] hover:bg-gray-100"
             @click="cancelCrop"
           >
-            Anuluj
+            {{ t("common.cancel") }}
           </button>
           <button
             type="button"
@@ -103,15 +106,15 @@ async function saveProfile() {
             :disabled="avatarForm.pending.value"
             @click="saveAvatar"
           >
-            Zastosuj
+            {{ t("profile.apply") }}
           </button>
         </div>
       </div>
 
       <form v-else class="p-4" @submit.prevent="saveProfile">
         <section class="flex flex-col border-b border-gray-200 py-3 sm:flex-row">
-          <div class="mb-2 font-semibold text-gray-700 sm:w-[160px]">Zdjęcie profilowe</div>
-          <label class="relative mx-auto cursor-pointer" aria-label="Zmień zdjęcie profilowe">
+          <div class="mb-2 font-semibold text-gray-700 sm:w-[160px]">{{ t("profile.avatar") }}</div>
+          <label class="relative mx-auto cursor-pointer" :aria-label="t('profile.changeAvatar')">
             <UserAvatar :url="me?.avatarUrl ?? null" :size="95" :alt="me?.name ?? ''" />
             <span class="absolute right-0 bottom-0 rounded-full border border-gray-300 bg-white p-1 shadow-xl">
               <Icon name="mdi:pencil" size="17" />
@@ -121,11 +124,11 @@ async function saveProfile() {
         </section>
 
         <section class="flex flex-col border-b border-gray-200 py-3 sm:flex-row">
-          <div class="mb-2 font-semibold text-gray-700 sm:w-[160px]">Nazwa</div>
+          <div class="mb-2 font-semibold text-gray-700 sm:w-[160px]">{{ t("profile.name") }}</div>
           <div class="mx-auto w-full max-w-md sm:w-[60%]">
             <TextField
               v-model="name"
-              label="Nazwa użytkownika"
+              :label="t('profile.username')"
               :maxlength="NAME_MAX"
               :error="profileForm.fieldError('name')"
             />
@@ -133,7 +136,7 @@ async function saveProfile() {
         </section>
 
         <section class="flex flex-col py-3 sm:flex-row">
-          <label for="bio" class="mb-2 font-semibold text-gray-700 sm:w-[160px]">Opis</label>
+          <label for="bio" class="mb-2 font-semibold text-gray-700 sm:w-[160px]">{{ t("profile.bio") }}</label>
           <div class="mx-auto w-full max-w-md sm:w-[60%]">
             <textarea
               id="bio"
@@ -158,14 +161,14 @@ async function saveProfile() {
             class="rounded-sm border border-gray-300 px-5 py-[6px] hover:bg-gray-100"
             @click="close"
           >
-            Anuluj
+            {{ t("common.cancel") }}
           </button>
           <button
             type="submit"
             class="bg-brand rounded-md px-7 py-[6px] font-medium text-white disabled:bg-gray-200"
             :disabled="!changed || profileForm.pending.value"
           >
-            Zapisz
+            {{ t("common.save") }}
           </button>
         </div>
       </form>

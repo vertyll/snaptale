@@ -10,7 +10,7 @@ const api = useApi();
 const { me } = useSession();
 const { whenSignedIn } = useOverlays();
 const { toggle } = useLike();
-const { errorText } = useMessages();
+const { t, errorText } = useMessages();
 
 const postId = computed(() => Number(route.params.id));
 const comment = ref("");
@@ -24,7 +24,7 @@ const { data: details, error } = await useAsyncData(
   () => requestFetch<PostDetails>(`/api/posts/${postId.value}`)
 );
 if (error.value) {
-  throw createError({ status: 404, message: "Nie znaleziono posta.", fatal: true });
+  throw createError({ status: 404, message: t("post.notFound"), data: { message: t("post.notFound") }, fatal: true });
 }
 watch(postId, () => (loaded.value = false));
 
@@ -80,7 +80,7 @@ async function addComment() {
 
 async function deleteComment(item: CommentView) {
   const current = details.value;
-  if (!current || !confirm("Czy na pewno chcesz usunąć ten komentarz?")) {
+  if (!current || !confirm(t("post.confirmDeleteComment"))) {
     return;
   }
   try {
@@ -94,7 +94,7 @@ async function deleteComment(item: CommentView) {
 
 async function deletePost() {
   const current = details.value;
-  if (!current || !confirm("Czy na pewno chcesz usunąć ten film?")) {
+  if (!current || !confirm(t("post.confirmDelete"))) {
     return;
   }
   try {
@@ -127,7 +127,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
       <button
         type="button"
         class="absolute z-20 m-5 rounded-full bg-gray-700 p-1.5 hover:bg-gray-800"
-        aria-label="Zamknij"
+        :aria-label="t('common.close')"
         @click="back"
       >
         <Icon name="mdi:close" size="27" class="text-white" />
@@ -137,7 +137,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
           type="button"
           class="rounded-full bg-gray-700 p-1.5 hover:bg-gray-800 disabled:opacity-40"
           :disabled="neighbours.newer === undefined"
-          aria-label="Nowszy film"
+          :aria-label="t('post.newer')"
           @click="goTo(neighbours.newer)"
         >
           <Icon name="mdi:chevron-up" size="30" class="text-white" />
@@ -146,7 +146,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
           type="button"
           class="rounded-full bg-gray-700 p-1.5 hover:bg-gray-800 disabled:opacity-40"
           :disabled="neighbours.older === undefined"
-          aria-label="Starszy film"
+          :aria-label="t('post.older')"
           @click="goTo(neighbours.older)"
         >
           <Icon name="mdi:chevron-down" size="30" class="text-white" />
@@ -186,7 +186,12 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
             </div>
           </div>
         </NuxtLink>
-        <button v-if="me?.id === details.post.author.id" type="button" aria-label="Usuń film" @click="deletePost">
+        <button
+          v-if="me?.id === details.post.author.id"
+          type="button"
+          :aria-label="t('post.delete')"
+          @click="deletePost"
+        >
           <Icon name="mdi:delete-outline" size="25" />
         </button>
       </div>
@@ -194,7 +199,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
       <p class="mt-4 px-8 text-sm break-words">{{ details.post.text }}</p>
       <div class="mt-4 flex items-center px-8 text-sm font-bold">
         <Icon name="mdi:music" size="17" />
-        <span class="pl-1">oryginalny dźwięk - {{ handleOf(details.post.author.name) }}</span>
+        <span class="pl-1">{{ t("common.originalSound", { handle: handleOf(details.post.author.name) }) }}</span>
       </div>
 
       <div class="mt-6 flex items-center gap-4 px-8 pb-4">
@@ -217,7 +222,9 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
       <p v-if="actionError" class="px-8 pb-2 font-semibold text-red-500" role="alert">{{ actionError }}</p>
 
       <div ref="commentList" class="flex-1 overflow-auto border-t-2 border-gray-200 bg-[#F8F8F8] pb-28">
-        <p v-if="details.comments.length === 0" class="mt-6 text-center text-xl text-gray-500">Brak komentarzy...</p>
+        <p v-if="details.comments.length === 0" class="mt-6 text-center text-xl text-gray-500">
+          {{ t("post.noComments") }}
+        </p>
         <div v-for="item in details.comments" :key="item.id" class="mt-4 flex items-start px-8">
           <NuxtLink :to="`/profile/${item.author.id}`">
             <UserAvatar :url="item.author.avatarUrl" :size="40" :alt="item.author.name" />
@@ -225,7 +232,12 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
           <div class="ml-4 w-full">
             <div class="flex items-center justify-between text-[18px] font-semibold">
               {{ item.author.name }}
-              <button v-if="canDelete(item)" type="button" aria-label="Usuń komentarz" @click="deleteComment(item)">
+              <button
+                v-if="canDelete(item)"
+                type="button"
+                :aria-label="t('post.deleteComment')"
+                @click="deleteComment(item)"
+              >
                 <Icon name="mdi:delete-outline" size="22" />
               </button>
             </div>
@@ -239,27 +251,27 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
         class="absolute bottom-0 flex h-[85px] w-full items-center justify-between border-t-2 border-gray-200 bg-white px-8 py-5"
         @submit.prevent="addComment"
       >
-        <label for="new-comment" class="sr-only">Dodaj komentarz</label>
+        <label for="new-comment" class="sr-only">{{ t("post.addComment") }}</label>
         <input
           id="new-comment"
           v-model="comment"
           maxlength="500"
           class="bg-surface w-full rounded-lg border-2 border-transparent p-2 text-[14px] focus:border-gray-400 focus:outline-none"
           type="text"
-          placeholder="Dodaj komentarz..."
+          :placeholder="t('post.commentPlaceholder')"
         />
         <button
           type="submit"
           :disabled="!comment.trim() || sending"
           class="text-brand ml-5 pr-1 text-sm font-semibold disabled:text-gray-400"
         >
-          Opublikuj
+          {{ t("common.publish") }}
         </button>
       </form>
       <div v-else class="absolute bottom-0 w-full border-t-2 border-gray-200 bg-white px-8 py-6 text-center text-sm">
         <button type="button" class="text-brand font-semibold" @click="whenSignedIn(() => undefined)">
-          Zaloguj się</button
-        >, aby komentować.
+          {{ t("post.signInToComment") }}</button
+        >{{ t("post.signInToCommentSuffix") }}
       </div>
     </aside>
   </div>

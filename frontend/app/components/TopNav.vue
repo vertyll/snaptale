@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useMessages();
 const { me, logout } = useSession();
 const { open, whenSignedIn } = useOverlays();
 const route = useRoute();
@@ -24,7 +25,7 @@ async function signOut() {
       :class="route.path === '/' ? 'max-w-[1150px]' : ''"
       class="mx-auto flex w-full items-center justify-between px-6"
     >
-      <NuxtLink to="/" aria-label="SnapTale - strona główna">
+      <NuxtLink to="/" :aria-label="t('nav.home')">
         <img width="115" src="~/assets/images/snaptale-logo.png" alt="SnapTale" />
       </NuxtLink>
 
@@ -35,7 +36,7 @@ async function signOut() {
           @click="upload"
         >
           <Icon name="mdi:plus" size="22" />
-          <span class="px-2 text-[15px] font-medium">Prześlij</span>
+          <span class="px-2 text-[15px] font-medium">{{ t("nav.upload") }}</span>
         </button>
 
         <button
@@ -44,14 +45,14 @@ async function signOut() {
           class="bg-brand rounded-md px-7 py-[6px] text-[15px] font-medium text-white"
           @click="open = 'login'"
         >
-          Zaloguj się
+          {{ t("nav.signIn") }}
         </button>
         <div v-else ref="menu" class="relative">
           <button
             type="button"
             class="mt-1"
             :aria-expanded="menuOpen"
-            aria-label="Menu konta"
+            :aria-label="t('nav.accountMenu')"
             @click="menuOpen = !menuOpen"
           >
             <UserAvatar :url="me.avatarUrl" :size="33" :alt="me.name" />
@@ -66,7 +67,7 @@ async function signOut() {
               @click="menuOpen = false"
             >
               <Icon name="mdi:account-outline" size="20" />
-              <span class="pl-2 text-sm font-semibold">Profil</span>
+              <span class="pl-2 text-sm font-semibold">{{ t("nav.profile") }}</span>
             </NuxtLink>
             <button
               type="button"
@@ -74,7 +75,7 @@ async function signOut() {
               @click="signOut"
             >
               <Icon name="mdi:logout" size="20" />
-              <span class="pl-2 text-sm font-semibold">Wyloguj</span>
+              <span class="pl-2 text-sm font-semibold">{{ t("nav.logout") }}</span>
             </button>
           </div>
         </div>

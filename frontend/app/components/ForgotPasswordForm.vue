@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useMessages();
 const api = useApi();
 const { submit, pending, fieldError, formError } = useForm();
 const email = ref("");
@@ -11,15 +12,15 @@ async function send() {
 
 <template>
   <form class="px-6" @submit.prevent="send">
-    <h2 class="mb-4 text-center text-[28px] font-bold">Reset hasła</h2>
+    <h2 class="mb-4 text-center text-[28px] font-bold">{{ t("auth.forgot.title") }}</h2>
     <p v-if="sent" class="text-center text-gray-700" role="status">
-      Jeśli konto z adresem {{ email }} istnieje, wysłaliśmy na nie link do ustawienia nowego hasła.
+      {{ t("auth.forgot.sent", { email }) }}
     </p>
     <template v-else>
-      <p class="pb-4 text-sm text-gray-600">Podaj adres e-mail konta, a wyślemy link do ustawienia nowego hasła.</p>
+      <p class="pb-4 text-sm text-gray-600">{{ t("auth.forgot.description") }}</p>
       <TextField
         v-model="email"
-        label="Adres e-mail"
+        :label="t('common.email')"
         type="email"
         autocomplete="email"
         autofocus
@@ -31,7 +32,7 @@ async function send() {
         :disabled="!email || pending"
         class="bg-brand mt-6 w-full rounded-sm py-3 text-[17px] font-semibold text-white disabled:bg-gray-200"
       >
-        Wyślij link
+        {{ t("auth.forgot.submit") }}
       </button>
     </template>
   </form>

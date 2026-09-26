@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { PostCard } from "~/utils/types";
 
+const { t } = useMessages();
 definePageMeta({ layout: "upload", middleware: "auth" });
 
 const TEXT_MAX = 300;
@@ -20,11 +21,11 @@ function choose(picked: File | undefined) {
     return;
   }
   if (picked.type !== "video/mp4") {
-    localError.value = "Obsługujemy tylko pliki MP4.";
+    localError.value = t("upload.onlyMp4");
     return;
   }
   if (picked.size > MAX_MEGABYTES * 1024 * 1024) {
-    localError.value = `Wideo może mieć maksymalnie ${MAX_MEGABYTES} MB.`;
+    localError.value = t("upload.tooLarge", { max: MAX_MEGABYTES });
     return;
   }
   clearVideo();
@@ -68,13 +69,13 @@ onBeforeUnmount(clearVideo);
       v-if="pending"
       class="fixed top-0 left-0 z-50 flex h-screen w-full items-center justify-center bg-black/50"
       role="status"
-      aria-label="Przesyłanie"
+      :aria-label="t('upload.uploading')"
     >
       <Icon name="mdi:loading" size="100" class="animate-spin text-white" />
     </div>
     <main class="mt-[80px] mb-[40px] w-full rounded-md bg-white px-4 py-6 shadow-lg md:px-10">
-      <h1 class="text-[23px] font-semibold">Prześlij wideo</h1>
-      <p class="mt-1 text-gray-400">Opublikuj wideo na swoim koncie</p>
+      <h1 class="text-[23px] font-semibold">{{ t("upload.title") }}</h1>
+      <p class="mt-1 text-gray-400">{{ t("upload.subtitle") }}</p>
 
       <div class="mt-8 gap-6 md:flex">
         <label
@@ -84,11 +85,13 @@ onBeforeUnmount(clearVideo);
           @dragover.prevent
         >
           <Icon name="mdi:cloud-upload" size="40" class="text-gray-400" />
-          <span class="mt-4 text-[17px]">Wybierz wideo do przesłania</span>
-          <span class="mt-1.5 text-[13px] text-gray-500">Lub przeciągnij i upuść plik</span>
+          <span class="mt-4 text-[17px]">{{ t("upload.choose") }}</span>
+          <span class="mt-1.5 text-[13px] text-gray-500">{{ t("upload.drop") }}</span>
           <span class="mt-12 text-sm text-gray-400">MP4</span>
-          <span class="mt-2 text-[13px] text-gray-400">Do {{ MAX_MEGABYTES }} MB</span>
-          <span class="bg-brand mt-8 w-[80%] rounded-sm px-2 py-1.5 text-[15px] text-white">Wybierz plik</span>
+          <span class="mt-2 text-[13px] text-gray-400">{{ t("upload.limit", { max: MAX_MEGABYTES }) }}</span>
+          <span class="bg-brand mt-8 w-[80%] rounded-sm px-2 py-1.5 text-[15px] text-white">{{
+            t("upload.pick")
+          }}</span>
           <input
             type="file"
             class="hidden"
@@ -122,14 +125,16 @@ onBeforeUnmount(clearVideo);
               <Icon name="mdi:check-circle-outline" size="16" class="min-w-[16px]" />
               <span class="truncate pl-1">{{ file?.name }}</span>
             </div>
-            <button type="button" class="ml-2 text-[11px] font-semibold" @click="clearVideo">Zmień</button>
+            <button type="button" class="ml-2 text-[11px] font-semibold" @click="clearVideo">
+              {{ t("upload.change") }}
+            </button>
           </div>
         </div>
 
         <form class="mt-4 mb-6 w-full" @submit.prevent="publish">
           <div class="mt-5">
             <div class="flex items-center justify-between">
-              <label for="caption" class="mb-1 text-[15px]">Napis</label>
+              <label for="caption" class="mb-1 text-[15px]">{{ t("upload.caption") }}</label>
               <span class="text-[12px] text-gray-400">{{ text.length }}/{{ TEXT_MAX }}</span>
             </div>
             <input
@@ -152,14 +157,14 @@ onBeforeUnmount(clearVideo);
               class="mt-8 rounded-sm border border-gray-300 px-10 py-2.5 hover:bg-gray-100"
               @click="discard"
             >
-              Wyczyść
+              {{ t("upload.clear") }}
             </button>
             <button
               type="submit"
               :disabled="!file || !text.trim() || pending"
               class="bg-brand mt-8 rounded-sm px-10 py-2.5 text-white disabled:bg-gray-200"
             >
-              Opublikuj
+              {{ t("common.publish") }}
             </button>
           </div>
         </form>

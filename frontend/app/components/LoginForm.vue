@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useMessages();
 const { refresh } = useSession();
 const { open, close } = useOverlays();
 const api = useApi();
@@ -20,10 +21,10 @@ async function login() {
 
 <template>
   <form class="px-6" @submit.prevent="login">
-    <h2 class="mb-4 text-center text-[28px] font-bold">Zaloguj się</h2>
+    <h2 class="mb-4 text-center text-[28px] font-bold">{{ t("auth.login.title") }}</h2>
     <TextField
       v-model="email"
-      label="Adres e-mail"
+      :label="t('common.email')"
       type="email"
       autocomplete="email"
       autofocus
@@ -32,14 +33,14 @@ async function login() {
     />
     <TextField
       v-model="password"
-      label="Hasło"
+      :label="t('common.password')"
       type="password"
       autocomplete="current-password"
       :error="fieldError('password')"
       class="pb-2"
     />
     <button type="button" class="text-brand text-[13px] font-semibold" @click="open = 'forgotPassword'">
-      Nie pamiętasz hasła?
+      {{ t("auth.forgotPassword") }}
     </button>
     <p v-if="formError" class="pt-2 text-[14px] font-semibold text-red-500" role="alert">{{ formError }}</p>
     <button
@@ -47,7 +48,7 @@ async function login() {
       :disabled="!email || !password || pending"
       class="bg-brand mt-6 w-full rounded-sm py-3 text-[17px] font-semibold text-white disabled:bg-gray-200"
     >
-      Zaloguj
+      {{ t("auth.login") }}
     </button>
   </form>
 </template>
