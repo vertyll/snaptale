@@ -1,6 +1,6 @@
 package com.vertyll.snaptale.security;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.server.autoconfigure.ServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,6 +21,8 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfAuthenticationStrategy;
+
+import static java.util.Objects.requireNonNull;
 
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
@@ -48,7 +50,7 @@ class SecurityConfig {
         HttpSecurity http,
         CookieCsrfTokenRepository csrfTokenRepository,
         SecurityContextRepository securityContextRepository,
-        @Value("${server.servlet.session.cookie.name}") String sessionCookieName
+        ServerProperties serverProperties
     ) {
         http.authorizeHttpRequests(
             authorize -> authorize.requestMatchers(HttpMethod.GET, PUBLIC_READ_ENDPOINTS)
@@ -66,7 +68,7 @@ class SecurityConfig {
             .logout(
                 logout -> logout.logoutUrl("/api/auth/logout")
                     .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT))
-                    .deleteCookies(sessionCookieName)
+                    .deleteCookies(sessionCookieName(serverProperties))
             )
             .csrf(csrf -> csrf.spa().csrfTokenRepository(csrfTokenRepository))
             .exceptionHandling(
@@ -106,5 +108,9 @@ class SecurityConfig {
     @Bean
     CsrfAuthenticationStrategy csrfAuthenticationStrategy(CookieCsrfTokenRepository csrfTokenRepository) {
         return new CsrfAuthenticationStrategy(csrfTokenRepository);
+    }
+
+    private static String sessionCookieName(ServerProperties serverProperties) {
+        return requireNonNull(serverProperties.getServlet().getSession().getCookie().getName());
     }
 }
