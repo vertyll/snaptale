@@ -101,8 +101,7 @@ npm run lint && npm run typecheck && npm run format:check
 
 > [!NOTE]
 >
-> Adres back-endu dla `nuxt dev` znajduje się w `.env.development` (`NUXT_BACKEND_INTERNAL_URL=http://localhost:8080`);
-> w kontenerze ustawia się go zmienną `NUXT_BACKEND_INTERNAL_URL`.
+> Adres back-endu dla `nuxt dev` znajduje się w `.env.development`.
 
 ## Uruchomienie lokalne
 
