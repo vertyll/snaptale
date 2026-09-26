@@ -1,0 +1,45 @@
+{
+  "validation.required": "To pole jest wymagane.",
+  "validation.tooLong": "{max, plural, one {Maksymalnie # znak.} few {Maksymalnie # znaki.} many {Maksymalnie # znaków.} other {Maksymalnie # znaku.}}",
+  "validation.tooShort": "{min, plural, one {Minimum # znak.} few {Minimum # znaki.} many {Minimum # znaków.} other {Minimum # znaku.}}",
+  "validation.email": "Podaj poprawny adres e-mail.",
+  "validation.invalidValue": "Nieprawidłowa wartość.",
+
+  "errors.invalidForm": "Popraw zaznaczone pola.",
+  "errors.duplicateEntry": "Taki wpis już istnieje.",
+  "errors.uploadTooLarge": "Plik jest za duży.",
+  "errors.unknown": "Coś poszło nie tak. Spróbuj ponownie.",
+  "errors.status.400": "Nieprawidłowe żądanie.",
+  "errors.status.401": "Zaloguj się, aby kontynuować.",
+  "errors.status.403": "Nie masz uprawnień do tej operacji.",
+  "errors.status.404": "Nie znaleziono.",
+  "errors.status.405": "Ta operacja nie jest obsługiwana.",
+  "errors.status.406": "Ta operacja nie jest obsługiwana.",
+  "errors.status.409": "Konflikt danych. Odśwież stronę i spróbuj ponownie.",
+  "errors.status.413": "Plik jest za duży.",
+  "errors.status.415": "Nieobsługiwany format danych.",
+  "errors.status.429": "Za dużo prób. Spróbuj ponownie za chwilę.",
+  "errors.status.500": "Błąd serwera. Spróbuj ponownie później.",
+  "errors.status.503": "Serwis jest chwilowo niedostępny.",
+
+  "errors.auth.badCredentials": "Nieprawidłowy e-mail lub hasło.",
+  "errors.auth.tooManyAttempts": "{minutes, plural, one {Za dużo nieudanych prób. Spróbuj ponownie za # minutę.} few {Za dużo nieudanych prób. Spróbuj ponownie za # minuty.} many {Za dużo nieudanych prób. Spróbuj ponownie za # minut.} other {Za dużo nieudanych prób. Spróbuj ponownie za # minuty.}}",
+  "errors.auth.emailTaken": "Konto z tym adresem e-mail już istnieje.",
+  "errors.auth.tokenInvalid": "Link jest nieprawidłowy lub wygasł.",
+
+  "errors.user.notFound": "Nie znaleziono użytkownika.",
+  "errors.follow.self": "Nie możesz obserwować samego siebie.",
+
+  "errors.post.notFound": "Nie znaleziono posta.",
+  "errors.post.notOwner": "Możesz usuwać tylko własne posty.",
+  "errors.comment.notFound": "Nie znaleziono komentarza.",
+  "errors.comment.notOwner": "Możesz usuwać tylko własne komentarze albo komentarze pod swoimi postami.",
+
+  "errors.media.videoRequired": "Wybierz plik wideo.",
+  "errors.media.videoUnsupported": "Obsługujemy tylko pliki MP4.",
+  "errors.media.videoTooLarge": "{maxMegabytes, plural, one {Wideo może mieć maksymalnie # MB.} few {Wideo może mieć maksymalnie # MB.} many {Wideo może mieć maksymalnie # MB.} other {Wideo może mieć maksymalnie # MB.}}",
+  "errors.media.imageRequired": "Wybierz zdjęcie.",
+  "errors.media.imageUnsupported": "Obsługujemy tylko pliki JPG i PNG.",
+  "errors.media.imageTooLarge": "{maxMegabytes, plural, one {Zdjęcie może mieć maksymalnie # MB.} few {Zdjęcie może mieć maksymalnie # MB.} many {Zdjęcie może mieć maksymalnie # MB.} other {Zdjęcie może mieć maksymalnie # MB.}}",
+  "errors.media.cropInvalid": "Zaznaczony obszar wychodzi poza zdjęcie."
+}

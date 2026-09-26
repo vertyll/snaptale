@@ -1,9 +1,9 @@
 node_modules
-*.log*
 .nuxt
-.nitro
-.cache
 .output
-.env
+.data
 dist
-*.DS_Store
+*.log
+.env
+.env.*
+!.env.development

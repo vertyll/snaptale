@@ -1,0 +1,69 @@
+name: Frontend
+
+on:
+  push:
+    branches: [main]
+    tags: ["frontend-v*"]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend.yml"
+      - ".github/workflows/_image.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/frontend.yml"
+      - ".github/workflows/_image.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Prettier, ESLint, TypeScript, build
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+        env:
+          NUXT_TELEMETRY_DISABLED: 1
+
+  image:
+    needs: quality
+    if: github.event_name != 'push' || github.ref_type == 'tag'
+    uses: ./.github/workflows/_image.yml
+    with:
+      context: frontend
+      image-name: vertyll/snaptale-frontend
+      tag-prefix: frontend-v
+    secrets: inherit

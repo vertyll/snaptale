@@ -1,47 +1,6 @@
-# Git
-.git
-.gitignore
-.gitattributes
-
-# Dependencies
-node_modules/
-npm-debug.log
-yarn-error.log
-pnpm-debug.log
-
-# Build output
-.nuxt/
-.output/
-dist/
-
-# Environment
-.env
-.env.*
-!.env.example
-
-# IDE
-.idea
-.vscode
-*.swp
-*.swo
-*.swn
-.DS_Store
-
-# Tests
-coverage/
-.nyc_output/
-
-# Documentation
-README.md
-*.md
-
-# Docker
-docker-compose.yml
-docker-compose.*.yml
+node_modules
+.nuxt
+.output
+.env*
 Dockerfile
 .dockerignore
-
-# Other
-.editorconfig
-.eslintrc
-.prettierrc

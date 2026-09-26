@@ -1,133 +1,128 @@
-## Założenia projektu
+# SnapTale
 
-Aplikacja internetowa SnapTale wzorująca się na założeniach aplikacji TikTok.
+Aplikacja internetowa z krótkimi filmami.
 
-## Link: https://snaptale.vertyll.dev
+Link: https://snaptale.vertyll.dev
 
-## Stos technologiczny
+## Struktura repozytorium
 
-### Back-end:
+| Katalog                         | Opis                                                                    |
+|---------------------------------|-------------------------------------------------------------------------|
+| `backend/`                      | Spring Boot 4.1, Java 25 - API                                          |
+| `frontend/`                     | Nuxt 4 - interfejs; proxy'uje `/api` i `/media` do back-endu            |
+| `docker-compose.dev.yml`        | Lokalnie: MySQL + maildev, opcjonalnie cały system (profil `app`)       |
+| `.github/workflows/`            | CI: weryfikacja i obrazy Docker (`backend`, `frontend`)                 |
 
-- Laravel.
-- PHP.
+## Back-end
+
+### Stos technologiczny
+
+- Spring Boot.
+- Java.
+- Maven.
 - MySQL.
+- Flyway.
+- JUnit.
+- Lombok.
+- Spring Security.
+- Spring Data JPA.
+- Spring Web.
+- Spring Mail.
+- Thymeleaf.
 
-### Front-end:
+### Budowanie i jakość
 
-- Nuxt.js.
+```bash
+cd backend
+./mvnw spotless:apply   # formatowanie
+./mvnw verify           # kompilacja z Error Prone/NullAway, testy, Spotless, PMD, SpotBugs
+```
+
+> [!IMPORTANT]
+>
+> Polecenie `verify` wymaga środowiska skonteneryzowanego dla Testcontainers.
+
+### Moduły
+
+| Pakiet                         | Odpowiedzialność                                                                |
+|--------------------------------|---------------------------------------------------------------------------------|
+| `auth`                         | Rejestracja, logowanie, wylogowanie, weryfikacja e-maila, reset hasła, e-maile  |
+| `user`                         | Konto zalogowanego użytkownika (`/api/me`), awatar, sugerowane konta            |
+| `post`                         | Filmy, polubienia i komentarze                                                  |
+| `follow`                       | Obserwowanie użytkowników                                                       |
+| `profile`                      | Profil użytkownika złożony z modułów `user`, `follow` i `post`                  |
+| `media`                        | Zapis i serwowanie plików (`/media/**`)                                         |
+| `messages`                     | Polskie komunikaty ICU dla kodów błędów API (`/api/messages`, tylko do odczytu) |
+| `security`, `common`, `config` | Spring Security, błędy (RFC 9457), walidacja, zegar                             |
+
+Błędy API zwracają kod komunikatu (`code`) i argumenty (`args`); treść po polsku jest w
+`backend/src/main/resources/messages/pl.json`, a test pilnuje, żeby każdy kod miał poprawny tekst ICU.
+
+### Profile i konfiguracja
+
+Profil jest obowiązkowy (`SPRING_PROFILES_ACTIVE=local` albo `prod`). Back-end nie używa plików `.env`.
+
+| Plik                           | Zawartość                                                            |
+|--------------------------------|----------------------------------------------------------------------|
+| `application.properties`       | wspólna konfiguracja, bez zmiennych środowiskowych                   |
+| `application-local.properties` | pełna konfiguracja lokalna (usługi z `docker-compose.dev.yml`)       |
+| `application-prod.properties`  | same odwołania `${...}` do zmiennych środowiskowych (tabela poniżej) |
+
+Zmienne środowiskowe profilu `prod`:
+
+| Zmienna                                                    | Opis                                                                 |
+|------------------------------------------------------------|----------------------------------------------------------------------|
+| `DB_URL`                                                   | JDBC URL MySQL, np. z `sslMode=VERIFY_IDENTITY` i truststore klastra |
+| `DB_USERNAME`, `DB_PASSWORD`                               | dane logowania do bazy                                               |
+| `DB_TRUSTSTORE_PASSWORD`                                   | hasło truststore'a z CA klastra (TLS do MySQL)                       |
+| `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD` | serwer SMTP                                                          |
+| `MAIL_FROM`                                                | adres nadawcy e-maili                                                |
+| `FRONTEND_URL`                                             | publiczny adres front-endu (linki w e-mailach)                       |
+| `MEDIA_DIRECTORY`                                          | katalog na wideo i awatary (trwały wolumen)                          |
+
+## Front-end
+
+### Stos technologiczny
+
+- Nuxt.
 - Vue.js.
-- Axios.
-- Tailwind CSS do szybkiego stylowania komponentów.
-- Pinia do zarządzania stanem aplikacji.
+- Node.js.
+- TypeScript.
+- Tailwind CSS.
 
-### Uwierzytelnianie:
+### Budowanie i jakość
 
-- Uwierzytelnianie za pomocą sesji.
-- Laravel Sanctum jako system do uwierzytelniania.
+```bash
+cd frontend
+npm ci
+npm run dev             # http://localhost:3000
+npm run lint && npm run typecheck && npm run format:check
+```
 
-### Dodatkowe narzędzia:
+> [!NOTE]
+>
+> Adres back-endu dla `nuxt dev` znajduje się w `.env.development` (`NUXT_BACKEND_INTERNAL_URL=http://localhost:8080`);
+> w kontenerze ustawia się go zmienną `NUXT_BACKEND_INTERNAL_URL`.
 
-- intervention/image jako biblioteka przetwarzania obrazów PHP.
+## Uruchomienie lokalne
 
-### Inne:
+> [!IMPORTANT]
+>
+> **Wymagania**: Docker, Java 25, Node.js 24.
 
-- nuxt-icon dla ikon w aplikacji.
+```bash
+docker compose -f docker-compose.dev.yml up -d   # MySQL :3306, maildev :1025 (SMTP) i :1080 (podgląd e-maili)
 
-## Zdjęcia poglądowe
+cd backend && SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run   # :8080
+cd frontend && npm ci && npm run dev                                # http://localhost:3000
+```
+
+Albo cały system w kontenerach: `docker compose -f docker-compose.dev.yml --profile app up -d --build`.
+
+## Zrzuty ekranu
 
 ![Widok projektu](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale4.png)
 ![Widok projektu](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale2.png)
 ![Widok projektu](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale5.png)
 ![Widok projektu](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale1.png)
 ![Widok projektu](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale3.png)
-
-## Instrukcja instalacji projektu – back-end
-
-1. Pobieramy projekt na lokalne środowisko.
-2. Instalujemy zależności:
-    ```bash
-    composer install 
-
-    cp .env.example .env 
-
-    php artisan cache:clear
-
-    composer dump-autoload
-
-    php artisan key:generate
-
-    composer require laravel/breeze --dev
-
-    php artisan serve
-    ```
-3. Tworzymy bazę danych. Upewniamy się, że `DB_DATABASE` w pliku `.env` jest taka sama i uruchamiamy migrację:
-    ```bash
-    php artisan migrate
-    ```
-
-## Instrukcja instalacji projektu – front-end
-
-1. Pobieramy projekt na lokalne środowisko.
-2. Instalujemy zależności:
-    ```bash
-    # npm
-    npm install
-    
-    # pnpm
-    pnpm install
-    
-    # yarn
-    yarn install
-    
-    # bun
-    bun install
-    ```
-
-### Środowisko deweloperskie
-
-Wystartuj serwer deweloperski na `http://localhost:3000`:
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-### Środowisko produkcyjne
-
-Budowanie aplikacji na produkcję:
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Lokalny podgląd zbudowanej aplikacji produkcyjnej:
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```

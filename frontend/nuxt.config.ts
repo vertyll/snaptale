@@ -1,21 +1,21 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineNuxtConfig({
-  pages: true,
-  modules: ["nuxt-icon", "@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt"],
+  compatibilityDate: "2026-09-26",
+  modules: ["@nuxt/icon", "@nuxt/eslint"],
   css: ["~/assets/css/main.css"],
-
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {},
+  vite: { plugins: [tailwindcss()] },
+  app: {
+    head: {
+      htmlAttrs: { lang: "pl" },
+      title: "SnapTale",
+      meta: [{ name: "description", content: "SnapTale - krótkie filmy od ludzi, których lubisz." }],
+      link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
     },
   },
-
+  icon: { serverBundle: { collections: ["mdi"] } },
   runtimeConfig: {
-    public: {
-      apiBaseUrl: process.env.API_BASE_URL,
-    },
+    backendInternalUrl: "",
   },
-
-  compatibilityDate: "2024-09-30",
+  typescript: { strict: true, typeCheck: false },
 });

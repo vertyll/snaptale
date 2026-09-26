@@ -1,57 +1,22 @@
-ARG NODE_VERSION=24
+ARG NODE_IMAGE=node:24-alpine
 
-# Base stage
-FROM node:${NODE_VERSION}-alpine AS base
-
-WORKDIR /app
-
-RUN corepack enable && corepack prepare pnpm@10.25.0 --activate
-RUN apk add --no-cache libc6-compat
-
-# Dependencies stage
-FROM base AS deps
-
-COPY package.json pnpm-lock.yaml ./
-
-RUN pnpm install --frozen-lockfile
-
-# Build stage
-FROM base AS build
-
-# Build arguments for environment
-ARG API_BASE_URL=http://localhost:8000
-ARG FRONTEND_URL=http://localhost:3000
-
-COPY package.json pnpm-lock.yaml ./
-
-RUN pnpm install --frozen-lockfile
-
+FROM ${NODE_IMAGE} AS build
+WORKDIR /workspace
+ENV NUXT_TELEMETRY_DISABLED=1
+COPY package.json package-lock.json ./
+RUN --mount=type=cache,target=/root/.npm npm ci --no-audit --no-fund
 COPY . .
+RUN npm run build
 
-# Set environment variables for build
-ENV API_BASE_URL=${API_BASE_URL}
-
-# Build the application
-RUN pnpm run build
-
-# Production stage
-FROM node:${NODE_VERSION}-alpine AS production
-
+FROM ${NODE_IMAGE} AS runtime
+ENV NODE_ENV=production \
+    NUXT_TELEMETRY_DISABLED=1 \
+    HOST=0.0.0.0 \
+    PORT=3000
 WORKDIR /app
-
-RUN apk add --no-cache curl
-
-# Copy built application
-COPY --from=build /app/.output /app/.output
-COPY --from=build /app/package.json /app/
-
-ENV NODE_ENV=production
-ENV HOST=0.0.0.0
-ENV PORT=3000
-
+COPY --from=build --chown=node:node /workspace/.output/ ./
+USER node
 EXPOSE 3000
-
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-    CMD curl -f http://localhost:3000 || exit 1
-
-CMD ["node", ".output/server/index.mjs"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD wget -q -O /dev/null "http://127.0.0.1:${PORT}/health" || exit 1
+CMD ["node", "server/index.mjs"]

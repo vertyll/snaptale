@@ -1,124 +1,40 @@
-ARG PHP_VERSION=8.4
+ARG JDK_IMAGE=azul/zulu-openjdk:25-latest
+ARG JRE_IMAGE=azul/zulu-openjdk:25-jre-headless-latest
 
-# Base stage
-FROM php:${PHP_VERSION}-fpm-alpine AS base
+FROM ${JDK_IMAGE} AS deps
+WORKDIR /workspace
+COPY .mvn/ .mvn/
+COPY mvnw pom.xml ./
+RUN --mount=type=cache,target=/root/.m2 ./mvnw -B -q dependency:go-offline
 
-WORKDIR /var/www/html
+FROM deps AS build
+COPY lombok.config ./
+COPY src/main/ src/main/
+RUN --mount=type=cache,target=/root/.m2 \
+    ./mvnw -B package -DskipTests -Dspotless.check.skip=true -Dpmd.skip=true -Dspotbugs.skip=true
 
-# Install system dependencies
-RUN apk add --no-cache \
-    git \
-    curl \
-    libpng-dev \
-    libjpeg-turbo-dev \
-    freetype-dev \
-    oniguruma-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    mysql-client \
-    bash \
-    netcat-openbsd \
-    dos2unix \
-    libzip-dev \
-    icu-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip intl opcache
+FROM ${JDK_IMAGE} AS extract
+WORKDIR /extract
+COPY --from=build /workspace/target/snaptale-backend.jar app.jar
+RUN java -Djarmode=tools -jar app.jar extract --layers --launcher --destination layers
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+FROM ${JRE_IMAGE} AS runtime
+WORKDIR /app
+RUN groupadd --system --gid 1001 snaptale && useradd --system --uid 1001 --gid snaptale snaptale
 
-# Dependencies stage
-FROM base AS deps
+COPY --from=extract --chown=snaptale:snaptale /extract/layers/dependencies/ ./
+COPY --from=extract --chown=snaptale:snaptale /extract/layers/spring-boot-loader/ ./
+COPY --from=extract --chown=snaptale:snaptale /extract/layers/snapshot-dependencies/ ./
+COPY --from=extract --chown=snaptale:snaptale /extract/layers/application/ ./
 
-COPY composer.json composer.lock ./
+RUN mkdir -p /var/app/media && chown snaptale:snaptale /var/app/media
+USER snaptale
+EXPOSE 8080
 
-RUN composer install \
-    --no-dev \
-    --no-scripts \
-    --no-autoloader \
-    --prefer-dist \
-    --no-interaction
-
-# Build stage
-FROM base AS build
-
-COPY composer.json composer.lock ./
-
-RUN composer install \
-    --no-scripts \
-    --no-autoloader \
-    --prefer-dist \
-    --no-interaction
-
-COPY . .
-
-# Generate optimized autoloader
-RUN composer dump-autoload --optimize \
-    && php artisan config:clear \
-    && php artisan route:clear \
-    && php artisan view:clear
-
-# Production stage
-FROM php:${PHP_VERSION}-fpm-alpine AS production
-
-COPY --from=base /usr/local/lib/php/extensions /usr/local/lib/php/extensions
-COPY --from=base /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
-
-# Install runtime dependencies
-RUN apk add --no-cache \
-    icu-libs \
-    libpng \
-    libjpeg-turbo \
-    freetype \
-    oniguruma \
-    libxml2 \
-    libzip \
-    zlib \
-    nginx \
-    supervisor \
-    bash \
-    curl \
-    mysql-client \
-    dos2unix
-
-WORKDIR /var/www/html
-
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Copy application files
-COPY --from=build /var/www/html /var/www/html
-
-# Copy php, nginx and supervisor configs
-COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
-COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
-COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-COPY docker/php/conf.d/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
-
-# Copy entrypoint script and configure everything in one layer
-COPY docker/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN dos2unix /usr/local/bin/docker-entrypoint.sh \
-    && chmod +x /usr/local/bin/docker-entrypoint.sh \
-    && chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html/storage \
-    && chmod -R 755 /var/www/html/bootstrap/cache \
-    && mkdir -p /var/www/html/public/storage \
-    && chown -R www-data:www-data /var/www/html/public/storage \
-    && echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.memory_consumption=256" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.validate_timestamps=0" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && mkdir -p /var/www/html/storage/{app/{public,private},framework/{cache/data,sessions,testing,views},logs}
-    
-ENV APP_ENV=production
-ENV APP_DEBUG=false
-
-EXPOSE 80
+ENV SPRING_PROFILES_ACTIVE=prod \
+    JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=75 -XX:+ExitOnOutOfMemoryError"
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost/api/health || exit 1
+  CMD ["bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /actuator/health/liveness HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q '\"UP\"' <&3"]
 
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]

@@ -1,38 +1,60 @@
+name: snaptale
+
 services:
-    mysql:
-        image: mysql:9.7.1
-        container_name: snaptale_mysql
-        restart: unless-stopped
-        environment:
-            MYSQL_DATABASE: snaptale
-            MYSQL_ROOT_PASSWORD: root
-            SERVICE_TAGS: dev
-            SERVICE_NAME: mysql
-        ports:
-            - "3306:3306"
-        volumes:
-            - mysql_data:/var/lib/mysql
-        networks:
-            - snaptale
-        healthcheck:
-            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-            interval: 10s
-            start_period: 30s
+  mysql:
+    image: docker.io/library/mysql:9.7.1
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: snaptale
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
-    maildev:
-        image: maildev/maildev
-        container_name: snaptale_maildev
-        restart: unless-stopped
-        ports:
-            - "1025:1025"
-            - "1080:1080"
-        networks:
-            - snaptale
+  maildev:
+    image: docker.io/maildev/maildev:3.0.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:1025:1025"
+      - "127.0.0.1:1080:1080"
 
-networks:
-    snaptale:
-        driver: bridge
+  backend:
+    profiles: [app]
+    build:
+      context: backend
+    depends_on:
+      mysql:
+        condition: service_healthy
+      maildev:
+        condition: service_started
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/snaptale
+      SPRING_MAIL_HOST: maildev
+      SNAPTALE_MEDIA_DIRECTORY: /var/app/media
+    volumes:
+      - media:/var/app/media
+    ports:
+      - "127.0.0.1:8080:8080"
+
+  frontend:
+    profiles: [app]
+    build:
+      context: frontend
+    depends_on:
+      - backend
+    environment:
+      NUXT_BACKEND_INTERNAL_URL: http://backend:8080
+    ports:
+      - "127.0.0.1:3000:3000"
 
 volumes:
-    mysql_data:
-        driver: local
+  mysql-data:
+  media:

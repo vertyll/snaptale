@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<ruleset name="Main PMD Rules"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>PMD rules for main code</description>
+
+    <!-- Best Practices -->
+    <rule ref="category/java/bestpractices.xml">
+        <exclude name="ImplicitFunctionalInterface"/>
+        <exclude name="GuardLogStatement"/>
+    </rule>
+
+    <!-- Code Style -->
+    <rule ref="category/java/codestyle.xml">
+        <exclude name="ShortMethodName"/>
+        <exclude name="OnlyOneReturn"/>
+        <exclude name="AtLeastOneConstructor"/>
+        <exclude name="CommentDefaultAccessModifier"/>
+        <exclude name="LongVariable"/>
+        <exclude name="ShortVariable"/>
+        <exclude name="ShortClassName"/>
+        <exclude name="TooManyStaticImports"/>
+        <exclude name="MethodArgumentCouldBeFinal"/>
+        <exclude name="LocalVariableCouldBeFinal"/>
+    </rule>
+
+    <!-- Design -->
+    <rule ref="category/java/design.xml">
+        <exclude name="LawOfDemeter"/>
+        <exclude name="CyclomaticComplexity"/>
+        <exclude name="CouplingBetweenObjects"/>
+        <exclude name="UseObjectForClearerAPI"/>
+        <exclude name="TooManyMethods"/>
+        <exclude name="ExcessiveImports"/>
+        <exclude name="TooManyFields"/>
+        <exclude name="LoosePackageCoupling"/>
+        <exclude name="ImmutableField"/>
+    </rule>
+
+    <!-- Design: JPA entity fields cannot be final -->
+    <rule ref="category/java/design.xml/ImmutableField">
+        <properties>
+            <property name="violationSuppressXPath" value="ancestor::ClassDeclaration[pmd-java:hasAnnotation('jakarta.persistence.Entity')]"/>
+        </properties>
+    </rule>
+
+    <!-- Documentation -->
+    <rule ref="category/java/documentation.xml">
+        <exclude name="CommentRequired"/>
+        <exclude name="CommentSize"/>
+    </rule>
+
+    <!-- Error Prone -->
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="NullAssignment"/>
+        <exclude name="AvoidFieldNameMatchingMethodName"/>
+        <exclude name="AvoidLiteralsInIfCondition"/>
+    </rule>
+
+    <!-- Multithreading -->
+    <rule ref="category/java/multithreading.xml">
+        <exclude name="UseConcurrentHashMap"/>
+        <exclude name="DoNotUseThreads"/>
+    </rule>
+
+    <!-- Performance -->
+    <rule ref="category/java/performance.xml">
+        <exclude name="TooFewBranchesForSwitch"/>
+        <exclude name="AvoidInstantiatingObjectsInLoops"/>
+        <exclude name="RedundantFieldInitializer" />
+    </rule>
+
+    <!-- Security -->
+    <rule ref="category/java/security.xml"/>
+
+</ruleset>

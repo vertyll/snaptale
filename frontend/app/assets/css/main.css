@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #bc2cf0;
+  --color-brand-dark: #9b2cf0;
+  --color-like: #f02c56;
+  --color-surface: #f1f1f2;
+  --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  @apply bg-white text-gray-900;
+}
