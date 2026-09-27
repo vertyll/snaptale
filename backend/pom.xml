@@ -327,25 +327,22 @@
                     <printFailingErrors>true</printFailingErrors>
                     <failOnViolation>true</failOnViolation>
                     <linkXRef>false</linkXRef>
+                    <rulesets>
+                        <ruleset>${project.basedir}/config/pmd/pmd-main-ruleset.xml</ruleset>
+                    </rulesets>
+                    <includeTests>false</includeTests>
+                    <excludeRoots>
+                        <excludeRoot>${project.build.directory}/generated-sources</excludeRoot>
+                    </excludeRoots>
+                    <targetDirectory>${project.build.directory}/pmd-main</targetDirectory>
                 </configuration>
                 <executions>
                     <execution>
                         <id>pmd-main</id>
                         <phase>verify</phase>
                         <goals>
-                            <goal>pmd</goal>
                             <goal>check</goal>
                         </goals>
-                        <configuration>
-                            <rulesets>
-                                <ruleset>${project.basedir}/config/pmd/pmd-main-ruleset.xml</ruleset>
-                            </rulesets>
-                            <includeTests>false</includeTests>
-                            <excludeRoots>
-                                <excludeRoot>${project.build.directory}/generated-sources</excludeRoot>
-                            </excludeRoots>
-                            <targetDirectory>${project.build.directory}/pmd-main</targetDirectory>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>pmd-test</id>
