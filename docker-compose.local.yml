@@ -2,7 +2,7 @@ name: snaptale
 
 services:
   mysql:
-    image: docker.io/library/mysql:9.7.1
+    image: docker.io/library/mysql:9.7.2
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: snaptale
