@@ -24,6 +24,11 @@ services:
     ports:
       - "127.0.0.1:1025:1025"
       - "127.0.0.1:1080:1080"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:1080/index.html || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend:
     profiles: [app]
