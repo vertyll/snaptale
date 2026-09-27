@@ -21,9 +21,13 @@ const file = ref<File | null>(null);
 const preview = ref<string | null>(null);
 const cropper = useTemplateRef<InstanceType<typeof Cropper>>("cropper");
 
-const changed = computed(
-  () => name.value.trim() !== "" && (name.value !== me.value?.name || bio.value !== (me.value?.bio ?? ""))
-);
+const changed = computed(() => {
+  const current = me.value;
+  if (name.value.trim() === "") {
+    return false;
+  }
+  return !current || name.value !== current.name || bio.value !== (current.bio ?? "");
+});
 
 function pickImage(event: Event) {
   const picked = (event.target as HTMLInputElement).files?.[0];
