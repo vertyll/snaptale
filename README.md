@@ -60,7 +60,7 @@ Błędy API zwracają kod komunikatu (`code`) i argumenty (`args`); treść po p
 
 ### Profile i konfiguracja
 
-Profil jest obowiązkowy (`SPRING_PROFILES_ACTIVE=local` albo `prod`). Back-end nie używa plików `.env`.
+Domyślny profil to `local`; obraz Dockera ustawia `prod` (`SPRING_PROFILES_ACTIVE=prod`). Back-end nie używa plików `.env`.
 
 | Plik                           | Zawartość                                                            |
 |--------------------------------|----------------------------------------------------------------------|
@@ -112,7 +112,7 @@ npm run lint && npm run typecheck && npm run format:check
 ```bash
 docker compose -f docker-compose.local.yml up -d   # MySQL :3306, maildev :1025 (SMTP) i :1080 (podgląd e-maili)
 
-cd backend && SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run   # :8080
+cd backend && ./mvnw spring-boot:run                                # :8080
 cd frontend && npm ci && npm run dev                                # http://localhost:3000
 ```
 
