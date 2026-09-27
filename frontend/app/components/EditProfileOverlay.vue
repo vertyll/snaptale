@@ -8,6 +8,9 @@ const BIO_MAX = 160;
 
 const { me, refresh } = useSession();
 const { close } = useOverlays();
+const dialog = ref<HTMLDialogElement | null>(null);
+
+onMounted(() => dialog.value?.showModal());
 const api = useApi();
 const profileForm = useForm();
 const avatarForm = useForm();
@@ -72,12 +75,11 @@ async function saveProfile() {
 </script>
 
 <template>
-  <div
-    class="fixed top-0 left-0 z-50 flex h-full w-full justify-center overflow-auto bg-black/50 pt-14 md:pt-[105px]"
-    role="dialog"
-    aria-modal="true"
+  <dialog
+    ref="dialog"
+    class="fixed inset-0 z-50 m-0 h-full max-h-none w-full max-w-none justify-center overflow-auto border-0 bg-black/50 p-0 pt-14 backdrop:bg-transparent open:flex md:pt-[105px]"
     aria-labelledby="edit-profile-title"
-    @keydown.esc="close"
+    @cancel.prevent="close"
   >
     <div class="relative mx-3 mb-10 h-fit w-full max-w-[700px] rounded-lg bg-white">
       <div class="flex items-center justify-between border-b border-gray-300 p-5">
@@ -173,5 +175,5 @@ async function saveProfile() {
         </div>
       </form>
     </div>
-  </div>
+  </dialog>
 </template>

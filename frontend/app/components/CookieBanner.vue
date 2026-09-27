@@ -4,10 +4,9 @@ const accepted = useCookie<string | null>("cookies_accepted", { maxAge: 60 * 60 
 </script>
 
 <template>
-  <div
+  <section
     v-if="!accepted"
     class="fixed right-0 bottom-0 left-0 z-50 border-t border-gray-200 bg-white p-4 shadow-md"
-    role="region"
     :aria-label="t('cookies.label')"
   >
     <div class="container mx-auto flex flex-col items-center justify-between sm:flex-row">
@@ -18,5 +17,5 @@ const accepted = useCookie<string | null>("cookies_accepted", { maxAge: 60 * 60 
         {{ t("cookies.accept") }}
       </button>
     </div>
-  </div>
+  </section>
 </template>

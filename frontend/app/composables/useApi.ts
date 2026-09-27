@@ -6,20 +6,20 @@ type Method = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 const CSRF_COOKIE = "XSRF-TOKEN";
 const CSRF_HEADER = "X-XSRF-TOKEN";
 
-export function useApi() {
-  async function csrfToken(): Promise<string> {
-    const existing = readCookie(CSRF_COOKIE);
-    if (existing) {
-      return existing;
-    }
-    await $fetch("/api/me");
-    const token = readCookie(CSRF_COOKIE);
-    if (!token) {
-      throw new Error("Back-end did not set the CSRF cookie");
-    }
-    return token;
+async function csrfToken(): Promise<string> {
+  const existing = readCookie(CSRF_COOKIE);
+  if (existing) {
+    return existing;
   }
+  await $fetch("/api/me");
+  const token = readCookie(CSRF_COOKIE);
+  if (!token) {
+    throw new Error("Back-end did not set the CSRF cookie");
+  }
+  return token;
+}
 
+export function useApi() {
   async function call<T>(method: Method, path: string, body?: BodyInit | Record<string, unknown>): Promise<T> {
     const headers: Record<string, string> = method === "GET" ? {} : { [CSRF_HEADER]: await csrfToken() };
     try {

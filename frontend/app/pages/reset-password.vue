@@ -24,8 +24,8 @@ async function reset() {
 <template>
   <main class="mx-auto w-full max-w-[470px] pt-[110px]">
     <h1 class="mb-6 text-center text-[28px] font-bold">{{ t("resetPassword.title") }}</h1>
-    <div v-if="done" class="text-center" role="status">
-      <p>{{ t("resetPassword.done") }}</p>
+    <div v-if="done" class="text-center">
+      <output class="block">{{ t("resetPassword.done") }}</output>
       <button type="button" class="text-brand mt-4 font-semibold" @click="open = 'login'">{{ t("nav.signIn") }}</button>
     </div>
     <p v-else-if="!token" class="text-center text-red-500">{{ t("resetPassword.invalidLink") }}</p>

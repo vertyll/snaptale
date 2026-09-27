@@ -65,14 +65,13 @@ onBeforeUnmount(clearVideo);
 
 <template>
   <div class="w-full">
-    <div
+    <output
       v-if="pending"
       class="fixed top-0 left-0 z-50 flex h-screen w-full items-center justify-center bg-black/50"
-      role="status"
       :aria-label="t('upload.uploading')"
     >
       <Icon name="mdi:loading" size="100" class="animate-spin text-white" />
-    </div>
+    </output>
     <main class="mt-[80px] mb-[40px] w-full rounded-md bg-white px-4 py-6 shadow-lg md:px-10">
       <h1 class="text-[23px] font-semibold">{{ t("upload.title") }}</h1>
       <p class="mt-1 text-gray-400">{{ t("upload.subtitle") }}</p>

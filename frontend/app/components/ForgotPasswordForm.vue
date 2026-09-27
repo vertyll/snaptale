@@ -13,9 +13,9 @@ async function send() {
 <template>
   <form class="px-6" @submit.prevent="send">
     <h2 class="mb-4 text-center text-[28px] font-bold">{{ t("auth.forgot.title") }}</h2>
-    <p v-if="sent" class="text-center text-gray-700" role="status">
+    <output v-if="sent" class="block text-center text-gray-700">
       {{ t("auth.forgot.sent", { email }) }}
-    </p>
+    </output>
     <template v-else>
       <p class="pb-4 text-sm text-gray-600">{{ t("auth.forgot.description") }}</p>
       <TextField

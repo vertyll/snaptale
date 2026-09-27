@@ -1,14 +1,16 @@
 <script setup lang="ts">
 const { t } = useMessages();
 const { open, close } = useOverlays();
+const dialog = ref<HTMLDialogElement | null>(null);
+
+onMounted(() => dialog.value?.showModal());
 </script>
 
 <template>
-  <div
-    class="fixed top-0 left-0 z-50 flex h-full w-full items-center justify-center bg-black/50"
-    role="dialog"
-    aria-modal="true"
-    @keydown.esc="close"
+  <dialog
+    ref="dialog"
+    class="fixed inset-0 z-50 m-0 h-full max-h-none w-full max-w-none items-center justify-center border-0 bg-black/50 p-0 backdrop:bg-transparent open:flex"
+    @cancel.prevent="close"
   >
     <div class="relative flex min-h-[70%] w-full max-w-[470px] flex-col rounded-lg bg-white p-4">
       <div class="flex w-full justify-end">
@@ -40,5 +42,5 @@ const { open, close } = useOverlays();
         </template>
       </div>
     </div>
-  </div>
+  </dialog>
 </template>
