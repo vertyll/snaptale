@@ -1,6 +1,11 @@
 ### General ###
 HELP.md
 
+### JVM crash dumps ###
+hs_err_pid*.log
+replay_pid*.log
+*.hprof
+
 ### Gradle ###
 .gradle
 build/
@@ -49,6 +54,18 @@ bin/
 ### OS ###
 .DS_Store
 Thumbs.db
+
+### Logs ###
+*.log
+logs/
+
+### Environment files ###
+.env
+*.env
+!.env.example
+
+### Compiled class files ###
+*.class
 
 ### Local media uploads ###
 /media/

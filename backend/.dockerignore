@@ -42,4 +42,3 @@ LICENSE
 **/Dockerfile
 **/docker-compose*.yml
 **/docker/
-**/docker-entrypoint.sh

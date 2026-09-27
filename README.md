@@ -6,12 +6,12 @@ Link: https://snaptale.vertyll.dev
 
 ## Struktura repozytorium
 
-| Katalog                         | Opis                                                                    |
-|---------------------------------|-------------------------------------------------------------------------|
-| `backend/`                      | Spring Boot 4.1, Java 25 - API                                          |
-| `frontend/`                     | Nuxt 4 - interfejs; proxy'uje `/api` i `/media` do back-endu            |
-| `docker-compose.dev.yml`        | Lokalnie: MySQL + maildev, opcjonalnie cały system (profil `app`)       |
-| `.github/workflows/`            | CI: weryfikacja i obrazy Docker (`backend`, `frontend`)                 |
+| Katalog                    | Opis                                                              |
+|----------------------------|-------------------------------------------------------------------|
+| `backend/`                 | Spring Boot 4.1, Java 25 - API                                    |
+| `frontend/`                | Nuxt 4 - interfejs; proxy'uje `/api` i `/media` do back-endu      |
+| `docker-compose.local.yml` | Lokalnie: MySQL + maildev, opcjonalnie cały system (profil `app`) |
+| `.github/workflows/`       | CI: weryfikacja i obrazy Docker (`backend`, `frontend`)           |
 
 ## Back-end
 
@@ -65,7 +65,7 @@ Profil jest obowiązkowy (`SPRING_PROFILES_ACTIVE=local` albo `prod`). Back-end 
 | Plik                           | Zawartość                                                            |
 |--------------------------------|----------------------------------------------------------------------|
 | `application.properties`       | wspólna konfiguracja, bez zmiennych środowiskowych                   |
-| `application-local.properties` | pełna konfiguracja lokalna (usługi z `docker-compose.dev.yml`)       |
+| `application-local.properties` | pełna konfiguracja lokalna (usługi z `docker-compose.local.yml`)       |
 | `application-prod.properties`  | same odwołania `${...}` do zmiennych środowiskowych (tabela poniżej) |
 
 Zmienne środowiskowe profilu `prod`:
@@ -110,13 +110,13 @@ npm run lint && npm run typecheck && npm run format:check
 > **Wymagania**: Docker, Java 25, Node.js 24.
 
 ```bash
-docker compose -f docker-compose.dev.yml up -d   # MySQL :3306, maildev :1025 (SMTP) i :1080 (podgląd e-maili)
+docker compose -f docker-compose.local.yml up -d   # MySQL :3306, maildev :1025 (SMTP) i :1080 (podgląd e-maili)
 
 cd backend && SPRING_PROFILES_ACTIVE=local ./mvnw spring-boot:run   # :8080
 cd frontend && npm ci && npm run dev                                # http://localhost:3000
 ```
 
-Albo cały system w kontenerach: `docker compose -f docker-compose.dev.yml --profile app up -d --build`.
+Albo cały system w kontenerach: `docker compose -f docker-compose.local.yml --profile app up -d --build`.
 
 ## Zrzuty ekranu
 

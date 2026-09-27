@@ -17,6 +17,17 @@
         <Bug pattern="VA_FORMAT_STRING_USES_NEWLINE"/>
     </Match>
 
+    <!-- Exclude RuntimeException thrown by test fakes that simulate a failing collaborator -->
+    <Match>
+        <Class name="~.*Test\$.*"/>
+        <Bug pattern="THROWS_METHOD_THROWS_RUNTIMEEXCEPTION"/>
+    </Match>
+
+    <!-- Exclude MapStruct generated implementations -->
+    <Match>
+        <Class name="~.*MapperImpl"/>
+    </Match>
+
     <!-- FindSecBugs: Ignore informational endpoints detection -->
     <Match>
         <Bug pattern="SPRING_ENDPOINT"/>

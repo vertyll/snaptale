@@ -1,6 +1,33 @@
-node_modules
-.nuxt
-.output
-.env*
-Dockerfile
+### Global / Git ###
+.git/
+.gitignore
 .dockerignore
+.github/
+README.md
+LICENSE
+
+### Dependencies & build outputs ###
+**/node_modules/
+**/.next/
+**/.nuxt/
+**/.output/
+**/.turbo/
+**/dist/
+**/out/
+**/coverage/
+**/*.tsbuildinfo
+
+### Development & IDEs ###
+**/.idea/
+**/.vscode/
+**/*.log
+**/.env*
+!**/.env.development
+
+### OS ###
+**/.DS_Store
+**/Thumbs.db
+
+### Docker ###
+**/Dockerfile
+**/docker-compose*.yml
