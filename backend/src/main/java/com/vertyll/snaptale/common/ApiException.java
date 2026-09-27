@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 
-abstract class ApiException extends RuntimeException {
+public abstract class ApiException extends RuntimeException {
 
     @Serial
     private static final long serialVersionUID = 1L;

@@ -19,16 +19,16 @@ async function csrfToken(): Promise<string> {
   return token;
 }
 
-export function useApi() {
-  async function call<T>(method: Method, path: string, body?: BodyInit | Record<string, unknown>): Promise<T> {
-    const headers: Record<string, string> = method === "GET" ? {} : { [CSRF_HEADER]: await csrfToken() };
-    try {
-      return await $fetch<T>(path, { method, body, headers, credentials: "same-origin" });
-    } catch (error: unknown) {
-      throw toApiError(error);
-    }
+async function call<T>(method: Method, path: string, body?: BodyInit | Record<string, unknown>): Promise<T> {
+  const headers: Record<string, string> = method === "GET" ? {} : { [CSRF_HEADER]: await csrfToken() };
+  try {
+    return await $fetch<T>(path, { method, body, headers, credentials: "same-origin" });
+  } catch (error: unknown) {
+    throw toApiError(error);
   }
+}
 
+export function useApi() {
   return {
     get: <T>(path: string) => call<T>("GET", path),
     post: <T>(path: string, body?: Record<string, unknown> | FormData) => call<T>("POST", path, body),

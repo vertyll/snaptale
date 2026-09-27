@@ -11,8 +11,8 @@ export function useForm() {
     try {
       await action();
       return true;
-    } catch (failure: unknown) {
-      error.value = failure;
+    } catch (error_: unknown) {
+      error.value = error_;
       return false;
     } finally {
       pending.value = false;

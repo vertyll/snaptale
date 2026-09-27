@@ -11,8 +11,8 @@ async function resend() {
   try {
     await api.post("/api/auth/email/resend");
     state.value = "sent";
-  } catch (failure: unknown) {
-    error.value = errorText(failure);
+  } catch (error_: unknown) {
+    error.value = errorText(error_);
     state.value = "idle";
   }
 }

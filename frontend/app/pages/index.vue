@@ -35,8 +35,8 @@ async function loadMore() {
     posts.value.push(...next.posts.filter((post) => !known.has(post.id)));
     hasMore.value = next.hasMore;
     page.value += 1;
-  } catch (failure: unknown) {
-    error.value = errorText(failure);
+  } catch (error_: unknown) {
+    error.value = errorText(error_);
   } finally {
     loading.value = false;
   }

@@ -8,10 +8,10 @@
     <title>Potwierdź adres e-mail</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #121212; color: #e8e8e8; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #121212;">
+<table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #121212;">
     <tr>
-        <td align="center" style="padding: 40px 16px;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 560px;">
+        <td style="padding: 40px 16px;">
+            <table role="presentation" style="width: 100%; border-collapse: collapse; max-width: 560px; margin: 0 auto;">
                 <tr>
                     <td style="padding: 0 0 16px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #a0a0a0;">SnapTale</td>
                 </tr>
@@ -20,7 +20,7 @@
                         <h1 style="margin: 0 0 20px; font-size: 22px; font-weight: 600; line-height: 1.3; color: #e8e8e8;">Potwierdź adres e-mail</h1>
                         <p style="margin: 0 0 16px; font-size: 15px; color: #e8e8e8;">Cześć <strong th:text="${name}">Użytkowniku</strong>,</p>
                         <p style="margin: 0 0 16px; font-size: 15px; color: #e8e8e8;">Dziękujemy za rejestrację w SnapTale. Potwierdź swój adres e-mail, klikając przycisk poniżej:</p>
-                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin: 8px 0 24px;">
+                        <table role="presentation" style="border-collapse: collapse; margin: 8px 0 24px;">
                             <tr>
                                 <td style="background-color: #6aa9ff;">
                                     <a th:href="${link}" href="#" style="display: inline-block; padding: 12px 28px; font-size: 15px; font-weight: 600; color: #0d1117; text-decoration: none;">Potwierdź adres e-mail</a>

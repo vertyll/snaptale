@@ -41,8 +41,8 @@ function toggleFollow() {
       current.followedByMe = !following;
       current.follows.followers += following ? -1 : 1;
       await refreshNuxtData("following");
-    } catch (failure: unknown) {
-      followError.value = errorText(failure);
+    } catch (error_: unknown) {
+      followError.value = errorText(error_);
     }
   });
 }

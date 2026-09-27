@@ -71,8 +71,8 @@ async function addComment() {
     comment.value = "";
     await nextTick();
     commentList.value?.scrollTo({ top: commentList.value.scrollHeight, behavior: "smooth" });
-  } catch (failure: unknown) {
-    actionError.value = errorText(failure);
+  } catch (error_: unknown) {
+    actionError.value = errorText(error_);
   } finally {
     sending.value = false;
   }
@@ -87,8 +87,8 @@ async function deleteComment(item: CommentView) {
     await api.del(`/api/posts/${current.post.id}/comments/${item.id}`);
     current.comments = current.comments.filter((candidate) => candidate.id !== item.id);
     current.post.commentCount -= 1;
-  } catch (failure: unknown) {
-    actionError.value = errorText(failure);
+  } catch (error_: unknown) {
+    actionError.value = errorText(error_);
   }
 }
 
@@ -100,8 +100,8 @@ async function deletePost() {
   try {
     await api.del(`/api/posts/${current.post.id}`);
     await navigateTo(`/profile/${current.post.author.id}`);
-  } catch (failure: unknown) {
-    actionError.value = errorText(failure);
+  } catch (error_: unknown) {
+    actionError.value = errorText(error_);
   }
 }
 
