@@ -8,6 +8,7 @@ import java.time.ZoneOffset;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.unit.DataSize;
 
 import com.vertyll.snaptale.TestMedia;
@@ -38,8 +39,9 @@ class MediaStorageTest {
     void rejectsOversizedVideos() {
         MediaStorage storage = storage(DataSize.ofBytes(4));
 
-        assertThatThrownBy(() -> storage.storeVideo(TestMedia.video("video")))
-            .isInstanceOf(InvalidRequestException.class)
+        MockMultipartFile video = TestMedia.video("video");
+
+        assertThatThrownBy(() -> storage.storeVideo(video)).isInstanceOf(InvalidRequestException.class)
             .hasMessage(MessageKeys.MEDIA_VIDEO_TOO_LARGE);
     }
 
