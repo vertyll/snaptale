@@ -1,4 +1,4 @@
-name: Image (reusable)
+name: Image
 
 on:
   workflow_call:
@@ -34,7 +34,7 @@ env:
 
 jobs:
   image:
-    name: Build and publish
+    name: Publish
     runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout repository
