@@ -99,6 +99,7 @@ class SecurityConfig {
     }
 
     @Bean
+    @SuppressWarnings("java:S3330")
     CookieCsrfTokenRepository csrfTokenRepository(SnaptaleSecurityProperties properties) {
         CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
         repository.setCookieCustomizer(cookie -> cookie.secure(properties.secureCookies()).sameSite("Lax"));

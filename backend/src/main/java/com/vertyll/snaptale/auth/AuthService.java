@@ -80,6 +80,7 @@ class AuthService {
         );
     }
 
+    @SuppressWarnings("java:S2637")
     private String encode(String password) {
         if (password.getBytes(StandardCharsets.UTF_8).length > BCRYPT_MAX_BYTES) {
             throw new InvalidRequestException(
