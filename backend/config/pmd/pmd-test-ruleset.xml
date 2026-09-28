@@ -10,7 +10,6 @@
         <exclude name="ImplicitFunctionalInterface"/>
         <exclude name="UnitTestContainsTooManyAsserts"/>
         <exclude name="UnitTestAssertionsShouldIncludeMessage"/>
-        <exclude name="UnitTestShouldIncludeAssert"/>
         <exclude name="LooseCoupling"/>
     </rule>
 
@@ -82,4 +81,9 @@
 
     <!-- Security -->
     <rule ref="category/java/security.xml"/>
+    <rule ref="category/java/bestpractices.xml/UnitTestShouldIncludeAssert">
+        <properties>
+            <property name="extraAssertMethodNames" value="verify,verifyNoInteractions,verifyNoMoreInteractions,andExpect,expectStatus,expectBody"/>
+        </properties>
+    </rule>
 </ruleset>
