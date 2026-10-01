@@ -83,7 +83,7 @@ async function saveProfile() {
     ref="dialog"
     class="fixed inset-0 z-50 m-0 h-full max-h-none w-full max-w-none justify-center overflow-auto border-0 bg-black/50 p-0 pt-14 backdrop:bg-transparent open:flex md:pt-[105px]"
     aria-labelledby="edit-profile-title"
-    @cancel.prevent="close"
+    @cancel.self.prevent="close"
   >
     <div class="relative mx-3 mb-10 h-fit w-full max-w-[700px] rounded-lg bg-white">
       <div class="flex items-center justify-between border-b border-gray-300 p-5">
@@ -122,7 +122,9 @@ async function saveProfile() {
           <div class="mb-2 font-semibold text-gray-700 sm:w-[160px]">{{ t("profile.avatar") }}</div>
           <label class="relative mx-auto cursor-pointer" :aria-label="t('profile.changeAvatar')">
             <UserAvatar :url="me?.avatarUrl ?? null" :size="95" :alt="me?.name ?? ''" />
-            <span class="absolute right-0 bottom-0 rounded-full border border-gray-300 bg-white p-1 shadow-xl">
+            <span
+              class="absolute right-0 bottom-0 flex size-8 items-center justify-center rounded-full border border-gray-300 bg-white shadow-xl"
+            >
               <Icon name="mdi:pencil" size="17" />
             </span>
             <input class="hidden" type="file" accept="image/png, image/jpeg" @change="pickImage" />

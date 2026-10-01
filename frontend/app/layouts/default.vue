@@ -7,7 +7,9 @@ const wide = computed(() => route.path === "/");
   <div>
     <TopNav />
     <div :class="wide ? 'max-w-[1140px]' : ''" class="mx-auto flex w-full justify-between px-0 lg:px-2.5">
-      <SideNav />
+      <div class="shrink-0">
+        <SideNav />
+      </div>
       <slot />
     </div>
     <CookieBanner />
