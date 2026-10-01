@@ -1,0 +1,23 @@
+name: SonarQube
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sonarqube-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    name: Scan
+    uses: vertyll/sonarqube-local/.github/workflows/scan.yml@main
+    with:
+      java: true
+      node: true
+      prepare: npm --prefix frontend ci --no-audit --no-fund
+    secrets: inherit

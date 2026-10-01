@@ -39,7 +39,7 @@ env:
 
 jobs:
   image:
-    name: Publish
+    name: Build
     runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout repository
