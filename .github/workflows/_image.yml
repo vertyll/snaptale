@@ -7,6 +7,11 @@ on:
         description: Build context (repository directory)
         required: true
         type: string
+      dockerfile:
+        description: Dockerfile path, when it is not the Dockerfile in the build context
+        required: false
+        type: string
+        default: ""
       image-name:
         description: Image name in the registry
         required: true
@@ -67,6 +72,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: ${{ inputs.context }}
+          file: ${{ inputs.dockerfile }}
           platforms: linux/arm64
           push: ${{ github.ref_type == 'tag' }}
           build-args: ${{ inputs.build-args }}
