@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @IntegrationTest
 class SecurityRulesIT {
 
-    private static final String KEYCLOAK = "http://localhost:8180/realms/snaptale/protocol/openid-connect";
+    private static final String KEYCLOAK = "http://localhost:9000/realms/snaptale/protocol/openid-connect";
 
     @Autowired
     MockMvc mvc;

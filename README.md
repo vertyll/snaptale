@@ -124,7 +124,7 @@ npm run lint && npm run typecheck && npm run format:check
 > **Wymagania**: Docker, Java 25, Node.js 24.
 
 ```bash
-docker compose -f docker-compose.local.yml up -d   # MySQL :3306, Keycloak :8180 (admin/admin), maildev :1080 (podgląd e-maili)
+docker compose -f docker-compose.local.yml up -d   # MySQL :3306, Keycloak :9000 (admin/admin), maildev :1025/:1080 (podgląd e-maili)
 
 cd backend && ./mvnw spring-boot:run                                # :8080
 cd frontend && npm ci && npm run dev                                # http://localhost:3000
