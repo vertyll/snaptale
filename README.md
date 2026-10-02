@@ -69,8 +69,7 @@ pierwszym logowaniu zakłada konto Snaptale (profil, filmy, obserwacje) powiąza
 w Keycloaku i przy każdym logowaniu odświeża jego e-mail. Wylogowanie (`POST /api/auth/logout`) kończy sesję i zwraca
 adres wylogowania z Keycloaka. Język wybrany w Snaptale trafia na strony Keycloaka jako `ui_locales`.
 
-Realm lokalny jest w `keycloak/realm-export.json`; realm produkcyjny utrzymuje
-[`k8s-infra`](https://github.com/vertyll/k8s-infra) (`apps/keycloak-realms/snaptale.json`).
+Realm lokalny jest w `keycloak/realm-export.json`.
 
 ### Profile i konfiguracja
 
