@@ -5,19 +5,12 @@ public final class MessageKeys {
 
     public static final String REQUIRED = "validation.required";
     public static final String TOO_LONG = "validation.tooLong";
-    public static final String TOO_SHORT = "validation.tooShort";
-    public static final String EMAIL_INVALID = "validation.email";
     public static final String INVALID_VALUE = "validation.invalidValue";
 
     public static final String INVALID_FORM = "errors.invalidForm";
     public static final String DUPLICATE_ENTRY = "errors.duplicateEntry";
     public static final String UPLOAD_TOO_LARGE = "errors.uploadTooLarge";
     public static final String HTTP_STATUS_PREFIX = "errors.status.";
-
-    public static final String AUTH_BAD_CREDENTIALS = "errors.auth.badCredentials";
-    public static final String AUTH_TOO_MANY_ATTEMPTS = "errors.auth.tooManyAttempts";
-    public static final String AUTH_EMAIL_TAKEN = "errors.auth.emailTaken";
-    public static final String AUTH_TOKEN_INVALID = "errors.auth.tokenInvalid";
 
     public static final String USER_NOT_FOUND = "errors.user.notFound";
     public static final String FOLLOW_SELF = "errors.follow.self";

@@ -22,22 +22,19 @@ class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private @Nullable Long id;
 
+    @Column(name = "keycloak_id", nullable = false, unique = true, updatable = false)
+    private String keycloakId;
+
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
-
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
 
     private @Nullable String bio;
 
     @Column(name = "avatar_path")
     private @Nullable String avatarPath;
-
-    @Column(name = "email_verified_at")
-    private @Nullable Instant emailVerifiedAt;
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
@@ -46,17 +43,17 @@ class UserEntity {
     private Instant updatedAt;
 
     protected UserEntity() {
+        this.keycloakId = "";
         this.name = "";
         this.email = "";
-        this.passwordHash = "";
         this.createdAt = Instant.EPOCH;
         this.updatedAt = Instant.EPOCH;
     }
 
-    UserEntity(String name, String email, String passwordHash, Instant now) {
+    UserEntity(String keycloakId, String name, String email, Instant now) {
+        this.keycloakId = keycloakId;
         this.name = name;
         this.email = email;
-        this.passwordHash = passwordHash;
         this.createdAt = now;
         this.updatedAt = now;
     }
@@ -81,14 +78,9 @@ class UserEntity {
         return previous;
     }
 
-    void changePassword(String passwordHash, Instant now) {
-        this.passwordHash = passwordHash;
-        this.updatedAt = now;
-    }
-
-    void markEmailVerified(Instant now) {
-        if (emailVerifiedAt == null) {
-            this.emailVerifiedAt = now;
+    void syncEmail(String email, Instant now) {
+        if (!this.email.equals(email)) {
+            this.email = email;
             this.updatedAt = now;
         }
     }

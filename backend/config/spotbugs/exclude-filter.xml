@@ -38,6 +38,12 @@
         <Bug pattern="CRLF_INJECTION_LOGS"/>
     </Match>
 
+    <!-- FindSecBugs: the language cookie only picks ui_locales, and Language.of accepts nothing but pl or en -->
+    <Match>
+        <Class name="com.vertyll.snaptale.security.LocalizedAuthorizationRequestResolver"/>
+        <Bug pattern="COOKIE_USAGE"/>
+    </Match>
+
     <!-- Exclude exposure of internal representation issues -->
     <Match>
         <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>

@@ -10,14 +10,7 @@ record MeResponse(@Nullable Me user) {
         return new MeResponse(null);
     }
 
-    record Me(
-        long id,
-        String name,
-        String email,
-        @Nullable String bio,
-        @Nullable String avatarUrl,
-        boolean emailVerified
-    ) {
+    record Me(long id, String name, String email, @Nullable String bio, @Nullable String avatarUrl) {
 
         static Me of(UserEntity user) {
             return new Me(
@@ -25,8 +18,7 @@ record MeResponse(@Nullable Me user) {
                 user.getName(),
                 user.getEmail(),
                 user.getBio(),
-                MediaStorage.publicUrl(user.getAvatarPath()),
-                user.getEmailVerifiedAt() != null
+                MediaStorage.publicUrl(user.getAvatarPath())
             );
         }
     }

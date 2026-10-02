@@ -1,14 +1,14 @@
-export type Overlay = "login" | "register" | "forgotPassword" | "editProfile";
+export type Overlay = "editProfile";
 
 export function useOverlays() {
   const open = useState<Overlay | null>("overlay", () => null);
-  const { isSignedIn } = useSession();
+  const { isSignedIn, signIn } = useSession();
 
   function whenSignedIn(action: () => unknown): void {
     if (isSignedIn.value) {
       action();
     } else {
-      open.value = "login";
+      void signIn();
     }
   }
 

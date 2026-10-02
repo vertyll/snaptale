@@ -44,7 +44,11 @@ const { data: following } = await useAsyncData(
       </template>
 
       <div class="mt-2 mr-2 hidden border-b border-gray-200 lg:mr-0 lg:ml-2 lg:block" />
-      <div class="hidden px-2 pt-4 text-[11px] text-gray-500 lg:ml-2 lg:block">© 2026 SnapTale</div>
+      <div class="hidden px-2 pt-4 text-[11px] text-gray-500 lg:ml-2 lg:flex lg:flex-col lg:gap-1">
+        <NuxtLink to="/terms" class="hover:underline">{{ t("legal.terms.title") }}</NuxtLink>
+        <NuxtLink to="/privacy" class="hover:underline">{{ t("legal.privacy.title") }}</NuxtLink>
+        <span class="pt-1">© 2026 SnapTale</span>
+      </div>
       <div class="pb-14" />
     </div>
   </nav>

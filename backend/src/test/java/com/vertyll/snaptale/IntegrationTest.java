@@ -15,11 +15,6 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Import(
-    {
-        MySqlTestContainer.class,
-        TestMail.class
-    }
-)
+@Import(MySqlTestContainer.class)
 public @interface IntegrationTest {
 }

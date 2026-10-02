@@ -1,7 +1,6 @@
 export default defineNuxtRouteMiddleware(() => {
-  const { isSignedIn } = useSession();
+  const { isSignedIn, signIn } = useSession();
   if (!isSignedIn.value) {
-    useOverlays().open.value = "login";
-    return navigateTo("/");
+    return signIn();
   }
 });

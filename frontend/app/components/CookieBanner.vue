@@ -12,9 +12,12 @@ const accepted = useCookie<string | null>("cookies_accepted", { maxAge: 60 * 60 
     <div class="container mx-auto flex flex-col items-center justify-between sm:flex-row">
       <p class="mb-2 text-sm text-gray-700 sm:mb-0">
         {{ t("cookies.text") }}
+        <NuxtLink to="/privacy" class="text-brand font-medium hover:underline">{{ t("legal.privacy.title") }}</NuxtLink>
+        ·
+        <NuxtLink to="/terms" class="text-brand font-medium hover:underline">{{ t("legal.terms.title") }}</NuxtLink>
       </p>
       <button type="button" class="bg-brand rounded px-4 py-2 text-white" @click="accepted = 'true'">
-        {{ t("cookies.accept") }}
+        {{ t("cookies.close") }}
       </button>
     </div>
   </section>

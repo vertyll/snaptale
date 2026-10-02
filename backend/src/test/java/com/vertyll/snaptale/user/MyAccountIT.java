@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.vertyll.snaptale.IntegrationTest;
 import com.vertyll.snaptale.TestMedia;
 import com.vertyll.snaptale.TestUsers;
+import com.vertyll.snaptale.TestUsers.TestUser;
 import com.vertyll.snaptale.common.MessageKeys;
 
 import static org.hamcrest.Matchers.startsWith;
@@ -32,7 +33,7 @@ class MyAccountIT {
 
     @Test
     void profileUpdateTrimsAndClearsAnEmptyBio() throws Exception {
-        Account user = users.create("Stare imię");
+        TestUser user = users.create("Stare imię");
 
         mvc.perform(
             patch("/api/me").with(as(user))
@@ -47,7 +48,7 @@ class MyAccountIT {
 
     @Test
     void avatarIsCroppedAndServed() throws Exception {
-        Account user = users.create("Awatar");
+        TestUser user = users.create("Awatar");
 
         mvc.perform(
             multipart(HttpMethod.PUT, "/api/me/avatar").file(TestMedia.png("image", 400, 300))
@@ -64,7 +65,7 @@ class MyAccountIT {
 
     @Test
     void cropOutsideTheImageIsRejected() throws Exception {
-        Account user = users.create("Awatar");
+        TestUser user = users.create("Awatar");
 
         mvc.perform(
             multipart(HttpMethod.PUT, "/api/me/avatar").file(TestMedia.png("image", 100, 100))

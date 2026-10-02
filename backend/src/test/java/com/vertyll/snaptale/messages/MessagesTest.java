@@ -20,6 +20,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.ClassPathResource;
 
+import com.vertyll.snaptale.common.Language;
 import com.vertyll.snaptale.common.MessageKeys;
 
 import com.ibm.icu.text.MessagePattern;
@@ -45,7 +46,15 @@ class MessagesTest {
             }
         }
 
-        assertThat(messages().keySet()).containsAll(keys);
+        assertThat(messages(Language.PL).keySet()).containsAll(keys);
+    }
+
+    @Test
+    void everyLanguageHasTheSameKeys() throws IOException {
+        Set<String> polish = messages(Language.PL).keySet();
+        for (Language language : Language.values()) {
+            assertThat(messages(language).keySet()).as(language.tag()).containsExactlyInAnyOrderElementsOf(polish);
+        }
     }
 
     @Test
@@ -65,13 +74,17 @@ class MessagesTest {
             }
         }
 
-        assertThat(constraintMessages).contains(MessageKeys.REQUIRED).isSubsetOf(messages().keySet());
+        assertThat(constraintMessages).contains(MessageKeys.REQUIRED).isSubsetOf(messages(Language.PL).keySet());
     }
 
     @Test
     void everyTextIsValidIcu() throws IOException {
-        messages()
-            .forEach((key, text) -> assertThatCode(() -> new MessagePattern(text)).as(key).doesNotThrowAnyException());
+        for (Language language : Language.values()) {
+            messages(language).forEach(
+                (key, text) -> assertThatCode(() -> new MessagePattern(text)).as(language.tag() + " " + key)
+                    .doesNotThrowAnyException()
+            );
+        }
     }
 
     private static boolean isConfigurationProperties(JavaClass javaClass) {
@@ -89,8 +102,8 @@ class MessagesTest {
         return Stream.concat(Arrays.stream(type.getAnnotations()), nested.flatMap(MessagesTest::annotations));
     }
 
-    private static Map<String, String> messages() throws IOException {
-        try (InputStream input = new ClassPathResource(MessagesController.RESOURCE).getInputStream()) {
+    private static Map<String, String> messages(Language language) throws IOException {
+        try (InputStream input = new ClassPathResource(MessagesController.resource(language)).getInputStream()) {
             return JsonMapper.builder().build().readValue(input, new TypeReference<>() {
             });
         }

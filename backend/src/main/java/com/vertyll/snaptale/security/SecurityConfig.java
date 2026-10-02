@@ -1,32 +1,38 @@
 package com.vertyll.snaptale.security;
 
-import org.springframework.boot.web.server.autoconfigure.ServerProperties;
+import java.util.Map;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfAuthenticationStrategy;
 
-import static java.util.Objects.requireNonNull;
+import tools.jackson.databind.ObjectMapper;
 
 @Configuration(proxyBeanMethods = false)
 @EnableWebSecurity
 class SecurityConfig {
+
+    static final String REGISTRATION_ID = "keycloak";
+
+    private static final String LOGIN_PATH = "/oauth2/authorization/" + REGISTRATION_ID;
 
     private static final String[] PUBLIC_READ_ENDPOINTS = {
         "/api/me",
@@ -37,25 +43,17 @@ class SecurityConfig {
         "/media/**"
     };
 
-    private static final String[] PUBLIC_AUTH_ENDPOINTS = {
-        "/api/auth/register",
-        "/api/auth/login",
-        "/api/auth/password/forgot",
-        "/api/auth/password/reset",
-        "/api/auth/email/verify"
-    };
-
     @Bean
     SecurityFilterChain securityFilterChain(
         HttpSecurity http,
         CookieCsrfTokenRepository csrfTokenRepository,
-        SecurityContextRepository securityContextRepository,
-        ServerProperties serverProperties
+        ClientRegistrationRepository clientRegistrations,
+        OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService,
+        SnaptaleSecurityProperties properties,
+        ObjectMapper objectMapper
     ) {
         http.authorizeHttpRequests(
             authorize -> authorize.requestMatchers(HttpMethod.GET, PUBLIC_READ_ENDPOINTS)
-                .permitAll()
-                .requestMatchers(HttpMethod.POST, PUBLIC_AUTH_ENDPOINTS)
                 .permitAll()
                 .requestMatchers("/api/**")
                 .authenticated()
@@ -64,11 +62,23 @@ class SecurityConfig {
                 .anyRequest()
                 .denyAll()
         )
-            .securityContext(context -> context.securityContextRepository(securityContextRepository))
+            .oauth2Login(
+                login -> login.loginPage(LOGIN_PATH)
+                    .authorizationEndpoint(
+                        endpoint -> endpoint.authorizationRequestResolver(
+                            new LocalizedAuthorizationRequestResolver(clientRegistrations)
+                        )
+                    )
+                    .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService))
+                    .authorizedClientRepository(new HttpSessionOAuth2AuthorizedClientRepository())
+                    .defaultSuccessUrl("/", true)
+                    .failureUrl("/?login=failed")
+            )
             .logout(
                 logout -> logout.logoutUrl("/api/auth/logout")
-                    .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.NO_CONTENT))
-                    .deleteCookies(sessionCookieName(serverProperties))
+                    .logoutSuccessHandler(
+                        new LogoutUrlResponder(clientRegistrations, properties.frontendUrl(), objectMapper)
+                    )
             )
             .csrf(csrf -> csrf.spa().csrfTokenRepository(csrfTokenRepository))
             .exceptionHandling(
@@ -79,23 +89,28 @@ class SecurityConfig {
     }
 
     @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    AuthenticationManager authenticationManager(
-        UserDetailsService userDetailsService,
-        PasswordEncoder passwordEncoder
+    ClientRegistrationRepository clientRegistrationRepository(
+        KeycloakProperties keycloak,
+        SnaptaleSecurityProperties properties
     ) {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder);
-        return new ProviderManager(provider);
-    }
-
-    @Bean
-    SecurityContextRepository securityContextRepository() {
-        return new HttpSessionSecurityContextRepository();
+        String browser = keycloak.realmUrl() + "/protocol/openid-connect";
+        String backchannel = keycloak.backchannel() + "/protocol/openid-connect";
+        ClientRegistration registration = ClientRegistration.withRegistrationId(REGISTRATION_ID)
+            .clientName("Keycloak")
+            .clientId(keycloak.clientId())
+            .clientSecret(keycloak.clientSecret())
+            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+            .redirectUri(properties.frontendUrl() + "/login/oauth2/code/{registrationId}")
+            .scope(OidcScopes.OPENID, OidcScopes.PROFILE, OidcScopes.EMAIL)
+            .authorizationUri(browser + "/auth")
+            .tokenUri(backchannel + "/token")
+            .jwkSetUri(backchannel + "/certs")
+            .issuerUri(keycloak.realmUrl())
+            .userNameAttributeName(IdTokenClaimNames.SUB)
+            .providerConfigurationMetadata(Map.of("end_session_endpoint", browser + "/logout"))
+            .build();
+        return new InMemoryClientRegistrationRepository(registration);
     }
 
     @Bean
@@ -104,14 +119,5 @@ class SecurityConfig {
         CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
         repository.setCookieCustomizer(cookie -> cookie.secure(properties.secureCookies()).sameSite("Lax"));
         return repository;
-    }
-
-    @Bean
-    CsrfAuthenticationStrategy csrfAuthenticationStrategy(CookieCsrfTokenRepository csrfTokenRepository) {
-        return new CsrfAuthenticationStrategy(csrfTokenRepository);
-    }
-
-    private static String sessionCookieName(ServerProperties serverProperties) {
-        return requireNonNull(serverProperties.getServlet().getSession().getCookie().getName());
     }
 }

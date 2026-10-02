@@ -8,9 +8,7 @@ import org.springframework.data.jpa.repository.NativeQuery;
 
 interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    Optional<UserEntity> findByEmail(String email);
-
-    boolean existsByEmail(String email);
+    Optional<UserEntity> findByKeycloakId(String keycloakId);
 
     @NativeQuery("SELECT * FROM users WHERE id <> :excludedId ORDER BY RAND() LIMIT :limit")
     List<UserEntity> findRandom(long excludedId, int limit);

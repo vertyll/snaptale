@@ -17,8 +17,8 @@ import org.springframework.test.web.servlet.assertj.MvcTestResult;
 import com.vertyll.snaptale.IntegrationTest;
 import com.vertyll.snaptale.TestMedia;
 import com.vertyll.snaptale.TestUsers;
+import com.vertyll.snaptale.TestUsers.TestUser;
 import com.vertyll.snaptale.common.MessageKeys;
-import com.vertyll.snaptale.user.Account;
 
 import com.jayway.jsonpath.JsonPath;
 
@@ -48,7 +48,7 @@ class PostIT {
 
     @Test
     void newPostAppearsInTheFeedWithItsVideoServedFromMedia() throws Exception {
-        Account author = users.create("Autor");
+        TestUser author = users.create("Autor");
         long postId = createPost(author, "Pierwszy film");
 
         String videoUrl = JsonPath.read(content(get("/api/posts/" + postId)), "$.post.videoUrl");
@@ -62,8 +62,8 @@ class PostIT {
 
     @Test
     void likesAndCommentsAreCountedPerViewer() throws Exception {
-        Account author = users.create("Autor");
-        Account fan = users.create("Fan");
+        TestUser author = users.create("Autor");
+        TestUser fan = users.create("Fan");
         long postId = createPost(author, "Do polubienia");
 
         mvc.perform(put("/api/posts/%d/like".formatted(postId)).with(as(fan)).with(csrf()))
@@ -92,8 +92,8 @@ class PostIT {
 
     @Test
     void onlyTheAuthorDeletesAPostAndItsVideoGoesWithIt() throws Exception {
-        Account author = users.create("Autor");
-        Account stranger = users.create("Obcy");
+        TestUser author = users.create("Autor");
+        TestUser stranger = users.create("Obcy");
         long postId = createPost(author, "Do usunięcia");
         String videoUrl = JsonPath.read(content(get("/api/posts/" + postId)), "$.post.videoUrl");
         Path video = mediaDirectory.resolve(videoUrl.substring("/media/".length()));
@@ -112,9 +112,9 @@ class PostIT {
 
     @Test
     void commentsAreRemovedByTheirAuthorOrThePostAuthorOnly() throws Exception {
-        Account author = users.create("Autor");
-        Account commenter = users.create("Komentujący");
-        Account stranger = users.create("Obcy");
+        TestUser author = users.create("Autor");
+        TestUser commenter = users.create("Komentujący");
+        TestUser stranger = users.create("Obcy");
         long postId = createPost(author, "Post");
         long first = comment(postId, commenter);
         long second = comment(postId, commenter);
@@ -130,7 +130,7 @@ class PostIT {
 
     @Test
     void uploadRejectsAMissingTextOrSomethingThatIsNotAnMp4() throws Exception {
-        Account author = users.create("Autor");
+        TestUser author = users.create("Autor");
 
         mvc.perform(
             multipart("/api/posts").file(TestMedia.notAVideo("video"))
@@ -146,7 +146,7 @@ class PostIT {
         ).andExpect(status().isBadRequest()).andExpect(jsonPath("$.errors.text.code").value(MessageKeys.REQUIRED));
     }
 
-    private long createPost(Account author, String text) {
+    private long createPost(TestUser author, String text) {
         return id(
             created(
                 multipart("/api/posts").file(TestMedia.video("video")).param("text", text).with(as(author)).with(csrf())
@@ -154,7 +154,7 @@ class PostIT {
         );
     }
 
-    private long comment(long postId, Account author) {
+    private long comment(long postId, TestUser author) {
         return id(
             created(
                 post("/api/posts/%d/comments".formatted(postId)).with(as(author))

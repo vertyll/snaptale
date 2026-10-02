@@ -11,6 +11,7 @@ const { me } = useSession();
 const { whenSignedIn } = useOverlays();
 const { toggle } = useLike();
 const { t, errorText } = useMessages();
+const { locale } = useLocale();
 
 const postId = computed(() => Number(route.params.id));
 const comment = ref("");
@@ -182,7 +183,8 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
           <div class="ml-3">
             <div class="text-[17px] font-semibold">{{ handleOf(details.post.author.name) }}</div>
             <div class="text-[13px] font-light">
-              {{ details.post.author.name }} · <span class="font-medium">{{ formatDate(details.post.createdAt) }}</span>
+              {{ details.post.author.name }} ·
+              <span class="font-medium">{{ formatDate(details.post.createdAt, locale) }}</span>
             </div>
           </div>
         </NuxtLink>

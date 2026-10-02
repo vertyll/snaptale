@@ -4,6 +4,9 @@ import type { Me } from "~/utils/types";
 const { me } = useSession();
 const { open } = useOverlays();
 const requestFetch = useRequestFetch();
+const { locale } = useLocale();
+
+useHead({ htmlAttrs: { lang: locale } });
 
 await useAsyncData("bootstrap", async () => {
   const session = await requestFetch<{ user: Me | null }>("/api/me");
@@ -18,6 +21,5 @@ watch(open, (overlay) => document.body.classList.toggle("overflow-hidden", overl
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
-  <AuthOverlay v-if="open === 'login' || open === 'register' || open === 'forgotPassword'" />
   <EditProfileOverlay v-if="open === 'editProfile'" />
 </template>

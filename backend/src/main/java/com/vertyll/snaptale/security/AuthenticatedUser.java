@@ -1,27 +1,23 @@
 package com.vertyll.snaptale.security;
 
 import java.io.Serial;
-import java.util.Collection;
-import java.util.List;
+import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
-import org.springframework.security.core.CredentialsContainer;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
-public final class AuthenticatedUser implements UserDetails, CredentialsContainer {
+public final class AuthenticatedUser extends DefaultOidcUser {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
     private final long id;
-    private final String email;
-    private @Nullable String passwordHash;
 
-    public AuthenticatedUser(long id, String email, @Nullable String passwordHash) {
+    public AuthenticatedUser(long id, OidcUser user) {
+        super(user.getAuthorities(), user.getIdToken(), user.getUserInfo(), StandardClaimNames.SUB);
         this.id = id;
-        this.email = email;
-        this.passwordHash = passwordHash;
     }
 
     public long id() {
@@ -29,22 +25,12 @@ public final class AuthenticatedUser implements UserDetails, CredentialsContaine
     }
 
     @Override
-    public String getUsername() {
-        return email;
+    public boolean equals(@Nullable Object other) {
+        return other instanceof AuthenticatedUser user && id == user.id && super.equals(other);
     }
 
     @Override
-    public @Nullable String getPassword() {
-        return passwordHash;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
-    }
-
-    @Override
-    public void eraseCredentials() {
-        passwordHash = null;
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), id);
     }
 }

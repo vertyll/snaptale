@@ -6,8 +6,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.vertyll.snaptale.IntegrationTest;
 import com.vertyll.snaptale.TestUsers;
+import com.vertyll.snaptale.TestUsers.TestUser;
 import com.vertyll.snaptale.common.MessageKeys;
-import com.vertyll.snaptale.user.Account;
 
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
@@ -31,8 +31,8 @@ class SocialIT {
 
     @Test
     void followingShowsOnTheProfileAndInTheFollowingList() throws Exception {
-        Account star = users.create("Gwiazda");
-        Account fan = users.create("Fan");
+        TestUser star = users.create("Gwiazda");
+        TestUser fan = users.create("Fan");
 
         mvc.perform(put("/api/users/%d/follow".formatted(star.id())).with(as(fan)).with(csrf()))
             .andExpect(status().isNoContent());
@@ -55,7 +55,7 @@ class SocialIT {
 
     @Test
     void nobodyFollowsThemselvesOrAMissingUser() throws Exception {
-        Account user = users.create("Samotnik");
+        TestUser user = users.create("Samotnik");
 
         mvc.perform(put("/api/users/%d/follow".formatted(user.id())).with(as(user)).with(csrf()))
             .andExpect(status().isBadRequest())
@@ -67,7 +67,7 @@ class SocialIT {
 
     @Test
     void suggestionsNeverIncludeTheViewer() throws Exception {
-        Account viewer = users.create("Widz");
+        TestUser viewer = users.create("Widz");
         users.create("Inny");
 
         mvc.perform(get("/api/users/suggested").with(as(viewer)))

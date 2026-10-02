@@ -2,6 +2,7 @@
 import type { FeedPage, PostCard } from "~/utils/types";
 
 const requestFetch = useRequestFetch();
+const route = useRoute();
 const api = useApi();
 const { t, errorText } = useMessages();
 
@@ -54,7 +55,9 @@ onBeforeUnmount(() => observer?.disconnect());
 
 <template>
   <main class="w-[calc(100%-90px)] max-w-[690px] pt-[80px]">
-    <EmailVerificationBanner />
+    <p v-if="route.query.login === 'failed'" class="pt-4 text-center font-semibold text-red-500" role="alert">
+      {{ t("auth.loginFailed") }}
+    </p>
     <PostMain v-for="post in posts" :key="post.id" :post="post" />
     <p v-if="posts.length === 0" class="pt-10 text-center text-gray-500">{{ t("feed.empty") }}</p>
     <p v-if="error" class="py-4 text-center font-semibold text-red-500" role="alert">{{ error }}</p>

@@ -2,11 +2,11 @@ import { IntlMessageFormat } from "intl-messageformat";
 import { messageOf } from "~/utils/api-error";
 import type { Message, MessageArgs } from "~/utils/types";
 
-const LOCALE = "pl";
 const cache = new Map<string, IntlMessageFormat>();
 
 export function useMessages() {
   const messages = useState<Record<string, string>>("messages", () => ({}));
+  const locale = useCookie<string>("lang", { default: () => "pl" });
 
   function t(code: string, args: MessageArgs = {}): string {
     const text = messages.value[code];
@@ -15,10 +15,11 @@ export function useMessages() {
       return code;
     }
     try {
-      let format = cache.get(text);
+      const cacheKey = `${locale.value}:${text}`;
+      let format = cache.get(cacheKey);
       if (!format) {
-        format = new IntlMessageFormat(text, LOCALE);
-        cache.set(text, format);
+        format = new IntlMessageFormat(text, locale.value);
+        cache.set(cacheKey, format);
       }
       return String(format.format(args));
     } catch (error) {
