@@ -51,11 +51,7 @@
         <sonar.projectKey>snaptale-backend</sonar.projectKey>
         <sonar.projectName>snaptale-backend</sonar.projectName>
         <sonar.junit.reportPaths>${project.build.directory}/surefire-reports,${project.build.directory}/failsafe-reports</sonar.junit.reportPaths>
-        <sonar.issue.ignore.multicriteria>emailTables,emailAttributes,localSecrets,uploadLimitsProperties</sonar.issue.ignore.multicriteria>
-        <sonar.issue.ignore.multicriteria.emailTables.ruleKey>Web:S5257</sonar.issue.ignore.multicriteria.emailTables.ruleKey>
-        <sonar.issue.ignore.multicriteria.emailTables.resourceKey>**/templates/**/*.html</sonar.issue.ignore.multicriteria.emailTables.resourceKey>
-        <sonar.issue.ignore.multicriteria.emailAttributes.ruleKey>Web:S1827</sonar.issue.ignore.multicriteria.emailAttributes.ruleKey>
-        <sonar.issue.ignore.multicriteria.emailAttributes.resourceKey>**/templates/**/*.html</sonar.issue.ignore.multicriteria.emailAttributes.resourceKey>
+        <sonar.issue.ignore.multicriteria>localSecrets,uploadLimitsProperties</sonar.issue.ignore.multicriteria>
         <sonar.issue.ignore.multicriteria.localSecrets.ruleKey>java:S6437</sonar.issue.ignore.multicriteria.localSecrets.ruleKey>
         <sonar.issue.ignore.multicriteria.localSecrets.resourceKey>**/application-local.*</sonar.issue.ignore.multicriteria.localSecrets.resourceKey>
         <sonar.issue.ignore.multicriteria.uploadLimitsProperties.ruleKey>java:S5693</sonar.issue.ignore.multicriteria.uploadLimitsProperties.ruleKey>
