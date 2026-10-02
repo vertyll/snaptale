@@ -80,6 +80,7 @@
   "nav.profile": "Profil",
   "nav.logout": "Wyloguj",
   "nav.language": "Język",
+  "nav.legal": "Informacje prawne",
   "error.notFound": "Nie znaleziono strony",
   "error.generic": "Coś poszło nie tak",
   "error.retry": "Spróbuj ponownie za chwilę.",

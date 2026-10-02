@@ -12,6 +12,7 @@ const wide = computed(() => route.path === "/");
       </div>
       <slot />
     </div>
+    <SiteFooter />
     <CookieBanner />
   </div>
 </template>

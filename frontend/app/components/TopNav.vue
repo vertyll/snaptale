@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { LOCALES, type Locale } from "~/composables/useLocale";
-
 const { t } = useMessages();
-const { locale, setLocale } = useLocale();
+const { locale } = useLocale();
 const { me, signIn, logout } = useSession();
 const { whenSignedIn } = useOverlays();
 const accountUrl = useRuntimeConfig().public.keycloakAccountUrl;
@@ -16,10 +14,6 @@ function upload() {
   whenSignedIn(() => navigateTo("/upload"));
 }
 
-function changeLanguage(event: Event) {
-  void setLocale((event.target as HTMLSelectElement).value as Locale);
-}
-
 async function signOut() {
   menuOpen.value = false;
   await logout();
@@ -30,34 +24,28 @@ async function signOut() {
   <header class="fixed z-30 flex h-[61px] w-full items-center border-b border-gray-200 bg-white">
     <div
       :class="route.path === '/' ? 'max-w-[1150px]' : ''"
-      class="mx-auto flex w-full items-center justify-between px-6"
+      class="mx-auto flex w-full items-center justify-between gap-2 px-3 sm:px-6"
     >
       <NuxtLink to="/" :aria-label="t('nav.home')">
-        <img width="115" src="~/assets/images/snaptale-logo.png" alt="SnapTale" />
+        <img src="~/assets/images/snaptale-logo.png" alt="SnapTale" class="w-[90px] sm:w-[115px]" />
       </NuxtLink>
 
-      <div class="flex w-full max-w-[400px] min-w-[275px] items-center justify-end gap-3">
-        <select
-          :value="locale"
-          :aria-label="t('nav.language')"
-          class="rounded-sm border border-gray-300 bg-white px-2 py-[7px] text-[15px] font-medium hover:bg-gray-100"
-          @change="changeLanguage"
-        >
-          <option v-for="option in LOCALES" :key="option" :value="option">{{ option.toUpperCase() }}</option>
-        </select>
+      <div class="flex items-center justify-end gap-2 sm:gap-3">
+        <LanguageMenu />
         <button
           type="button"
-          class="flex items-center rounded-sm border border-gray-300 px-3 py-[6px] hover:bg-gray-100"
+          class="flex items-center rounded-sm border border-gray-300 px-2 py-[6px] hover:bg-gray-100 sm:px-3"
+          :aria-label="t('nav.upload')"
           @click="upload"
         >
           <Icon name="mdi:plus" size="22" />
-          <span class="px-2 text-[15px] font-medium">{{ t("nav.upload") }}</span>
+          <span class="hidden px-2 text-[15px] font-medium sm:inline">{{ t("nav.upload") }}</span>
         </button>
 
         <button
           v-if="!me"
           type="button"
-          class="bg-brand rounded-md px-7 py-[6px] text-[15px] font-medium text-white"
+          class="bg-brand rounded-md px-4 py-[6px] text-[15px] font-medium whitespace-nowrap text-white sm:px-7"
           @click="signIn"
         >
           {{ t("nav.signIn") }}
