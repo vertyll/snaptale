@@ -2,16 +2,16 @@ import type { Me } from "~/utils/types";
 
 const LOGIN_PATH = "/oauth2/authorization/keycloak";
 
+function signIn() {
+  return navigateTo(LOGIN_PATH, { external: true });
+}
+
 export function useSession() {
   const me = useState<Me | null>("me", () => null);
   const api = useApi();
 
   async function refresh(): Promise<void> {
     me.value = (await api.get<{ user: Me | null }>("/api/me")).user;
-  }
-
-  function signIn() {
-    return navigateTo(LOGIN_PATH, { external: true });
   }
 
   async function logout(): Promise<void> {

@@ -1,32 +1,16 @@
 CREATE TABLE users
 (
-    id                BIGINT       NOT NULL AUTO_INCREMENT,
-    name              VARCHAR(50)  NOT NULL,
-    email             VARCHAR(254) NOT NULL,
-    password_hash     VARCHAR(100) NOT NULL,
-    bio               VARCHAR(160) NULL,
-    avatar_path       VARCHAR(255) NULL,
-    email_verified_at DATETIME(6)  NULL,
-    created_at        DATETIME(6)  NOT NULL,
-    updated_at        DATETIME(6)  NOT NULL,
+    id          BIGINT       NOT NULL AUTO_INCREMENT,
+    keycloak_id CHAR(36)     NOT NULL,
+    name        VARCHAR(50)  NOT NULL,
+    email       VARCHAR(254) NOT NULL,
+    bio         VARCHAR(160) NULL,
+    avatar_path VARCHAR(255) NULL,
+    created_at  DATETIME(6)  NOT NULL,
+    updated_at  DATETIME(6)  NOT NULL,
     CONSTRAINT pk_users PRIMARY KEY (id),
-    CONSTRAINT uk_users_email UNIQUE (email)
+    CONSTRAINT uk_users_keycloak_id UNIQUE (keycloak_id)
 );
-
-CREATE TABLE user_tokens
-(
-    id         BIGINT      NOT NULL AUTO_INCREMENT,
-    user_id    BIGINT      NOT NULL,
-    purpose    VARCHAR(30) NOT NULL,
-    token_hash CHAR(64)    NOT NULL,
-    expires_at DATETIME(6) NOT NULL,
-    created_at DATETIME(6) NOT NULL,
-    CONSTRAINT pk_user_tokens PRIMARY KEY (id),
-    CONSTRAINT uk_user_tokens_hash UNIQUE (token_hash),
-    CONSTRAINT fk_user_tokens_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
-);
-
-CREATE INDEX ix_user_tokens_user_purpose ON user_tokens (user_id, purpose);
 
 CREATE TABLE posts
 (
@@ -80,3 +64,30 @@ CREATE TABLE follows
 );
 
 CREATE INDEX ix_follows_followed ON follows (followed_id);
+
+CREATE TABLE SPRING_SESSION
+(
+    PRIMARY_ID            CHAR(36)     NOT NULL,
+    SESSION_ID            CHAR(36)     NOT NULL,
+    CREATION_TIME         BIGINT       NOT NULL,
+    LAST_ACCESS_TIME      BIGINT       NOT NULL,
+    MAX_INACTIVE_INTERVAL INT          NOT NULL,
+    EXPIRY_TIME           BIGINT       NOT NULL,
+    PRINCIPAL_NAME        VARCHAR(100) NULL,
+    CONSTRAINT SPRING_SESSION_PK PRIMARY KEY (PRIMARY_ID)
+) ENGINE = InnoDB
+  ROW_FORMAT = DYNAMIC;
+
+CREATE UNIQUE INDEX SPRING_SESSION_IX1 ON SPRING_SESSION (SESSION_ID);
+CREATE INDEX SPRING_SESSION_IX2 ON SPRING_SESSION (EXPIRY_TIME);
+CREATE INDEX SPRING_SESSION_IX3 ON SPRING_SESSION (PRINCIPAL_NAME);
+
+CREATE TABLE SPRING_SESSION_ATTRIBUTES
+(
+    SESSION_PRIMARY_ID CHAR(36)     NOT NULL,
+    ATTRIBUTE_NAME     VARCHAR(200) NOT NULL,
+    ATTRIBUTE_BYTES    BLOB         NOT NULL,
+    CONSTRAINT SPRING_SESSION_ATTRIBUTES_PK PRIMARY KEY (SESSION_PRIMARY_ID, ATTRIBUTE_NAME),
+    CONSTRAINT SPRING_SESSION_ATTRIBUTES_FK FOREIGN KEY (SESSION_PRIMARY_ID) REFERENCES SPRING_SESSION (PRIMARY_ID) ON DELETE CASCADE
+) ENGINE = InnoDB
+  ROW_FORMAT = DYNAMIC;
