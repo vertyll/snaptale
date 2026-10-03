@@ -83,15 +83,18 @@ Domyślny profil to `local`; obraz Dockera ustawia `prod` (`SPRING_PROFILES_ACTI
 
 Zmienne środowiskowe profilu `prod`:
 
-| Zmienna                      | Opis                                                                 |
-|------------------------------|----------------------------------------------------------------------|
-| `DB_URL`                     | JDBC URL MySQL, np. z `sslMode=VERIFY_IDENTITY` i truststore klastra |
-| `DB_USERNAME`, `DB_PASSWORD` | dane logowania do bazy                                               |
-| `DB_TRUSTSTORE_PASSWORD`     | hasło truststore'a z CA klastra (TLS do MySQL)                       |
-| `FRONTEND_URL`               | publiczny adres front-endu (adres powrotu z Keycloaka)               |
-| `KEYCLOAK_REALM_URL`         | adres realmu, np. `https://keycloak.vertyll.dev/realms/snaptale`     |
-| `KEYCLOAK_CLIENT_SECRET`     | sekret klienta `snaptale-backend`                                    |
-| `MEDIA_DIRECTORY`            | katalog na wideo i awatary (trwały wolumen)                          |
+| Zmienna                          | Opis                                                                 |
+|----------------------------------|----------------------------------------------------------------------|
+| `DB_URL`                         | JDBC URL MySQL, np. z `sslMode=VERIFY_IDENTITY` i truststore klastra |
+| `DB_USERNAME`, `DB_PASSWORD`     | dane logowania do bazy                                               |
+| `DB_TRUSTSTORE_PASSWORD`         | hasło truststore'a z CA klastra (TLS do MySQL)                       |
+| `FRONTEND_URL`                   | publiczny adres front-endu (adres powrotu z Keycloaka)               |
+| `KEYCLOAK_REALM_URL`             | adres realmu, np. `https://keycloak.vertyll.dev/realms/snaptale`     |
+| `KEYCLOAK_CLIENT_SECRET`         | sekret klienta `snaptale-backend`                                    |
+| `MEDIA_DIRECTORY`                | katalog na wideo i awatary (trwały wolumen)                          |
+| `MAIL_HOST`, `MAIL_PORT`         | serwer SMTP (`spring.mail.*`)                                        |
+| `MAIL_USERNAME`, `MAIL_PASSWORD` | dane logowania do serwera SMTP                                       |
+| `MAIL_FROM`                      | adres nadawcy (`snaptale.mail.from`)                                 |
 
 ## Front-end
 
