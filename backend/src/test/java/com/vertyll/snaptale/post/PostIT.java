@@ -43,7 +43,7 @@ class PostIT {
     @Autowired
     TestUsers users;
 
-    @Value("${snaptale.media.directory}")
+    @Value("${application.media.directory}")
     Path mediaDirectory;
 
     @Test

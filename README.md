@@ -94,7 +94,7 @@ Zmienne środowiskowe profilu `prod`:
 | `MEDIA_DIRECTORY`                | katalog na wideo i awatary (trwały wolumen)                          |
 | `MAIL_HOST`, `MAIL_PORT`         | serwer SMTP (`spring.mail.*`)                                        |
 | `MAIL_USERNAME`, `MAIL_PASSWORD` | dane logowania do serwera SMTP                                       |
-| `MAIL_FROM`                      | adres nadawcy (`snaptale.mail.from`)                                 |
+| `MAIL_FROM`                      | adres nadawcy (`application.mail.from`)                              |
 
 ## Front-end
 

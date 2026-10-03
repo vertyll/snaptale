@@ -10,7 +10,7 @@ import org.springframework.util.unit.DataSize;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-@ConfigurationProperties("snaptale.media")
+@ConfigurationProperties("application.media")
 record MediaProperties(
     @NotNull Path directory,
     @NotNull DataSize maxVideoSize,

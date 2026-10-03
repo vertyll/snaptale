@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-@ConfigurationProperties("snaptale.keycloak")
+@ConfigurationProperties("application.keycloak")
 record KeycloakProperties(
     @NotBlank String realmUrl,
     @Nullable String backchannelRealmUrl,

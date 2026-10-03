@@ -7,6 +7,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-@ConfigurationProperties("snaptale.security")
+@ConfigurationProperties("application.security")
 record SnaptaleSecurityProperties(@NotNull Boolean secureCookies, @NotBlank String frontendUrl) {
 }

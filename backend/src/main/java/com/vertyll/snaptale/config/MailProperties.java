@@ -6,6 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-@ConfigurationProperties("snaptale.mail")
+@ConfigurationProperties("application.mail")
 record MailProperties(@NotBlank String from) {
 }

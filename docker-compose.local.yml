@@ -64,8 +64,8 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: local
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/snaptale
-      SNAPTALE_KEYCLOAK_BACKCHANNEL_REALM_URL: http://keycloak:8080/realms/snaptale
-      SNAPTALE_MEDIA_DIRECTORY: /var/app/media
+      APPLICATION_KEYCLOAK_BACKCHANNEL_REALM_URL: http://keycloak:8080/realms/snaptale
+      APPLICATION_MEDIA_DIRECTORY: /var/app/media
     volumes:
       - media:/var/app/media
     ports:
