@@ -13,7 +13,12 @@ useHead({ title: () => `${t(`legal.${props.document}.title`)} | SnapTale` });
       :key="paragraph"
       class="pb-4 text-[15px] leading-relaxed text-gray-800"
     >
-      {{ paragraph }}
+      <template v-for="(segment, index) in splitEmails(paragraph)" :key="index">
+        <a v-if="segment.kind === 'email'" :href="`mailto:${segment.email}`" class="text-brand hover:underline">{{
+          segment.email
+        }}</a>
+        <template v-else>{{ segment.text }}</template>
+      </template>
     </p>
   </main>
 </template>
