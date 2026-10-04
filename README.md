@@ -57,8 +57,9 @@ Short video sharing application.
 - **State**: the back-end is stateless: every request is authorized by the JWT alone, so any instance can serve it. The
   only state is the browser session holding the tokens, and it lives in Redis, outside the application.
 - **Token lifecycle**: access tokens live five minutes; every refresh returns a new refresh token and invalidates the
-  old one, and concurrent requests of one session share a single refresh. A refresh Keycloak refuses ends the session,
-  so a blocked account or a revoked role stops working within minutes. Signing out also ends the Keycloak session.
+  old one, and concurrent requests of one session share a single refresh, across replicas too (a lock in Redis). A
+  refresh Keycloak refuses ends the session, so a blocked account or a revoked role stops working within minutes.
+  Signing out also ends the Keycloak session.
 - **Accounts**: the SnapTale account (profile, videos, follows) is created in MySQL at the first sign-in and linked to
   the Keycloak user; its email follows Keycloak on every sign-in.
 

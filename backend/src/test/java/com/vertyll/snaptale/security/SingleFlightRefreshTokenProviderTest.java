@@ -46,7 +46,8 @@ class SingleFlightRefreshTokenProviderTest {
             awaitQuietly(release);
             return client("access-2", "refresh-2");
         };
-        SingleFlightRefreshTokenProvider provider = new SingleFlightRefreshTokenProvider(slow, fixedClock());
+        SingleFlightRefreshTokenProvider provider =
+                new SingleFlightRefreshTokenProvider(slow, SharedRefreshes.inProcessOnly(), fixedClock());
 
         CompletableFuture<OAuth2AuthorizedClient> first =
                 CompletableFuture.supplyAsync(() -> provider.authorize(context(client("access-1", "refresh-1"))));
@@ -67,7 +68,8 @@ class SingleFlightRefreshTokenProviderTest {
             calls.incrementAndGet();
             return client("access-2", "refresh-2");
         };
-        SingleFlightRefreshTokenProvider provider = new SingleFlightRefreshTokenProvider(counting, fixedClock());
+        SingleFlightRefreshTokenProvider provider =
+                new SingleFlightRefreshTokenProvider(counting, SharedRefreshes.inProcessOnly(), fixedClock());
 
         provider.authorize(context(client("access-1", "refresh-1")));
         OAuth2AuthorizedClient stale = provider.authorize(context(client("access-1", "refresh-1")));
@@ -78,13 +80,28 @@ class SingleFlightRefreshTokenProviderTest {
     }
 
     @Test
+    void aTokenNotAboutToExpireGoesStraightToTheDelegate() {
+        AtomicInteger calls = new AtomicInteger();
+        OAuth2AuthorizedClientProvider counting = context -> {
+            calls.incrementAndGet();
+            return null;
+        };
+        SingleFlightRefreshTokenProvider provider =
+                new SingleFlightRefreshTokenProvider(counting, SharedRefreshes.inProcessOnly(), fixedClock());
+
+        assertThat(provider.authorize(context(client("access-1", "refresh-1", NOW.plusSeconds(300))))).isNull();
+        assertThat(calls).hasValue(1);
+    }
+
+    @Test
     void aRefusedRefreshIsNotRemembered() {
         AtomicInteger calls = new AtomicInteger();
         OAuth2AuthorizedClientProvider refusing = context -> {
             calls.incrementAndGet();
             throw new OAuth2AuthorizationException(new OAuth2Error("invalid_grant"));
         };
-        SingleFlightRefreshTokenProvider provider = new SingleFlightRefreshTokenProvider(refusing, fixedClock());
+        SingleFlightRefreshTokenProvider provider =
+                new SingleFlightRefreshTokenProvider(refusing, SharedRefreshes.inProcessOnly(), fixedClock());
         OAuth2AuthorizationContext context = context(client("access-1", "refresh-1"));
 
         assertThatThrownBy(() -> provider.authorize(context)).isInstanceOf(OAuth2AuthorizationException.class);
@@ -99,11 +116,15 @@ class SingleFlightRefreshTokenProviderTest {
     }
 
     private static OAuth2AuthorizedClient client(String access, String refresh) {
+        return client(access, refresh, NOW.plusSeconds(30));
+    }
+
+    private static OAuth2AuthorizedClient client(String access, String refresh, Instant expiresAt) {
         return new OAuth2AuthorizedClient(
             REGISTRATION,
             "user",
-            new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, access, NOW, NOW.plusSeconds(300)),
-            new OAuth2RefreshToken(refresh, NOW)
+            new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, access, NOW.minusSeconds(270), expiresAt),
+            new OAuth2RefreshToken(refresh, NOW.minusSeconds(270))
         );
     }
 
