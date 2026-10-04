@@ -6,8 +6,11 @@ import java.util.Map;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
@@ -28,6 +31,7 @@ import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimNames;
 import org.springframework.security.oauth2.jwt.JwtClaimValidator;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
@@ -37,6 +41,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -65,6 +70,7 @@ class SecurityConfig {
         OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService,
         OAuth2AuthorizedClientRepository authorizedClients,
         SessionAccessTokens sessionAccessTokens,
+        Converter<Jwt, AbstractAuthenticationToken> bearerTokenAccounts,
         SnaptaleSecurityProperties properties,
         ObjectMapper objectMapper
     ) {
@@ -96,7 +102,14 @@ class SecurityConfig {
                         new LogoutUrlResponder(clientRegistrations, properties.frontendUrl(), objectMapper)
                     )
             )
-            .csrf(csrf -> csrf.spa().csrfTokenRepository(csrfTokenRepository))
+            .oauth2ResourceServer(
+                resourceServer -> resourceServer.jwt(jwt -> jwt.jwtAuthenticationConverter(bearerTokenAccounts))
+            )
+            .csrf(
+                csrf -> csrf.spa()
+                    .csrfTokenRepository(csrfTokenRepository)
+                    .ignoringRequestMatchers(new RequestHeaderRequestMatcher(HttpHeaders.AUTHORIZATION))
+            )
             .exceptionHandling(
                 exceptions -> exceptions.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
             )

@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.vertyll.snaptale.IntegrationTest;
+import com.vertyll.snaptale.TestAccessTokens;
 import com.vertyll.snaptale.TestUsers;
 
 import static org.hamcrest.Matchers.allOf;
@@ -121,5 +122,23 @@ class SecurityRulesIT {
         mvc.perform(get("/index.php")).andExpect(status().isUnauthorized());
         mvc.perform(get("/index.php").with(oidcLogin().oidcUser(TestUsers.principal(1, "subject", "ktos@example.com"))))
             .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void aBearerTokenIdentifiesItsAccountWithoutASessionOrCsrfToken() throws Exception {
+        TestUsers.TestUser user = users.create("Klient API");
+        String bearer = "Bearer " + TestAccessTokens.of(user.keycloakId());
+
+        mvc.perform(get("/api/me").header("Authorization", bearer))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.user.id").value(user.id()));
+        mvc.perform(get("/api/me/following").header("Authorization", bearer)).andExpect(status().isOk());
+        mvc.perform(put("/api/posts/0/like").header("Authorization", bearer)).andExpect(status().isNotFound());
+    }
+
+    @Test
+    void anUnknownBearerTokenIsRejected() throws Exception {
+        mvc.perform(get("/api/me/following").header("Authorization", "Bearer forged"))
+            .andExpect(status().isUnauthorized());
     }
 }

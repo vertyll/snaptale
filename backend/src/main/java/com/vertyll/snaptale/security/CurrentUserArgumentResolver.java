@@ -44,6 +44,9 @@ class CurrentUserArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static Optional<Long> signedInUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof AccountTokenAuthentication bearer) {
+            return Optional.of(bearer.userId());
+        }
         return authentication != null && authentication.getPrincipal() instanceof AuthenticatedUser user
                 ? Optional.of(user.id()) : Optional.empty();
     }
