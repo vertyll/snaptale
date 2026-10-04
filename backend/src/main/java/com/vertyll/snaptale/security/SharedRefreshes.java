@@ -28,17 +28,17 @@ class SharedRefreshes {
     private static final int FIELDS = 4;
 
     private final @Nullable StringRedisTemplate redis;
-    private final String keyPrefix;
+    private final RedisKeyProperties redisKeyProperties;
 
     @Autowired
-    SharedRefreshes(StringRedisTemplate redis, RedisKeyProperties properties) {
+    SharedRefreshes(StringRedisTemplate redis, RedisKeyProperties redisKeyProperties) {
         this.redis = redis;
-        this.keyPrefix = properties.keyPrefix();
+        this.redisKeyProperties = redisKeyProperties;
     }
 
     private SharedRefreshes() {
         this.redis = null;
-        this.keyPrefix = "";
+        this.redisKeyProperties = new RedisKeyProperties("");
     }
 
     static SharedRefreshes inProcessOnly() {
@@ -51,8 +51,8 @@ class SharedRefreshes {
             return keycloak.get();
         }
         String id = sha256(refreshToken);
-        String lockKey = keyPrefix + ":refresh-lock:" + id;
-        String resultKey = keyPrefix + ":refresh-result:" + id;
+        String lockKey = redisKeyProperties.keyPrefix() + ":refresh-lock:" + id;
+        String resultKey = redisKeyProperties.keyPrefix() + ":refresh-result:" + id;
         Optional<TokenPair> shared;
         boolean leader;
         try {
