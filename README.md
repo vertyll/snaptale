@@ -42,14 +42,18 @@ Short video sharing application.
 
 ### Authentication:
 
-- Keycloak (realm `snaptale`) handles sign-up, sign-in, email verification, password reset, two-factor authentication
-  and acceptance of the terms of use.
-- The back-end signs users in with the authorization code flow and PKCE, keeps the tokens in its session, stored in
-  MySQL, and gives the browser only the `SNAPTALE_SESSION` cookie (`HttpOnly`, `SameSite=Lax`, `Secure` in production)
-  with a CSRF token.
-- The SnapTale account (profile, videos, follows) is created at the first sign-in and linked to the Keycloak user.
-- Locally, `docker-compose.local.yml` runs MySQL, Keycloak on `:9000` (admin/admin) with the realm from
-  `keycloak/realm-export.json`, and maildev.
+- **Identity provider**: Keycloak (realm `snaptale`) owns every page that touches a credential: sign-up, sign-in, email
+  verification, password reset, two-factor authentication and acceptance of the terms of use. The application never sees
+  a password.
+- **Pattern**: BFF with Spring Security's OAuth2 client: the authorization code flow and PKCE, tokens kept by the
+  back-end, and only the `SNAPTALE_SESSION` cookie (`HttpOnly`, `SameSite=Lax`, `Secure` in production) with a CSRF
+  token in the browser.
+- **Session store**: MySQL (Spring Session JDBC), next to the application's data, so a restart signs nobody out.
+- **JWT**: Keycloak's tokens stay inside the back-end; the API itself is authorized by the session.
+- **Session lifecycle**: the session lasts ten hours of inactivity; signing out ends it and returns Keycloak's logout
+  address, so the Keycloak session ends too.
+- **Accounts**: the SnapTale account (profile, videos, follows) is created in MySQL at the first sign-in and linked to
+  the Keycloak user; its email follows Keycloak on every sign-in.
 
 ### Core back-end:
 
