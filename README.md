@@ -1,22 +1,12 @@
-# SnapTale
+## Project Assumptions
 
-Aplikacja internetowa z krótkimi filmami.
+Short video sharing application.
 
-Link: https://snaptale.vertyll.dev
+## Link: https://snaptale.vertyll.dev
 
-## Struktura repozytorium
+## Technology Stack
 
-| Katalog                    | Opis                                                                                                 |
-|----------------------------|------------------------------------------------------------------------------------------------------|
-| `backend/`                 | Spring Boot 4.1, Java 25 - API                                                                       |
-| `frontend/`                | Nuxt 4 - interfejs; proxy'uje `/api`, `/media` i logowanie (`/oauth2`, `/login/oauth2`) do back-endu |
-| `docker-compose.local.yml` | Lokalnie: MySQL, Keycloak, maildev, opcjonalnie cały system (profil `app`)                           |
-| `keycloak/`                | Realm `snaptale` importowany przez lokalny Keycloak                                                  |
-| `.github/workflows/`       | CI: weryfikacja i obrazy Docker (`backend`, `frontend`)                                              |
-
-## Back-end
-
-### Stos technologiczny
+### Back-end:
 
 - Spring Boot.
 - Java.
@@ -24,120 +14,65 @@ Link: https://snaptale.vertyll.dev
 - MySQL.
 - Flyway.
 - JUnit.
+- Testcontainers.
 - Lombok.
 - Spring Security.
 - Spring Data JPA.
 - Spring Web.
-- Spring Session.
-- Keycloak.
+- Spring Session (JDBC).
+- Spring Mail.
 
-### Budowanie i jakość
-
-```bash
-cd backend
-./mvnw spotless:apply   # formatowanie
-./mvnw verify           # kompilacja z Error Prone/NullAway, testy, Spotless, PMD, SpotBugs
-```
-
-> [!IMPORTANT]
->
-> Polecenie `verify` wymaga środowiska skonteneryzowanego dla Testcontainers.
-
-### Moduły
-
-| Pakiet                         | Odpowiedzialność                                                               |
-|--------------------------------|--------------------------------------------------------------------------------|
-| `auth`                         | Konto Snaptale zakładane przy pierwszym logowaniu przez Keycloak               |
-| `user`                         | Konto zalogowanego użytkownika (`/api/me`), awatar, sugerowane konta           |
-| `post`                         | Filmy, polubienia i komentarze                                                 |
-| `follow`                       | Obserwowanie użytkowników                                                      |
-| `profile`                      | Profil użytkownika złożony z modułów `user`, `follow` i `post`                 |
-| `media`                        | Zapis i serwowanie plików (`/media/**`)                                        |
-| `messages`                     | Komunikaty ICU po polsku i angielsku (`/api/messages?lang=`, tylko do odczytu) |
-| `security`, `common`, `config` | Spring Security, błędy (RFC 9457), walidacja, zegar                            |
-
-Błędy API zwracają kod komunikatu (`code`) i argumenty (`args`); treści są w
-`backend/src/main/resources/messages/{pl,en}.json`, a testy pilnują, żeby każdy kod miał poprawny tekst ICU i żeby oba
-języki miały te same klucze.
-
-### Logowanie
-
-Rejestracją, logowaniem, weryfikacją e-maila, resetem hasła, 2FA i akceptacją regulaminu zajmuje się Keycloak (realm
-`snaptale`). Back-end loguje użytkownika przepływem authorization code z PKCE (`oauth2Login` ze Spring Security),
-trzyma tokeny w sesji w MySQL (Spring Session) i daje przeglądarce tylko ciasteczko sesji `SNAPTALE_SESSION`. Przy
-pierwszym logowaniu zakłada konto Snaptale (profil, filmy, obserwacje) powiązane z identyfikatorem użytkownika
-w Keycloaku i przy każdym logowaniu odświeża jego e-mail. Wylogowanie (`POST /api/auth/logout`) kończy sesję i zwraca
-adres wylogowania z Keycloaka. Język wybrany w Snaptale trafia na strony Keycloaka jako `ui_locales`.
-
-Realm lokalny jest w `keycloak/realm-export.json`.
-
-### Profile i konfiguracja
-
-Domyślny profil to `local`; obraz Dockera ustawia `prod` (`SPRING_PROFILES_ACTIVE=prod`). Back-end nie używa plików `.env`.
-
-| Plik                           | Zawartość                                                            |
-|--------------------------------|----------------------------------------------------------------------|
-| `application.properties`       | wspólna konfiguracja, bez zmiennych środowiskowych                   |
-| `application-local.properties` | pełna konfiguracja lokalna (usługi z `docker-compose.local.yml`)     |
-| `application-prod.properties`  | same odwołania `${...}` do zmiennych środowiskowych (tabela poniżej) |
-
-Zmienne środowiskowe profilu `prod`:
-
-| Zmienna                          | Opis                                                                 |
-|----------------------------------|----------------------------------------------------------------------|
-| `DB_URL`                         | JDBC URL MySQL, np. z `sslMode=VERIFY_IDENTITY` i truststore klastra |
-| `DB_USERNAME`, `DB_PASSWORD`     | dane logowania do bazy                                               |
-| `DB_TRUSTSTORE_PASSWORD`         | hasło truststore'a z CA klastra (TLS do MySQL)                       |
-| `FRONTEND_URL`                   | publiczny adres front-endu (adres powrotu z Keycloaka)               |
-| `KEYCLOAK_REALM_URL`             | adres realmu, np. `https://keycloak.vertyll.dev/realms/snaptale`     |
-| `KEYCLOAK_CLIENT_SECRET`         | sekret klienta `snaptale-backend`                                    |
-| `MEDIA_DIRECTORY`                | katalog na wideo i awatary (trwały wolumen)                          |
-| `MAIL_HOST`, `MAIL_PORT`         | serwer SMTP (`spring.mail.*`)                                        |
-| `MAIL_USERNAME`, `MAIL_PASSWORD` | dane logowania do serwera SMTP                                       |
-| `MAIL_FROM`                      | adres nadawcy (`application.mail.from`)                              |
-
-## Front-end
-
-### Stos technologiczny
+### Front-end:
 
 - Nuxt.
 - Vue.js.
-- Node.js.
 - TypeScript.
 - Tailwind CSS.
 
-### Budowanie i jakość
+### Authentication:
 
-```bash
-cd frontend
-npm ci
-npm run dev             # http://localhost:3000
-npm run lint && npm run typecheck && npm run format:check
-```
+- Keycloak (realm `snaptale`) handles sign-up, sign-in, email verification, password reset, two-factor authentication
+  and acceptance of the terms of use.
+- The back-end signs users in with the authorization code flow and PKCE, keeps the tokens in its session, stored in
+  MySQL, and gives the browser only the `SNAPTALE_SESSION` cookie (`HttpOnly`, `SameSite=Lax`, `Secure` in production)
+  with a CSRF token.
+- The SnapTale account (profile, videos, follows) is created at the first sign-in and linked to the Keycloak user.
+- Locally, `docker-compose.local.yml` runs MySQL, Keycloak on `:9000` (admin/admin) with the realm from
+  `keycloak/realm-export.json`, and maildev.
 
-> [!NOTE]
->
-> Adres back-endu i konsoli konta Keycloaka dla `nuxt dev` znajdują się w `.env.development`.
+### Core back-end:
 
-## Uruchomienie lokalne
+- Maven build system.
+- The application has an exception handling mechanism (RFC 9457 problem details with message codes).
+- The application has a logging mechanism.
+- The application has separate environments for local and prod.
+- The application has a dedicated configuration file.
+- The application has Flyway database migration mechanism.
+- The application has ICU messages in Polish and English.
+- And many other features that can be found in the application code.
 
-> [!IMPORTANT]
->
-> **Wymagania**: Docker, Java 25, Node.js 24.
+### Core front-end:
 
-```bash
-docker compose -f docker-compose.local.yml up -d   # MySQL :3306, Keycloak :9000 (admin/admin), maildev :1025/:1080 (podgląd e-maili)
+- The front-end proxies `/api`, `/media` and the sign-in endpoints to the back-end.
+- The application has separate environments for local and prod.
+- Polish and English.
+- And many other features that can be found in the application code.
 
-cd backend && ./mvnw spring-boot:run                                # :8080
-cd frontend && npm ci && npm run dev                                # http://localhost:3000
-```
+### Other:
 
-Albo cały system w kontenerach: `docker compose -f docker-compose.local.yml --profile app up -d --build`.
+- Docker for development environment.
+- PMD for static code analysis.
+- SpotBugs for static code analysis.
+- JSpecify for null-safety annotations.
+- NullAway for null-safety checks.
+- Error Prone for static code analysis.
+- Spotless for code formatting.
+- ESLint and Prettier for the front-end.
 
-## Zrzuty ekranu
+## Preview Screenshots
 
-![Widok projektu](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale4.png)
-![Widok projektu](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale2.png)
-![Widok projektu](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale5.png)
-![Widok projektu](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale1.png)
-![Widok projektu](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale3.png)
+![Project View](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale4.png)
+![Project View](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale2.png)
+![Project View](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale5.png)
+![Project View](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale1.png)
+![Project View](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale3.png)
