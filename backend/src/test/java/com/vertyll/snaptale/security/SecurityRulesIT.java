@@ -35,6 +35,20 @@ class SecurityRulesIT {
     @Autowired
     ClientRegistrationRepository registrations;
 
+    @Autowired
+    TestUsers users;
+
+    @Test
+    void aSessionWhoseAccessTokenIsRejectedIsTreatedAsSignedOut() throws Exception {
+        TestUsers.TestUser user = users.create("Odrzucony");
+        mvc.perform(get("/api/me/following").with(TestUsers.as(user))).andExpect(status().isOk());
+        mvc.perform(get("/api/me/following").with(TestUsers.withRejectedAccessToken(user)))
+            .andExpect(status().isUnauthorized());
+        mvc.perform(get("/api/me").with(TestUsers.withRejectedAccessToken(user)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.user").isEmpty());
+    }
+
     @Test
     void anonymousVisitorsReadButDoNotWrite() throws Exception {
         mvc.perform(get("/api/me")).andExpect(status().isOk()).andExpect(jsonPath("$.user").isEmpty());

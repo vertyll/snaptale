@@ -12,7 +12,8 @@ record KeycloakProperties(
     @NotBlank String realmUrl,
     @Nullable String backchannelRealmUrl,
     @NotBlank String clientId,
-    @NotBlank String clientSecret
+    @NotBlank String clientSecret,
+    @NotBlank String audience
 ) {
 
     String backchannel() {
