@@ -48,8 +48,10 @@ Short video sharing application.
 - **Pattern**: BFF with Spring Security's OAuth2 client: the authorization code flow and PKCE, tokens kept by the
   back-end, and only the `SNAPTALE_SESSION` cookie (`HttpOnly`, `SameSite=Lax`, `Secure` in production) with a CSRF
   token in the browser.
-- **Session store**: MySQL (Spring Session JDBC), next to the application's data, so a restart signs nobody out.
-- **JWT**: Keycloak's tokens stay inside the back-end; the API itself is authorized by the session.
+- **Session store**: MySQL (Spring Session JDBC), next to the application's data.
+- **JWT**: Keycloak's tokens stay inside the back-end; the back-end authorizes requests by the session.
+- **State**: not stateless: requests are authorized by the session, not by a JWT. The session lives in MySQL, so the
+  back-end keeps nothing in its own memory and a restart signs nobody out.
 - **Session lifecycle**: the session lasts ten hours of inactivity; signing out ends it and returns Keycloak's logout
   address, so the Keycloak session ends too.
 - **Accounts**: the SnapTale account (profile, videos, follows) is created in MySQL at the first sign-in and linked to
