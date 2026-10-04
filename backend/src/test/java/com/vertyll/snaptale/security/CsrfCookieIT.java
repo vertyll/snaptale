@@ -15,12 +15,18 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.vertyll.snaptale.MySqlTestContainer;
+import com.vertyll.snaptale.RedisTestContainer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Import(MySqlTestContainer.class)
+@Import(
+    {
+        MySqlTestContainer.class,
+        RedisTestContainer.class
+    }
+)
 class CsrfCookieIT {
 
     private static final String CSRF_COOKIE = "XSRF-TOKEN";

@@ -30,6 +30,31 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: docker.io/library/redis:8-alpine
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redisinsight:
+    image: docker.io/redis/redisinsight:3.8.0
+    restart: unless-stopped
+    environment:
+      RI_ACCEPT_TERMS_AND_CONDITIONS: "true"
+      RI_REDIS_HOST: redis
+      RI_REDIS_PORT: "6379"
+      RI_REDIS_ALIAS: snaptale (local)
+    ports:
+      - "127.0.0.1:5540:5540"
+    depends_on:
+      redis:
+        condition: service_healthy
+
   keycloak:
     image: quay.io/keycloak/keycloak:26.7.4
     restart: unless-stopped
@@ -59,11 +84,14 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      redis:
+        condition: service_healthy
       keycloak:
         condition: service_healthy
     environment:
       SPRING_PROFILES_ACTIVE: local
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/snaptale
+      SPRING_DATA_REDIS_HOST: redis
       APPLICATION_KEYCLOAK_BACKCHANNEL_REALM_URL: http://keycloak:8080/realms/snaptale
       APPLICATION_MEDIA_DIRECTORY: /var/app/media
     volumes:
