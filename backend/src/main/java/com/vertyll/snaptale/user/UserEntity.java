@@ -71,7 +71,8 @@ class UserEntity {
         this.updatedAt = now;
     }
 
-    @Nullable String replaceAvatar(String avatarPath, Instant now) {
+    @Nullable
+    String replaceAvatar(String avatarPath, Instant now) {
         String previous = this.avatarPath;
         this.avatarPath = avatarPath;
         this.updatedAt = now;

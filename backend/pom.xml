@@ -334,11 +334,11 @@
                         <importOrder>
                             <order>java,javax,jakarta,org,com.vertyll,com,,\#java,\#javax,\#jakarta,\#org,\#com.vertyll,\#com,\#</order>
                         </importOrder>
+                        <formatAnnotations/>
                         <eclipse>
                             <version>${eclipse-jdt.version}</version>
                             <file>${project.basedir}/config/formatter/eclipse-java-custom-style.xml</file>
                         </eclipse>
-                        <formatAnnotations/>
                         <trimTrailingWhitespace/>
                         <endWithNewline/>
                         <toggleOffOn/>
