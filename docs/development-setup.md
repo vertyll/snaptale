@@ -23,8 +23,12 @@ Every `docker compose` command here works verbatim as `podman compose`.
 | RedisInsight | `http://localhost:5540`                     | browsing the sessions in Redis                  |
 
 The realm comes with no accounts: sign up through the application, and confirm the address from the mail MailDev
-catches. The realm lives in the `keycloak-data` volume, so a change to `keycloak/realm-export.json` only takes effect
-after `docker compose -f docker-compose.local.yml down -v`.
+catches.
+
+> [!NOTE]
+>
+> The realm lives in the `keycloak-data` volume, so a change to `keycloak/realm-export.json` only takes effect after
+> `docker compose -f docker-compose.local.yml down -v`.
 
 ## Run the applications
 

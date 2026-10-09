@@ -20,16 +20,16 @@ A Spring Boot API over MySQL and Redis. It signs users in and keeps their tokens
 
 ## Access
 
-`security/SecurityConfig` decides by path: public reads of posts, profiles, suggestions, `/api/me`, the messages and
-`/media/**`; every other `/api/**` call needs a signed-in user; anything else is refused (`denyAll()`). There is no
-OpenAPI description; the controllers are the reference.
+`security/SecurityConfig` decides by path: the public reads are listed in `PUBLIC_READ_ENDPOINTS`, every other
+`/api/**` call needs a signed-in user, and anything else is refused (`denyAll()`), so a new endpoint is closed until it
+is listed there.
 
 ## Accounts
 
 The SnapTale account holds what Keycloak does not: the profile, the videos, the follows. It lives in MySQL and is linked
-to the Keycloak identifier. `UserAccounts.signIn` creates it at the first sign-in, or the first call with a bearer token,
-taking the display name from Keycloak; afterwards the email follows Keycloak on every sign-in, while the name is the
-user's own to change.
+to the Keycloak identifier. `UserAccounts.signIn` creates it at the first sign-in, or the first call with a bearer
+token, taking the display name from Keycloak; afterwards the email follows Keycloak on every sign-in, while the name is
+the user's own to change.
 
 ## Media
 
