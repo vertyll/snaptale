@@ -6,6 +6,30 @@ back-end is a BFF: it signs the user in, keeps the tokens in its session and giv
 
 ## Signing in
 
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant N as Nuxt server
+    participant A as Back-end
+    participant K as Keycloak
+    participant R as Redis
+
+    B->>N: GET /oauth2/authorization/keycloak
+    N->>A: forwarded
+    A-->>B: 302 to Keycloak, with state and the PKCE challenge
+    B->>K: sign in on Keycloak's page
+    K-->>B: 302 to /login/oauth2/code/keycloak on the front-end's address
+    B->>N: GET /login/oauth2/code/keycloak?code&state
+    N->>A: forwarded
+    A->>K: code + client secret + PKCE verifier
+    K-->>A: access, refresh and ID token
+    A->>R: store the tokens in the session
+    A-->>B: 302 to /, SNAPTALE_SESSION and XSRF-TOKEN cookies
+    B->>N: /api/... + cookies
+    N->>A: forwarded
+    Note over A: the request is authorized by the session's access token
+```
+
 1. The front-end sends the browser to `/oauth2/authorization/keycloak`, which the Nuxt server forwards to the back-end.
    `LocalizedAuthorizationRequestResolver` builds the authorization request with PKCE and passes the language from
    the `lang` cookie.
