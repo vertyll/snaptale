@@ -79,6 +79,14 @@ Short video sharing application.
 - Spotless for code formatting.
 - ESLint and Prettier for the front-end.
 
+## Documentation
+
+- [Development Setup](./docs/development-setup.md) – the infrastructure and starting the applications.
+- [Architecture](./docs/architecture.md) – the two applications, and the errors and translations they share.
+- [Authentication](./docs/authentication.md) – sign-in, tokens, sessions, refreshing and CSRF.
+- [Back-end](./backend/README.md) – packages, access, accounts, media, messages, running and production.
+- [Front-end](./frontend/README.md) – layout, text, running and production.
+
 ## Preview Screenshots
 
 ![Project View](https://raw.githubusercontent.com/vertyll/SnapTale/main/screenshots/snaptale4.png)
