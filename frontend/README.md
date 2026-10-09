@@ -17,7 +17,7 @@ A Nuxt application. It holds no token: sign-in and the session belong to the bac
 
 ## Text
 
-Every label and every error is a key of the back-end's catalogue, formatted with `IntlMessageFormat` by `useMessages`
+Every label and every error is a key of the back-end's catalog, formatted with `IntlMessageFormat` by `useMessages`
 ([Errors and translations](../docs/architecture.md#errors-and-translations)): `t(code, args)` for a label,
 `errorText(error)` for a failed call, `ApiError.field(name)` next to a form's input. The language is the `lang`
 cookie, which the back-end also passes to Keycloak.
