@@ -15,12 +15,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  index:
-    name: Index
+  markdown:
+    name: Markdown
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Check CONTENTS.md lists every document
-        run: bash scripts/check-docs-index.sh
+      - name: Set up Go
+        uses: actions/setup-go@v7
+        with:
+          go-version: stable
+          cache: false
+
+      - name: Check Markdown formatting, links, anchors, alerts and the index
+        run: go run github.com/vertyll/mdtools/cmd/mdtools@v1.0.0 run
