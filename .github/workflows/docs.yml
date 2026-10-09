@@ -22,5 +22,5 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Check the README indexes every document
+      - name: Check CONTENTS.md lists every document
         run: bash scripts/check-docs-index.sh
