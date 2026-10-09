@@ -2,6 +2,24 @@
 
 ## Two applications
 
+```mermaid
+flowchart LR
+    browser([Browser])
+    nuxt["frontend<br/>Nuxt"]
+    back["backend<br/>Spring Boot"]
+    kc[Keycloak]
+    redis[("Redis<br/>sessions")]
+    mysql[(MySQL)]
+    media[("Media directory<br/>videos, avatars")]
+
+    browser -- "SNAPTALE_SESSION cookie" --> nuxt
+    nuxt -- "/api, /oauth2, /media forwarded" --> back
+    back -- "sign-in, refresh, token keys" --> kc
+    back --> redis
+    back --> mysql
+    back --> media
+```
+
 | Application                                     | What it is                                                      |
 |-------------------------------------------------|-----------------------------------------------------------------|
 | `frontend` ([front-end](../frontend/README.md)) | a Nuxt application: the pages and a server that proxies the API |
