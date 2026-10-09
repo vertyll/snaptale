@@ -48,7 +48,7 @@ Short video sharing application.
 - **Pattern**: BFF with Spring Security's OAuth2 client; the browser holds only a session cookie.
 - **Session store**: Redis (Spring Session).
 - **JWT**: verified on every request; a client without a browser calls the API with a Bearer token.
-- **Details**: [Authentication](./docs/authentication.md).
+- **Details**: [Authentication](docs/authentication.md).
 
 ### Core back-end:
 
@@ -81,13 +81,9 @@ Short video sharing application.
 
 ## Documentation
 
-- [Glossary](./GLOSSARY.md) – every term the docs use, and where it is explained.
-- [Standards](./STANDARDS.md) – the RFCs and specifications the code implements or depends on.
-- [Development Setup](./docs/development-setup.md) – the infrastructure and starting the applications.
-- [Architecture](./docs/architecture.md) – the two applications, and the errors and translations they share.
-- [Authentication](./docs/authentication.md) – sign-in, tokens, sessions, refreshing and CSRF.
-- [Back-end](./backend/README.md) – packages, access, accounts, media, messages, running and production.
-- [Front-end](./frontend/README.md) – layout, text, running and production.
+- [Contents](CONTENTS.md) – every document in the repository, the module it belongs to, and what it covers.
+- [Glossary](GLOSSARY.md) – every term the docs use, and where it is explained.
+- [Standards](STANDARDS.md) – the RFCs and specifications the code implements or depends on.
 
 ## Preview Screenshots
 
