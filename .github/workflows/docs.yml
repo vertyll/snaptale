@@ -29,4 +29,4 @@ jobs:
           cache: false
 
       - name: Check Markdown formatting, links, anchors, alerts and the index
-        run: go run github.com/vertyll/mdtools/cmd/mdtools@v1.0.0 run
+        run: go run github.com/vertyll/mdtools/cmd/mdtools@v1.0.1 run
