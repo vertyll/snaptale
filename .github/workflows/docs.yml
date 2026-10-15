@@ -22,11 +22,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
 
-      - name: Set up Go
-        uses: actions/setup-go@v7
-        with:
-          go-version: stable
-          cache: false
+      - name: Fetch markright
+        env:
+          VERSION: v0.1.0
+          TARGET: x86_64-unknown-linux-musl
+        run: |
+          base="https://github.com/vertyll/markright/releases/download/$VERSION"
+          curl -fsSLO "$base/markright-$TARGET.tar.gz"
+          curl -fsSL "$base/SHA256SUMS" | grep " markright-$TARGET.tar.gz$" | sha256sum -c -
+          tar -xzf "markright-$TARGET.tar.gz" markright
 
       - name: Check Markdown formatting, links, anchors, alerts and the index
-        run: go run github.com/vertyll/mdtools/cmd/mdtools@v1.2.1 run
+        run: ./markright check

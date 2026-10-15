@@ -1,7 +1,0 @@
-version: "1"
-
-linters:
-  default: all
-
-formatters:
-  default: all

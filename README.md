@@ -10,15 +10,17 @@
     <img alt="" src="https://img.shields.io/badge/Apache_Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white">
 </p>
 
+# Snaptale
+
 ## Project Assumptions
 
 Short video sharing application.
 
-## Link: https://snaptale.vertyll.dev
+## Link: <https://snaptale.vertyll.dev>
 
 ## Technology Stack
 
-### Back-end:
+### Back-end
 
 - Spring Boot.
 - Java.
@@ -35,14 +37,14 @@ Short video sharing application.
 - Spring Session (Redis).
 - Spring Mail.
 
-### Front-end:
+### Front-end
 
 - Nuxt.
 - Vue.js.
 - TypeScript.
 - Tailwind CSS.
 
-### Authentication:
+### Authentication
 
 - **Identity provider**: Keycloak (realm `snaptale`); the application never sees a password.
 - **Pattern**: BFF with Spring Security's OAuth2 client; the browser holds only a session cookie.
@@ -50,7 +52,7 @@ Short video sharing application.
 - **JWT**: verified on every request; a client without a browser calls the API with a Bearer token.
 - **Details**: [Authentication](docs/authentication.md).
 
-### Core back-end:
+### Core back-end
 
 - Maven build system.
 - The application has an exception handling mechanism (RFC 9457 problem details with message codes).
@@ -61,14 +63,14 @@ Short video sharing application.
 - The application has ICU messages in Polish and English.
 - And many other features that can be found in the application code.
 
-### Core front-end:
+### Core front-end
 
 - The front-end proxies `/api`, `/media` and the sign-in endpoints to the back-end.
 - The application has separate environments for local and prod.
 - Polish and English.
 - And many other features that can be found in the application code.
 
-### Other:
+### Other
 
 - Docker for development environment.
 - PMD for static code analysis.

@@ -45,13 +45,15 @@ docker compose -f docker-compose.local.yml --profile app up -d --build
 
 ## Documentation checks
 
-The Markdown is formatted and linted with [mdtools](https://github.com/vertyll/mdtools), at the version the
-[Docs workflow](../.github/workflows/docs.yml) pins:
+The Markdown is formatted and linted with [markright](https://github.com/vertyll/markright), at the version the
+[Docs workflow](../.github/workflows/docs.yml) pins. Install that version, from an archive of its
+[release](https://github.com/vertyll/markright/releases) or with `cargo install --locked markright@VERSION`, then run:
 
 ```bash
-go run github.com/vertyll/mdtools/cmd/mdtools@VERSION fmt
-go run github.com/vertyll/mdtools/cmd/mdtools@VERSION run
+markright fmt
+markright check
 ```
 
-`fmt` rewrites what it can; `run` reports the rest and fails on any issue, as the workflow does on every push and pull
-request. [`.mdtools.yaml`](../.mdtools.yaml) chooses the formatters and linters and what each one skips.
+`fmt` rewrites what it can; `check` reports the rest and fails on any issue, as the workflow does on every push and
+pull request, and `check --fix` does both in one run. [`.markright.toml`](../.markright.toml) chooses the formatters
+and linters and what each one skips.
