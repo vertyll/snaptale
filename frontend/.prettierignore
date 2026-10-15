@@ -2,3 +2,5 @@
 .output
 node_modules
 package-lock.json
+# Markdown is formatted by markright, from the root of the repository.
+*.md
