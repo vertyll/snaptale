@@ -429,7 +429,7 @@
 
         <setting
                 id="org.eclipse.jdt.core.formatter.insert_new_line_after_annotation_on_local_variable"
-                value="do not insert"/>
+                value="insert"/>
 
         <setting
                 id="org.eclipse.jdt.core.formatter.insert_new_line_after_type_annotation"
