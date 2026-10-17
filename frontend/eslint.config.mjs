@@ -9,6 +9,17 @@ export default withNuxt(
       "@typescript-eslint/no-non-null-assertion": "error",
       eqeqeq: ["error", "always"],
       "vue/multi-word-component-names": "off",
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["~/composables/keycloak/*", "~~/app/composables/keycloak/*"],
+              message: "Use the keycloak module through what its index exports.",
+            },
+          ],
+        },
+      ],
     },
   },
   prettier

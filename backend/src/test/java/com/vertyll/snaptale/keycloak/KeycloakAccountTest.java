@@ -1,4 +1,4 @@
-package com.vertyll.snaptale.security;
+package com.vertyll.snaptale.keycloak;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;

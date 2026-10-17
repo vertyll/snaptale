@@ -6,6 +6,9 @@ import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Language {
     PL("pl"),
     EN("en");
@@ -16,6 +19,7 @@ public enum Language {
         this.tag = tag;
     }
 
+    @JsonValue
     public String tag() {
         return tag;
     }
@@ -26,6 +30,12 @@ public enum Language {
 
     public static Language of(@Nullable String tag) {
         return Arrays.stream(values()).filter(language -> language.tag.equals(tag)).findFirst().orElse(PL);
+    }
+
+    /** The language with this tag, as a request names it; a tag SnapTale does not have is refused. */
+    @JsonCreator
+    public static Language fromTag(String tag) {
+        return find(tag).orElseThrow(() -> new IllegalArgumentException("Unsupported language: " + tag));
     }
 
     /** The language with this tag, or empty when SnapTale has none. */

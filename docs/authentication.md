@@ -94,12 +94,13 @@ The pages are light only, as the app is: `darkMode=false` in `theme.properties` 
 theme menu with it.
 
 The language goes both ways. The sign-in page opens in the application's language, sent as `ui_locales`; Keycloak shows
-a signed-in person their account's language instead, so before an account action `KeycloakLanguageFilter` stores the
-application's language on the account, with the person's own token, through Keycloak's account API. A language chosen in
-Keycloak's own menu goes back to the application, as the sign-in returns to an address that carries nothing else:
-`language.js` leaves it in the cookie `ui_locale_snaptale`, under the domain Keycloak shares with the application, the
-parent of Keycloak's host (on localhost, every port), and `KeycloakLanguageFilter` takes it over into the `lang` cookie
-when the sign-in returns to `/login/oauth2/code/keycloak`, and removes it.
+a signed-in person their account's language instead, so the application stores a signed-in person's choice there at
+once, through `PUT /api/me/language`, and again before an account action. The language the reader last chose, in the
+application or in Keycloak's own menu, is kept in the cookie `ui_locale_snaptale`, which both write, under the domain
+Keycloak shares with the application, the parent of Keycloak's host (on localhost, every port), and for a year: the
+front-end, which also keeps the `lang` cookie the back-end reads in step with it, reads it whenever a page loads and
+writes it when the reader picks a language, and `language.js` writes it on a choice in Keycloak's menu. Being a shared
+record rather than a message, it keeps the two in step however the reader moves between them.
 
 `template.ftl` is a copy of `keycloak.v2`'s own, changed only where it says `Changed from keycloak.v2`. Keycloak builds
 its pages from that template, so after an upgrade of Keycloak the copy is compared with the new release's and brought up
@@ -125,3 +126,5 @@ image holding it in `/themes`, which the Keycloak theme workflow publishes on a 
 | `security/SingleFlightRefreshTokenProvider`, `security/SharedRefreshes` | one refresh per refresh token                        |
 | `security/LogoutUrlResponder`                                           | Keycloak's end-session address                       |
 | `user/UserAccounts`                                                     | the SnapTale account linked to a Keycloak identity   |
+| `keycloak/KeycloakAccounts`                                             | the way into Keycloak's account: actions, language   |
+| `frontend/app/composables/keycloak`                                     | the shared language and the account actions          |

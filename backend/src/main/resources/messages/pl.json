@@ -37,7 +37,7 @@
   "common.publish": "Opublikuj",
   "common.originalSound": "oryginalny dźwięk - {handle}",
   "cookies.label": "Informacja o plikach cookie",
-  "cookies.text": "SnapTale używa wyłącznie niezbędnych plików cookie: sesji, ochrony formularzy i wybranego języka.",
+  "cookies.text": "SnapTale używa wyłącznie niezbędnych plików cookie: sesji, ochrony formularzy i wybranego języka, wspólnego ze stroną logowania.",
   "profile.edit": "Edytuj profil",
   "profile.avatar": "Zdjęcie profilowe",
   "profile.changeAvatar": "Zmień zdjęcie profilowe",
@@ -133,6 +133,6 @@
   "legal.privacy.h7": "7. Dobrowolność podania danych",
   "legal.privacy.p7": "Podanie danych jest dobrowolne, ale bez nich nie da się założyć konta. Nie podejmujemy wobec Ciebie decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu, w tym profilowania.",
   "legal.privacy.h8": "8. Pliki cookie i pamięć przeglądarki",
-  "legal.privacy.p8": "Aplikacja używa wyłącznie niezbędnych plików cookie: sesji, ochrony formularzy przed atakami CSRF i zapamiętania wybranego języka. Nie używamy analityki ani reklam.",
-  "legal.privacy.lastModified": "03.10.2026"
+  "legal.privacy.p8": "Aplikacja używa wyłącznie niezbędnych plików cookie: sesji, ochrony formularzy przed atakami CSRF i zapamiętania wybranego języka, który dzieli ze stroną logowania, żeby obie mówiły tym samym językiem. Nie używamy analityki ani reklam.",
+  "legal.privacy.lastModified": "17.10.2026"
 }

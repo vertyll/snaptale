@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import type { SecondFactor } from "~/utils/types";
-
 const { t } = useMessages();
-const { me, signIn, startAccountAction, logout } = useSession();
-const api = useApi();
-const secondFactor = ref<SecondFactor | null>(null);
+const { me, signIn, logout } = useSession();
+const { secondFactor, loadSecondFactor, changePassword, toggleSecondFactor } = useKeycloakAccount();
 const { whenSignedIn } = useOverlays();
 const route = useRoute();
 const menuOpen = ref(false);
@@ -14,13 +11,9 @@ useClickOutside(menu, () => (menuOpen.value = false));
 
 watch(menuOpen, async (open) => {
   if (open) {
-    secondFactor.value = await api.get<SecondFactor>("/api/me/second-factor").catch(() => null);
+    await loadSecondFactor();
   }
 });
-
-function toggleSecondFactor(factor: SecondFactor) {
-  return startAccountAction(factor.credentialId ? `delete_credential:${factor.credentialId}` : "CONFIGURE_TOTP");
-}
 
 function upload() {
   whenSignedIn(() => navigateTo("/upload"));
@@ -87,7 +80,7 @@ async function signOut() {
             <button
               type="button"
               class="flex w-full items-center px-2 py-3 text-left hover:bg-gray-100"
-              @click="startAccountAction('UPDATE_PASSWORD')"
+              @click="changePassword()"
             >
               <Icon name="mdi:lock-outline" size="20" />
               <span class="pl-2 text-sm font-semibold">{{ t("nav.password") }}</span>

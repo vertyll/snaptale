@@ -1,8 +1,6 @@
 package com.vertyll.snaptale.security;
 
 import java.util.Arrays;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +14,7 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequest
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 
 import com.vertyll.snaptale.common.Language;
+import com.vertyll.snaptale.keycloak.KeycloakAccounts;
 
 final class LocalizedAuthorizationRequestResolver implements OAuth2AuthorizationRequestResolver {
 
@@ -27,11 +26,6 @@ final class LocalizedAuthorizationRequestResolver implements OAuth2Authorization
      * Keycloak asks to confirm and removes only when it is the person's own. No secret passes through the application.
      */
     static final String ACCOUNT_ACTION_PARAMETER = "kc_action";
-
-    private static final Set<String> ACCOUNT_ACTIONS = Set.of("UPDATE_PASSWORD", "CONFIGURE_TOTP");
-
-    private static final Pattern DELETE_CREDENTIAL =
-            Pattern.compile("delete_credential:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}");
 
     private final DefaultOAuth2AuthorizationRequestResolver delegate;
 
@@ -64,7 +58,7 @@ final class LocalizedAuthorizationRequestResolver implements OAuth2Authorization
         String action = request.getParameter(ACCOUNT_ACTION_PARAMETER);
         return OAuth2AuthorizationRequest.from(authorization).additionalParameters(parameters -> {
             parameters.put("ui_locales", language);
-            if (action != null && (ACCOUNT_ACTIONS.contains(action) || DELETE_CREDENTIAL.matcher(action).matches())) {
+            if (KeycloakAccounts.isAccountAction(action)) {
                 parameters.put(ACCOUNT_ACTION_PARAMETER, action);
             }
         }).build();

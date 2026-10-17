@@ -11,6 +11,9 @@ import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 
+import static com.tngtech.archunit.base.DescribedPredicate.not;
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideInAPackage;
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.simpleName;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
@@ -36,6 +39,15 @@ final class ArchitectureTest {
         .should()
         .dependOnClassesThat()
         .areAssignableTo(Repository.class);
+
+    @ArchTest
+    static final ArchRule KEYCLOAK_IS_REACHED_THROUGH_ITS_ENTRY = noClasses().that()
+        .resideOutsideOfPackage("..keycloak..")
+        .should()
+        .dependOnClassesThat(
+            resideInAPackage("..keycloak..").and(not(simpleName("KeycloakAccounts")))
+                .and(not(simpleName("KeycloakProperties")))
+        );
 
     @ArchTest
     static final ArchRule MODULES_ARE_FREE_OF_CYCLES =

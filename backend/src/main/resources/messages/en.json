@@ -37,7 +37,7 @@
   "common.publish": "Publish",
   "common.originalSound": "original sound - {handle}",
   "cookies.label": "Cookie notice",
-  "cookies.text": "SnapTale uses only the cookies it needs: your session, form protection and your chosen language.",
+  "cookies.text": "SnapTale uses only the cookies it needs: your session, form protection and your chosen language, shared with the sign-in page.",
   "profile.edit": "Edit profile",
   "profile.avatar": "Profile picture",
   "profile.changeAvatar": "Change profile picture",
@@ -133,6 +133,6 @@
   "legal.privacy.h7": "7. Providing the data",
   "legal.privacy.p7": "Providing the data is voluntary, but an account cannot be created without it. No decisions about you are based solely on automated processing, including profiling.",
   "legal.privacy.h8": "8. Cookies and browser storage",
-  "legal.privacy.p8": "The application uses only the cookies it needs: your session, protection of forms against CSRF attacks, and your chosen language. There is no analytics and no advertising.",
-  "legal.privacy.lastModified": "3 October 2026"
+  "legal.privacy.p8": "The application uses only the cookies it needs: your session, protection of forms against CSRF attacks, and your chosen language, which it shares with the sign-in page so the two speak the same language. There is no analytics and no advertising.",
+  "legal.privacy.lastModified": "17 October 2026"
 }

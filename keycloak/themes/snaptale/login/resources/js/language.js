@@ -1,6 +1,6 @@
-// A language chosen on Keycloak's pages goes back to the app in the cookie `ui_locale_<realm>`, as the sign-in returns
-// to an address that carries nothing else; the app takes it over and removes it. Keycloak itself keeps the choice on the
-// account, for its own pages.
+// The language the reader last chose, in the app or on Keycloak's pages, is kept in the cookie `ui_locale_<realm>`,
+// which the app reads whenever a page loads and writes whenever its language changes; a choice made here goes in it, so
+// the app shows it however the reader returns. Keycloak itself keeps the choice on the account, for its own pages.
 (() => {
   document.addEventListener("click", (event) => {
     const choice = event.target.closest("a[lang][href*='kc_locale']");
@@ -20,6 +20,6 @@
     const isAddress = labels.every((label) => /^\d+$/.test(label));
     const domain = labels.length > 2 && !isAddress ? `; Domain=${labels.slice(1).join(".")}` : "";
     const secure = window.location.protocol === "https:" ? "; Secure" : "";
-    document.cookie = `ui_locale_${realm}=${language}; Path=/; Max-Age=86400; SameSite=Lax${domain}${secure}`;
+    document.cookie = `ui_locale_${realm}=${language}; Path=/; Max-Age=31536000; SameSite=Lax${domain}${secure}`;
   }
 })();

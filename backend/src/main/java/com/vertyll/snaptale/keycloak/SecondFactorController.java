@@ -1,4 +1,4 @@
-package com.vertyll.snaptale.security;
+package com.vertyll.snaptale.keycloak;
 
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.Authentication;

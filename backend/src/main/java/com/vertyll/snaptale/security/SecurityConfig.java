@@ -1,6 +1,5 @@
 package com.vertyll.snaptale.security;
 
-import java.net.URI;
 import java.time.Clock;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +44,9 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher;
 
+import com.vertyll.snaptale.keycloak.KeycloakAccounts;
+import com.vertyll.snaptale.keycloak.KeycloakProperties;
+
 import tools.jackson.databind.ObjectMapper;
 
 @Configuration(proxyBeanMethods = false)
@@ -76,8 +78,7 @@ class SecurityConfig {
         SessionAccessTokens sessionAccessTokens,
         Converter<Jwt, AbstractAuthenticationToken> bearerTokenAccounts,
         SnaptaleSecurityProperties properties,
-        KeycloakProperties keycloak,
-        KeycloakAccount keycloakAccount,
+        KeycloakAccounts keycloakAccounts,
         ObjectMapper objectMapper
     ) {
         http.authorizeHttpRequests(
@@ -122,12 +123,7 @@ class SecurityConfig {
             .requestCache(RequestCacheConfigurer::disable)
             .addFilterBefore(new SessionAccessTokenFilter(sessionAccessTokens), AnonymousAuthenticationFilter.class)
             .addFilterBefore(
-                new KeycloakLanguageFilter(
-                    keycloak.realm(),
-                    KeycloakLanguageFilter.sharedDomain(URI.create(keycloak.realmUrl()).getHost()).orElse(null),
-                    sessionAccessTokens,
-                    keycloakAccount
-                ),
+                new KeycloakLanguageFilter(sessionAccessTokens, keycloakAccounts),
                 OAuth2AuthorizationRequestRedirectFilter.class
             );
         return http.build();

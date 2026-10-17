@@ -14,6 +14,8 @@ export default defineNuxtConfig({
     },
   },
   icon: { serverBundle: { collections: ["mdi"] } },
+  // A module folder exposes only its index; its other files are its own.
+  imports: { dirs: ["composables/keycloak/index.ts"] },
   runtimeConfig: {
     backendInternalUrl: "",
   },

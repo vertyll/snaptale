@@ -5,13 +5,14 @@ A Nuxt application. It holds no token: sign-in and the session belong to the bac
 
 ## Layout
 
-| Path              | Holds                                                                   |
-|-------------------|-------------------------------------------------------------------------|
-| `app/pages`       | the routed pages                                                        |
-| `app/components`  | the components the pages are built from                                 |
-| `app/composables` | the API client (`useApi`), the session, the messages, forms and locale  |
-| `app/utils`       | `ApiError`, formatting and shared types                                 |
-| `server/routes`   | the proxy to the back-end: `/api`, `/oauth2`, `/login/oauth2`, `/media` |
+| Path                       | Holds                                                                                      |
+|----------------------------|--------------------------------------------------------------------------------------------|
+| `app/pages`                | the routed pages                                                                           |
+| `app/components`           | the components the pages are built from                                                    |
+| `app/composables`          | the API client (`useApi`), the session, the messages, forms and locale                     |
+| `app/composables/keycloak` | Keycloak's pages: the shared language and the account actions; only `index.ts` is imported |
+| `app/utils`                | `ApiError`, formatting and shared types                                                    |
+| `server/routes`            | the proxy to the back-end: `/api`, `/oauth2`, `/login/oauth2`, `/media`                    |
 
 `useApi` sends the CSRF token from the `XSRF-TOKEN` cookie in `X-XSRF-TOKEN` on every unsafe request.
 

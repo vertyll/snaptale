@@ -1,4 +1,4 @@
-package com.vertyll.snaptale.security;
+package com.vertyll.snaptale.keycloak;
 
 import java.net.http.HttpClient;
 import java.time.Duration;

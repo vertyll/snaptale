@@ -17,6 +17,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -30,6 +31,18 @@ class MyAccountIT {
 
     @Autowired
     TestUsers users;
+
+    @Test
+    void aLanguageSnapTaleDoesNotHaveIsNotStoredOnTheAccount() throws Exception {
+        TestUser user = users.create("Ola");
+
+        mvc.perform(
+            put("/api/me/language").with(as(user))
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"language\":\"de\"}")
+        ).andExpect(status().isBadRequest());
+    }
 
     @Test
     void profileUpdateTrimsAndClearsAnEmptyBio() throws Exception {
