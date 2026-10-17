@@ -119,7 +119,7 @@
   "legal.privacy.h1": "1. Administrator danych",
   "legal.privacy.p1": "Administratorem danych jest Mikołaj Gawron, autor SnapTale, projektu demonstracyjnego stworzonego w celach nauki i portfolio. Kontakt: gawrmiko@gmail.com.",
   "legal.privacy.h2": "2. Jakie dane przetwarzamy",
-  "legal.privacy.p2": "Przetwarzamy dane konta (adres e-mail, nazwa użytkownika, hasło przechowywane wyłącznie jako skrót w Keycloaku), dane profilu (nazwa, opis, zdjęcie), publikowane filmy, opisy i komentarze oraz polubienia i obserwacje. 6 ust. 1 lit. b RODO, czyli w celu świadczenia usługi, z której korzystasz.",
+  "legal.privacy.p2": "Przetwarzamy dane konta (adres e-mail, nazwa użytkownika, hasło przechowywane wyłącznie jako skrót w Keycloaku), dane profilu (nazwa, opis, zdjęcie), publikowane filmy, opisy i komentarze oraz polubienia i obserwacje.",
   "legal.privacy.h3": "3. Cel i podstawa prawna",
   "legal.privacy.p3": "Dane przetwarzamy wyłącznie po to, żeby aplikacja działała, na podstawie art. 6 ust. 1 lit. b RODO, czyli w celu świadczenia usługi, z której korzystasz.",
   "legal.privacy.h4": "4. Gdzie są dane i kto je otrzymuje",
