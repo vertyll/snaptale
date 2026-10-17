@@ -17,3 +17,6 @@ Thumbs.db
 
 ### SonarQube ###
 .scannerwork/
+
+### Keycloak theme ###
+/keycloak/target/

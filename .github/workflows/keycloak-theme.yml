@@ -1,0 +1,53 @@
+name: Keycloak theme
+
+on:
+  push:
+    branches: [main]
+    tags: ["keycloak-theme-v*"]
+    paths:
+      - "keycloak/themes/**"
+      - "keycloak/build-theme.sh"
+      - "keycloak/Dockerfile"
+      - "keycloak/check-template.sh"
+      - "docker-compose.local.yml"
+      - ".github/workflows/keycloak-theme.yml"
+      - ".github/workflows/_image.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "keycloak/themes/**"
+      - "keycloak/build-theme.sh"
+      - "keycloak/Dockerfile"
+      - "keycloak/check-template.sh"
+      - "docker-compose.local.yml"
+      - ".github/workflows/keycloak-theme.yml"
+      - ".github/workflows/_image.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: keycloak-theme-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  template:
+    name: Template
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Compare the copied templates with Keycloak's
+        run: keycloak/check-template.sh
+
+  image:
+    name: Image
+    needs: [template]
+    uses: ./.github/workflows/_image.yml
+    with:
+      context: keycloak
+      image-name: vertyll/snaptale-keycloak-theme
+      tag-prefix: keycloak-theme-v
+    secrets: inherit

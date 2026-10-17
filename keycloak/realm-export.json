@@ -2,6 +2,8 @@
   "realm": "snaptale",
   "enabled": true,
   "displayName": "SnapTale",
+  "loginTheme": "snaptale",
+  "emailTheme": "snaptale",
   "sslRequired": "external",
   "registrationAllowed": true,
   "registrationEmailAsUsername": true,
@@ -155,11 +157,11 @@
   "localizationTexts": {
     "pl": {
       "termsTitle": "Regulamin SnapTale",
-      "termsText": "<p>SnapTale to projekt demonstracyjny, stworzony w celach nauki i portfolio. Twoje dane są przechowywane w bazach danych na prywatnym serwerze autora w Unii Europejskiej.</p><p>Akceptując, potwierdzasz, że przeczytałeś <a href=\"http://localhost:3000/terms\" target=\"_blank\" rel=\"noopener\">regulamin</a> i <a href=\"http://localhost:3000/privacy\" target=\"_blank\" rel=\"noopener\">politykę prywatności</a> i akceptujesz regulamin.</p>"
+      "termsText": "<p>SnapTale to projekt demonstracyjny, stworzony do nauki i jako portfolio.</p><p>Akceptując, potwierdzasz, że:</p><ul><li>akceptujesz <a href=\"http://localhost:3000/terms\" target=\"_blank\" rel=\"noopener\">regulamin</a>;</li><li>znasz <a href=\"http://localhost:3000/privacy\" target=\"_blank\" rel=\"noopener\">politykę prywatności</a>;</li><li>wiesz, że Twoje dane są przechowywane na prywatnym serwerze autora w Unii Europejskiej.</li></ul>"
     },
     "en": {
       "termsTitle": "SnapTale terms of use",
-      "termsText": "<p>SnapTale is a demo project built for learning and as a portfolio piece. Your data is stored in databases on the author's private server in the European Union.</p><p>By accepting, you confirm that you have read the <a href=\"http://localhost:3000/terms\" target=\"_blank\" rel=\"noopener\">terms of use</a> and the <a href=\"http://localhost:3000/privacy\" target=\"_blank\" rel=\"noopener\">privacy policy</a>, and you accept the terms of use.</p>"
+      "termsText": "<p>SnapTale is a demo project built for learning and as a portfolio piece.</p><p>By accepting, you confirm that you:</p><ul><li>accept the <a href=\"http://localhost:3000/terms\" target=\"_blank\" rel=\"noopener\">terms of use</a>;</li><li>have read the <a href=\"http://localhost:3000/privacy\" target=\"_blank\" rel=\"noopener\">privacy policy</a>;</li><li>know that your data is stored on the author’s private server in the European Union.</li></ul>"
     }
   },
   "clients": [

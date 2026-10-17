@@ -65,6 +65,35 @@ address, carrying the ID token; the browser follows it, Keycloak ends its sessio
 
 Every unsafe request repeats the `XSRF-TOKEN` cookie in a header: [CSRF](mechanisms/csrf.md).
 
+## The sign-in pages
+
+Keycloak draws the sign-in, sign-up, password reset and second-factor pages, and the mails it sends, with the theme in
+[`keycloak/themes/snaptale`](../keycloak/themes/snaptale), so they look like the front-end, with its logo:
+
+| Part                      | Holds                                                                                |
+|---------------------------|--------------------------------------------------------------------------------------|
+| `login/theme.properties`  | extends `keycloak.v2`, whose templates draw every page, and names the legal pages    |
+| `login/template.ftl`      | the page frame: a top bar with the name and the menus, a footer with the legal pages |
+| `login/resources`         | `css/app.css`, the colors, type and card on PatternFly                               |
+| `login/messages`          | the texts of the bar and the footer, in Polish and English                           |
+| `email/html/template.ftl` | the frame of every mail; its texts stay Keycloak's own                               |
+
+The pages are light only, as the app is: `darkMode=false` in `theme.properties` turns off Keycloak's dark mode, and the
+theme menu with it.
+
+`template.ftl` is a copy of `keycloak.v2`'s own, changed only where it says `Changed from keycloak.v2`. Keycloak builds
+its pages from that template, so after an upgrade of Keycloak the copy is compared with the new release's and brought up
+to date. The Keycloak theme workflow does the comparison: `keycloak/check-template.sh` fails when the template in the
+Keycloak image of `docker-compose.local.yml` is not the one the copy was made from, recorded as `parentTemplateSha256`
+in `theme.properties`, which changes with the copy. The colors are those of `frontend/app/assets/css/main.css` and the
+Tailwind grays the front-end draws with. A mail's colors are written as hex, since mail clients read neither `oklch()`
+nor `light-dark()`. The links of the bar and the footer lead to the client's base URL, `baseUrl` in the realm.
+
+The realm names the theme in `loginTheme` and `emailTheme`. Locally, compose mounts the folder into Keycloak. A Keycloak
+that serves several applications, each in its own realm, takes it as a JAR in `/opt/keycloak/providers`:
+`keycloak/build-theme.sh` writes `keycloak/target/snaptale-keycloak-theme.jar`, and `keycloak/Dockerfile` builds an
+image holding it in `/themes`, which the Keycloak theme workflow publishes on a `keycloak-theme-v*` tag.
+
 ## Code
 
 | Class                                                                   | Role                                                 |

@@ -1,0 +1,438 @@
+/* SnapTale's look on the sign-in pages: the colors of `frontend/app/assets/css/main.css` and of the Tailwind grays
+   the app draws with, light only, as the app is. PatternFly reads them through its own variables, set below on
+   `:root`, where they win over its defaults. */
+
+:root {
+  --background: #ffffff;
+  --foreground: #111827;
+  --card: #ffffff;
+  --popover: #ffffff;
+  --popover-foreground: #111827;
+  --muted-foreground: #6b7280;
+  --primary: #bc2cf0;
+  --primary-foreground: #ffffff;
+  --destructive: #ef4444;
+  --border: #d1d5db;
+  --ring: #bc2cf0;
+  --shadow-sm: 0 10px 25px -5px rgb(0 0 0 / 10%), 0 8px 10px -6px rgb(0 0 0 / 10%);
+}
+
+:root {
+  color-scheme: light;
+}
+
+/* The app's look on the parts below: its type, its corners, its bar and its footer. */
+:root {
+  --app-font: "Roboto", ui-sans-serif, system-ui, sans-serif;
+  --app-heading-font: var(--app-font);
+  --app-brand-font: var(--app-font);
+  --app-brand-size: 1.125rem;
+  --app-brand-weight: 700;
+  --app-logo-width: 115px;
+  --app-radius: 0.375rem;
+  --app-card-radius: 0.5rem;
+  --app-page-background: var(--background);
+  --app-field-background: #f1f1f2;
+  --app-bar-background: var(--background);
+  --app-bar-foreground: var(--foreground);
+  --app-bar-border: #e5e7eb;
+  --app-footer-background: transparent;
+  --app-footer-foreground: var(--muted-foreground);
+  --app-footer-border: #e5e7eb;
+}
+
+:root {
+  --pf-v5-global--FontFamily--text: var(--app-font);
+  --pf-v5-global--FontFamily--heading: var(--app-heading-font);
+  /* PatternFly re-points its colors per component at a `--dark-*` variant (on a light surface) or a `--light-*` one
+     (on a dark one, such as the header over its picture). Every variant gets the app's color, so each component
+     draws in it, whatever surface PatternFly assumed. */
+  --pf-v5-global--BackgroundColor--100: var(--card);
+  --pf-v5-global--BackgroundColor--200: var(--background);
+  --pf-v5-global--BackgroundColor--light-100: var(--card);
+  --pf-v5-global--BackgroundColor--dark-100: var(--background);
+  --pf-v5-global--Color--100: var(--foreground);
+  --pf-v5-global--Color--dark-100: var(--foreground);
+  --pf-v5-global--Color--light-100: var(--foreground);
+  --pf-v5-global--Color--200: var(--muted-foreground);
+  --pf-v5-global--Color--dark-200: var(--muted-foreground);
+  --pf-v5-global--Color--light-200: var(--muted-foreground);
+  --pf-v5-global--BorderColor--100: var(--border);
+  --pf-v5-global--BorderColor--dark-100: var(--border);
+  --pf-v5-global--BorderColor--light-100: var(--border);
+  --pf-v5-global--BorderColor--200: var(--border);
+  --pf-v5-global--BorderColor--300: var(--border);
+  --pf-v5-global--BorderColor--400: var(--border);
+  --pf-v5-global--primary-color--100: var(--primary);
+  --pf-v5-global--primary-color--dark-100: var(--primary);
+  --pf-v5-global--primary-color--light-100: var(--primary);
+  --pf-v5-global--primary-color--200: color-mix(in oklab, var(--primary) 90%, var(--background));
+  --pf-v5-global--primary-color--300: var(--primary);
+  --pf-v5-global--link--Color: var(--foreground);
+  --pf-v5-global--link--Color--hover: var(--muted-foreground);
+  --pf-v5-global--link--Color--dark: var(--foreground);
+  --pf-v5-global--link--Color--dark--hover: var(--muted-foreground);
+  --pf-v5-global--link--Color--light: var(--foreground);
+  --pf-v5-global--link--Color--light--hover: var(--muted-foreground);
+  --pf-v5-global--danger-color--100: var(--destructive);
+  --pf-v5-global--active-color--100: var(--ring);
+  --pf-v5-global--active-color--300: var(--ring);
+  --pf-v5-global--BorderRadius--sm: var(--app-radius);
+  --pf-v5-global--BoxShadow--md: var(--shadow-sm);
+  --keycloak-card-top-color: transparent;
+}
+
+/* Buttons define their colors on the button itself, in light and in dark, so they are set here, as the app's. */
+.pf-v5-c-button {
+  --pf-v5-c-button--BorderRadius: var(--app-radius);
+  --pf-v5-c-button--m-primary--Color: var(--primary-foreground);
+  --pf-v5-c-button--m-primary--hover--Color: var(--primary-foreground);
+  --pf-v5-c-button--m-primary--focus--Color: var(--primary-foreground);
+  --pf-v5-c-button--m-primary--active--Color: var(--primary-foreground);
+  --pf-v5-c-button--m-primary--BackgroundColor: var(--primary);
+  --pf-v5-c-button--m-primary--hover--BackgroundColor: color-mix(in oklab, var(--primary) 90%, var(--background));
+  --pf-v5-c-button--m-primary--focus--BackgroundColor: color-mix(in oklab, var(--primary) 90%, var(--background));
+  --pf-v5-c-button--m-primary--active--BackgroundColor: color-mix(in oklab, var(--primary) 80%, var(--background));
+  --pf-v5-c-button--m-secondary--Color: var(--foreground);
+  --pf-v5-c-button--m-secondary--hover--Color: var(--foreground);
+  --pf-v5-c-button--m-secondary--BorderColor: var(--border);
+  --pf-v5-c-button--m-secondary--hover--BorderColor: var(--border);
+  --pf-v5-c-button--m-secondary--hover--BackgroundColor: color-mix(in oklab, var(--foreground) 5%, transparent);
+}
+
+.login-pf body,
+#keycloak-bg {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--app-page-background);
+  color: var(--foreground);
+  font-family: var(--pf-v5-global--FontFamily--text);
+}
+
+/* The card's column: centered, with the app's 16 px gutter on a phone, so the card never meets the screen's edge. */
+.pf-v5-c-login {
+  display: block;
+  flex: 1;
+  min-height: 0;
+  padding: 1.5rem 1rem;
+}
+
+.pf-v5-c-login__container {
+  display: block;
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .pf-v5-c-login {
+    padding: 3rem 2rem;
+  }
+}
+
+.pf-v5-c-login__main {
+  margin: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--app-card-radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.pf-v5-c-login__main-header {
+  display: block;
+  padding: 1.5rem 1.5rem 0;
+  border-top: 0;
+}
+
+.pf-v5-c-login__main-body {
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+/* The card's footer would add its own padding to the card's, out of line with the fields. */
+.pf-v5-c-login__main-footer {
+  padding: 0;
+}
+
+.pf-v5-c-login__main-footer-band {
+  margin: 1.5rem 0 0;
+  padding: 1.25rem 0 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.pf-v5-c-login__main-body .subtitle {
+  margin-bottom: 0.75rem;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+.pf-v5-c-button.pf-m-control {
+  --pf-v5-c-button--m-control--BackgroundColor: var(--app-field-background);
+  --pf-v5-c-button--m-control--Color: var(--muted-foreground);
+  --pf-v5-c-button--m-control--hover--Color: var(--foreground);
+  --pf-v5-c-button--m-control--hover--BackgroundColor: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --pf-v5-c-button--m-control--focus--BackgroundColor: color-mix(in oklab, var(--foreground) 5%, var(--background));
+  --pf-v5-c-button--m-control--active--BackgroundColor: color-mix(in oklab, var(--foreground) 10%, var(--background));
+  --pf-v5-c-button--m-control--active--after--BorderBottomColor: var(--border);
+  --pf-v5-c-button--m-control--BorderRadius: 0 var(--app-radius) var(--app-radius) 0;
+  --pf-v5-c-button--m-control--after--BorderTopColor: var(--border);
+  --pf-v5-c-button--m-control--after--BorderRightColor: var(--border);
+  --pf-v5-c-button--m-control--after--BorderBottomColor: var(--border);
+  --pf-v5-c-button--m-control--after--BorderLeftColor: var(--border);
+  --pf-v5-c-button--m-control--hover--after--BorderBottomColor: var(--border);
+  --pf-v5-c-button--m-control--focus--after--BorderBottomColor: var(--ring);
+  border-radius: 0 var(--app-radius) var(--app-radius) 0;
+}
+
+.pf-v5-c-button.pf-m-control::after {
+  border-radius: 0 var(--app-radius) var(--app-radius) 0;
+}
+
+.pf-v5-c-input-group .pf-v5-c-form-control,
+.pf-v5-c-input-group .pf-v5-c-form-control::before,
+.pf-v5-c-input-group .pf-v5-c-form-control::after {
+  border-radius: var(--app-radius) 0 0 var(--app-radius);
+}
+
+.pf-v5-c-check__label {
+  font-size: 0.875rem;
+}
+
+#kc-page-title {
+  font-family: var(--app-heading-font);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* Fields: a hairline border all round and the app's ring on focus, instead of PatternFly's underline. */
+.pf-v5-c-form-control {
+  --pf-v5-c-form-control--BackgroundColor: var(--app-field-background);
+  --pf-v5-c-form-control--before--BorderTopColor: var(--border);
+  --pf-v5-c-form-control--before--BorderRightColor: var(--border);
+  --pf-v5-c-form-control--before--BorderLeftColor: var(--border);
+  --pf-v5-c-form-control--before--BorderBottomColor: var(--border);
+  --pf-v5-c-form-control--after--BorderBottomColor: var(--border);
+  --pf-v5-c-form-control--hover--after--BorderBottomColor: var(--border);
+  --pf-v5-c-form-control--focus--after--BorderBottomColor: var(--border);
+  border-radius: var(--app-radius);
+}
+
+.pf-v5-c-form-control::before,
+.pf-v5-c-form-control::after {
+  border-radius: var(--app-radius);
+}
+
+.pf-v5-c-form-control:focus-within {
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--ring) 40%, transparent);
+}
+
+.pf-v5-c-login__main a:not(.pf-v5-c-button) {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.kc-app-bar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  height: 4rem;
+  border-bottom: 1px solid var(--app-bar-border);
+  background: var(--app-bar-background);
+}
+
+.kc-app-bar__inner {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+}
+
+.kc-app-bar__brand {
+  display: flex;
+  align-items: center;
+  color: var(--app-bar-foreground);
+  font-family: var(--app-brand-font);
+  font-size: var(--app-brand-size);
+  font-weight: var(--app-brand-weight);
+  line-height: 1.75rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.kc-app-bar__brand:hover {
+  color: var(--app-bar-foreground);
+  text-decoration: none;
+}
+
+.kc-app-bar__logo {
+  display: block;
+  width: var(--app-logo-width);
+  height: auto;
+}
+
+.kc-app-bar__menus {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.kc-app-menu {
+  position: relative;
+}
+
+.kc-app-menu__trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-radius: var(--app-radius);
+  color: var(--app-bar-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  list-style: none;
+  cursor: pointer;
+}
+
+.kc-app-menu__trigger::-webkit-details-marker {
+  display: none;
+}
+
+.kc-app-menu__trigger:hover {
+  background: color-mix(in oklab, var(--app-bar-foreground) 8%, transparent);
+}
+
+.kc-app-menu__trigger:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.kc-app-menu__code {
+  text-transform: uppercase;
+}
+
+.kc-app-menu__panel {
+  position: absolute;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  min-width: 11rem;
+  flex-direction: column;
+  margin-top: 0.5rem;
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--popover);
+  color: var(--popover-foreground);
+  box-shadow: var(--shadow-sm);
+}
+
+.kc-app-menu__item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 0;
+  border-radius: var(--app-radius);
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.kc-app-menu__item:hover {
+  background: color-mix(in oklab, var(--foreground) 5%, transparent);
+  color: inherit;
+  text-decoration: none;
+}
+
+.kc-app-menu__item--active {
+  background: color-mix(in oklab, var(--foreground) 5%, transparent);
+  font-weight: 500;
+}
+
+.kc-app-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.kc-app-icon--system,
+.kc-app-icon--light,
+.kc-app-icon--dark {
+  display: none;
+}
+
+[data-theme-shown="system"] .kc-app-icon--system,
+[data-theme-shown="light"] .kc-app-icon--light,
+[data-theme-shown="dark"] .kc-app-icon--dark {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .kc-app-bar__inner {
+    padding: 0 1rem;
+  }
+
+  .kc-app-menu__trigger {
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+.kc-app-footer {
+  border-top: 1px solid var(--app-footer-border);
+  background: var(--app-footer-background);
+}
+
+.kc-app-footer__links {
+  display: flex;
+  max-width: 64rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 auto;
+  padding: 1rem;
+  color: var(--app-footer-foreground);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-align: center;
+}
+
+.kc-app-footer__links a {
+  color: var(--app-footer-foreground);
+  text-decoration: none;
+}
+
+.kc-app-footer__links a:hover {
+  color: var(--app-footer-foreground);
+  text-decoration: underline;
+}
+
+/* PatternFly takes the markers and spacing off lists, which the terms need back. */
+#kc-registration-terms-text p,
+#kc-registration-terms-text ul,
+.pf-v5-u-mb-md-on-md > p,
+.pf-v5-u-mb-md-on-md > ul {
+  margin: 0 0 0.75rem;
+}
+
+#kc-registration-terms-text ul,
+.pf-v5-u-mb-md-on-md > ul {
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+#kc-registration-terms-text li + li,
+.pf-v5-u-mb-md-on-md > ul > li + li {
+  margin-top: 0.25rem;
+}
