@@ -1,7 +1,10 @@
 import type { Me } from "~/utils/types";
 
+/** Where the browser starts a sign-in, through the back-end. */
+export const SIGN_IN_PATH = "/oauth2/authorization/keycloak";
+
 function signIn() {
-  return openKeycloak();
+  return navigateTo(SIGN_IN_PATH, { external: true });
 }
 
 export function useSession() {
