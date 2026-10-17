@@ -1,12 +1,26 @@
 <script setup lang="ts">
+import type { SecondFactor } from "~/utils/types";
+
 const { t } = useMessages();
 const { me, signIn, startAccountAction, logout } = useSession();
+const api = useApi();
+const secondFactor = ref<SecondFactor | null>(null);
 const { whenSignedIn } = useOverlays();
 const route = useRoute();
 const menuOpen = ref(false);
 const menu = useTemplateRef<HTMLElement>("menu");
 
 useClickOutside(menu, () => (menuOpen.value = false));
+
+watch(menuOpen, async (open) => {
+  if (open) {
+    secondFactor.value = await api.get<SecondFactor>("/api/me/second-factor").catch(() => null);
+  }
+});
+
+function toggleSecondFactor(factor: SecondFactor) {
+  return startAccountAction(factor.credentialId ? `delete_credential:${factor.credentialId}` : "CONFIGURE_TOTP");
+}
 
 function upload() {
   whenSignedIn(() => navigateTo("/upload"));
@@ -79,12 +93,15 @@ async function signOut() {
               <span class="pl-2 text-sm font-semibold">{{ t("nav.password") }}</span>
             </button>
             <button
+              v-if="secondFactor"
               type="button"
               class="flex w-full items-center px-2 py-3 text-left hover:bg-gray-100"
-              @click="startAccountAction('CONFIGURE_TOTP')"
+              @click="toggleSecondFactor(secondFactor)"
             >
-              <Icon name="mdi:shield-key-outline" size="20" />
-              <span class="pl-2 text-sm font-semibold">{{ t("nav.twoFactor") }}</span>
+              <Icon :name="secondFactor.enabled ? 'mdi:shield-off-outline' : 'mdi:shield-key-outline'" size="20" />
+              <span class="pl-2 text-sm font-semibold">
+                {{ secondFactor.enabled ? t("nav.twoFactorOff") : t("nav.twoFactorOn") }}
+              </span>
             </button>
             <button
               type="button"

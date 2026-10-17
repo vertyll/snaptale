@@ -43,11 +43,15 @@ The browser holds only the `SNAPTALE_SESSION` cookie (`HttpOnly`, `SameSite=Lax`
 
 ## Account actions
 
-The account menu changes the password and sets up the second factor on Keycloak's own pages, so no password and no TOTP
-secret passes through SnapTale. It sends the signed-in browser to `/oauth2/authorization/keycloak?kc_action=…`, and
-`LocalizedAuthorizationRequestResolver` passes `kc_action` on to Keycloak when it is `UPDATE_PASSWORD` or
-`CONFIGURE_TOTP`, and drops any other value. Keycloak shows only that page, then returns through the usual sign-in to
-`/`.
+The account menu changes the password and turns the second factor on and off on Keycloak's own pages, so no password
+and no TOTP secret passes through SnapTale. `GET /api/me/second-factor` reads the caller's OTP credential from
+Keycloak's account API (`/realms/snaptale/account/credentials`) with the caller's own access token, which carries the
+`account` audience and the `manage-account` role every account gets, so SnapTale needs no right to read anyone else's
+credentials. The menu then sends the signed-in browser to `/oauth2/authorization/keycloak?kc_action=…`, and
+`LocalizedAuthorizationRequestResolver` passes `kc_action` on to Keycloak when it is `UPDATE_PASSWORD`,
+`CONFIGURE_TOTP` or `delete_credential:<id>` with a UUID, and drops any other value. Keycloak shows only that page,
+asks to confirm a removal and removes a credential only when it is the person's own, then returns through the usual
+sign-in to `/`.
 
 ## Every API request is authorized by a token
 

@@ -2,6 +2,7 @@ package com.vertyll.snaptale.security;
 
 import java.util.Arrays;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,11 +23,15 @@ final class LocalizedAuthorizationRequestResolver implements OAuth2Authorization
 
     /**
      * The Keycloak action a signed-in person starts from the account menu, passed on so Keycloak shows only that page and
-     * returns: changing the password or setting up the second factor, which no secret of passes through the application.
+     * returns: changing the password, setting up the second factor, or removing a credential named by its id, which
+     * Keycloak asks to confirm and removes only when it is the person's own. No secret passes through the application.
      */
     static final String ACCOUNT_ACTION_PARAMETER = "kc_action";
 
     private static final Set<String> ACCOUNT_ACTIONS = Set.of("UPDATE_PASSWORD", "CONFIGURE_TOTP");
+
+    private static final Pattern DELETE_CREDENTIAL =
+            Pattern.compile("delete_credential:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}");
 
     private final DefaultOAuth2AuthorizationRequestResolver delegate;
 
@@ -59,7 +64,7 @@ final class LocalizedAuthorizationRequestResolver implements OAuth2Authorization
         String action = request.getParameter(ACCOUNT_ACTION_PARAMETER);
         return OAuth2AuthorizationRequest.from(authorization).additionalParameters(parameters -> {
             parameters.put("ui_locales", language);
-            if (action != null && ACCOUNT_ACTIONS.contains(action)) {
+            if (action != null && (ACCOUNT_ACTIONS.contains(action) || DELETE_CREDENTIAL.matcher(action).matches())) {
                 parameters.put(ACCOUNT_ACTION_PARAMETER, action);
             }
         }).build();

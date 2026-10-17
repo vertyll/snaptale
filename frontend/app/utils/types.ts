@@ -70,3 +70,9 @@ export interface ProblemDetail {
   args: MessageArgs;
   errors?: Record<string, Message>;
 }
+
+/** Whether the signed-in person set up a second factor, and the credential Keycloak's `delete_credential` removes. */
+export interface SecondFactor {
+  enabled: boolean;
+  credentialId: string | null;
+}

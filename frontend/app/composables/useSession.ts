@@ -2,8 +2,11 @@ import type { Me } from "~/utils/types";
 
 const LOGIN_PATH = "/oauth2/authorization/keycloak";
 
-/** A page Keycloak shows to a signed-in person before returning: changing the password or setting up the second factor. */
-export type AccountAction = "UPDATE_PASSWORD" | "CONFIGURE_TOTP";
+/**
+ * A page Keycloak shows to a signed-in person before returning: changing the password, setting up the second factor, or
+ * removing a credential named by its id, which Keycloak asks to confirm.
+ */
+export type AccountAction = "UPDATE_PASSWORD" | "CONFIGURE_TOTP" | `delete_credential:${string}`;
 
 function signIn() {
   return navigateTo(LOGIN_PATH, { external: true });
