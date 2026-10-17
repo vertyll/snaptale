@@ -6,18 +6,18 @@ A Spring Boot API over MySQL and Redis. It signs users in and keeps their tokens
 
 ## Layout
 
-| Package    | Holds                                                                     |
-|------------|---------------------------------------------------------------------------|
-| `post`     | videos, the feed, likes and comments                                      |
-| `follow`   | who follows whom                                                          |
-| `profile`  | a user's public profile                                                   |
-| `user`     | the SnapTale account, the signed-in user and suggestions                  |
-| `auth`     | linking a Keycloak identity to a SnapTale account                         |
-| `security` | sign-in, sessions and tokens                                              |
-| `keycloak` | Keycloak's pages and the account there: password, second factor, language |
-| `media`    | storing videos and avatars on disk and serving them                       |
-| `messages` | the UI messages in Polish and English                                     |
-| `common`   | errors, validation limits and shared types                                |
+| Package    | Holds                                                                                                                                       |
+|------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| `post`     | videos, the feed, likes and comments                                                                                                        |
+| `follow`   | who follows whom                                                                                                                            |
+| `profile`  | a user's public profile                                                                                                                     |
+| `user`     | the SnapTale account, the signed-in user and suggestions                                                                                    |
+| `auth`     | linking a Keycloak identity to a SnapTale account                                                                                           |
+| `security` | sign-in, sessions and tokens                                                                                                                |
+| `keycloak` | Keycloak's pages and the account there: password, second factor, language; reached only through `KeycloakAccounts` and `KeycloakProperties` |
+| `media`    | storing videos and avatars on disk and serving them                                                                                         |
+| `messages` | the UI messages in Polish and English                                                                                                       |
+| `common`   | errors, validation limits and shared types                                                                                                  |
 
 ## Access
 

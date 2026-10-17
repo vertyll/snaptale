@@ -1,15 +1,12 @@
 package com.vertyll.snaptale.security;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
@@ -42,25 +39,12 @@ final class KeycloakLanguageFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         if (request.getRequestURI()
             .startsWith(OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI)
-                && request.getParameter(LocalizedAuthorizationRequestResolver.ACCOUNT_ACTION_PARAMETER) != null
-                && SecurityContextHolder.getContext()
+                && KeycloakAccounts.asksForAccountAction(request) && SecurityContextHolder.getContext()
                     .getAuthentication() instanceof OAuth2AuthenticationToken session) {
-            Language language = Language.of(cookie(request, LocalizedAuthorizationRequestResolver.LANGUAGE_COOKIE));
+            Language language = RequestLanguage.of(request);
             sessionAccessTokens.current(session, request, response)
                 .ifPresent(accessToken -> accounts.keepLanguage(accessToken, language));
         }
         chain.doFilter(request, response);
-    }
-
-    private static @Nullable String cookie(HttpServletRequest request, String name) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return null;
-        }
-        return Arrays.stream(cookies)
-            .filter(cookie -> name.equals(cookie.getName()))
-            .map(Cookie::getValue)
-            .findFirst()
-            .orElse(null);
     }
 }

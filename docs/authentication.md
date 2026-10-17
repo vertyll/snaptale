@@ -43,15 +43,15 @@ The browser holds only the `SNAPTALE_SESSION` cookie (`HttpOnly`, `SameSite=Lax`
 
 ## Account actions
 
-The account menu changes the password and turns the second factor on and off on Keycloak's own pages, so no password
-and no TOTP secret passes through SnapTale. `GET /api/me/second-factor` reads the caller's OTP credential from
-Keycloak's account API (`/realms/snaptale/account/credentials`) with the caller's own access token, which carries the
-`account` audience and the `manage-account` role every account gets, so SnapTale needs no right to read anyone else's
-credentials. The menu then sends the signed-in browser to `/oauth2/authorization/keycloak?kc_action=…`, and
-`LocalizedAuthorizationRequestResolver` passes `kc_action` on to Keycloak when it is `UPDATE_PASSWORD`,
-`CONFIGURE_TOTP` or `delete_credential:<id>` with a UUID, and drops any other value. Keycloak shows only that page,
-asks to confirm a removal and removes a credential only when it is the person's own, then returns through the usual
-sign-in to `/`.
+The account menu changes the password and turns the second factor on and off on Keycloak's own pages, so no password and
+no TOTP secret passes through SnapTale. `GET /api/me/second-factor` reads the caller's OTP credential from Keycloak's
+account API (`/realms/snaptale/account/credentials`) with the caller's own access token, which carries the `account`
+audience and the `manage-account` role every account gets, so SnapTale needs no right to read anyone else's credentials.
+The menu then sends the signed-in browser to `/oauth2/authorization/keycloak?kc_action=…`, and
+`LocalizedAuthorizationRequestResolver` passes `kc_action` on to Keycloak when `KeycloakAccounts` finds it is
+`UPDATE_PASSWORD`, `CONFIGURE_TOTP` or `delete_credential:<id>` with a UUID, and drops any other value. Keycloak shows
+only that page, asks to confirm a removal and removes a credential only when it is the person's own, then returns
+through the usual sign-in to `/`.
 
 ## Every API request is authorized by a token
 
@@ -117,14 +117,15 @@ image holding it in `/themes`, which the Keycloak theme workflow publishes on a 
 
 ## Code
 
-| Class                                                                   | Role                                                 |
-|-------------------------------------------------------------------------|------------------------------------------------------|
-| `security/SecurityConfig`                                               | the filter chain, the client registration, CSRF      |
-| `security/LocalizedAuthorizationRequestResolver`                        | PKCE and the language                                |
-| `auth/KeycloakUserService`, `auth/BearerTokenAccounts`                  | linking the account at sign-in and for bearer tokens |
-| `security/SessionAccessTokenFilter`, `security/SessionAccessTokens`     | a session's request authorized by its token          |
-| `security/SingleFlightRefreshTokenProvider`, `security/SharedRefreshes` | one refresh per refresh token                        |
-| `security/LogoutUrlResponder`                                           | Keycloak's end-session address                       |
-| `user/UserAccounts`                                                     | the SnapTale account linked to a Keycloak identity   |
-| `keycloak/KeycloakAccounts`                                             | the way into Keycloak's account: actions, language   |
-| `frontend/app/composables/keycloak`                                     | the shared language and the account actions          |
+| Class                                                                   | Role                                                        |
+|-------------------------------------------------------------------------|-------------------------------------------------------------|
+| `security/SecurityConfig`                                               | the filter chain, the client registration, CSRF             |
+| `security/LocalizedAuthorizationRequestResolver`                        | PKCE and the language                                       |
+| `auth/KeycloakUserService`, `auth/BearerTokenAccounts`                  | linking the account at sign-in and for bearer tokens        |
+| `security/SessionAccessTokenFilter`, `security/SessionAccessTokens`     | a session's request authorized by its token                 |
+| `security/SingleFlightRefreshTokenProvider`, `security/SharedRefreshes` | one refresh per refresh token                               |
+| `security/LogoutUrlResponder`                                           | Keycloak's end-session address                              |
+| `security/KeycloakLanguageFilter`                                       | the language stored on the account before an account action |
+| `user/UserAccounts`                                                     | the SnapTale account linked to a Keycloak identity          |
+| `keycloak/KeycloakAccounts`                                             | the way into Keycloak's account: actions, language          |
+| `frontend/app/composables/keycloak`                                     | the shared language and the account actions                 |

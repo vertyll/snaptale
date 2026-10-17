@@ -1,8 +1,5 @@
 package com.vertyll.snaptale.security;
 
-import java.util.Arrays;
-
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.jspecify.annotations.Nullable;
@@ -13,19 +10,9 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequest
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 
-import com.vertyll.snaptale.common.Language;
 import com.vertyll.snaptale.keycloak.KeycloakAccounts;
 
 final class LocalizedAuthorizationRequestResolver implements OAuth2AuthorizationRequestResolver {
-
-    static final String LANGUAGE_COOKIE = "lang";
-
-    /**
-     * The Keycloak action a signed-in person starts from the account menu, passed on so Keycloak shows only that page and
-     * returns: changing the password, setting up the second factor, or removing a credential named by its id, which
-     * Keycloak asks to confirm and removes only when it is the person's own. No secret passes through the application.
-     */
-    static final String ACCOUNT_ACTION_PARAMETER = "kc_action";
 
     private final DefaultOAuth2AuthorizationRequestResolver delegate;
 
@@ -54,25 +41,10 @@ final class LocalizedAuthorizationRequestResolver implements OAuth2Authorization
         if (authorization == null) {
             return null;
         }
-        String language = Language.of(languageCookie(request)).tag();
-        String action = request.getParameter(ACCOUNT_ACTION_PARAMETER);
+        String language = RequestLanguage.of(request).tag();
         return OAuth2AuthorizationRequest.from(authorization).additionalParameters(parameters -> {
             parameters.put("ui_locales", language);
-            if (KeycloakAccounts.isAccountAction(action)) {
-                parameters.put(ACCOUNT_ACTION_PARAMETER, action);
-            }
+            KeycloakAccounts.passOnAccountAction(request, parameters);
         }).build();
-    }
-
-    private static @Nullable String languageCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return null;
-        }
-        return Arrays.stream(cookies)
-            .filter(cookie -> LANGUAGE_COOKIE.equals(cookie.getName()))
-            .map(Cookie::getValue)
-            .findFirst()
-            .orElse(null);
     }
 }

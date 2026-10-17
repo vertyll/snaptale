@@ -5,6 +5,9 @@ import jakarta.persistence.Entity;
 import org.springframework.data.repository.Repository;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vertyll.snaptale.keycloak.KeycloakAccounts;
+import com.vertyll.snaptale.keycloak.KeycloakProperties;
+
 import com.tngtech.archunit.core.domain.JavaModifier;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
@@ -12,8 +15,8 @@ import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 
 import static com.tngtech.archunit.base.DescribedPredicate.not;
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.equivalentTo;
 import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideInAPackage;
-import static com.tngtech.archunit.core.domain.JavaClass.Predicates.simpleName;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
@@ -42,11 +45,11 @@ final class ArchitectureTest {
 
     @ArchTest
     static final ArchRule KEYCLOAK_IS_REACHED_THROUGH_ITS_ENTRY = noClasses().that()
-        .resideOutsideOfPackage("..keycloak..")
+        .resideOutsideOfPackage("com.vertyll.snaptale.keycloak..")
         .should()
         .dependOnClassesThat(
-            resideInAPackage("..keycloak..").and(not(simpleName("KeycloakAccounts")))
-                .and(not(simpleName("KeycloakProperties")))
+            resideInAPackage("com.vertyll.snaptale.keycloak..").and(not(equivalentTo(KeycloakAccounts.class)))
+                .and(not(equivalentTo(KeycloakProperties.class)))
         );
 
     @ArchTest

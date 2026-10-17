@@ -1,4 +1,8 @@
-import type { SecondFactor } from "~/utils/types";
+/** Whether the signed-in person set up a second factor, and the credential Keycloak's `delete_credential` removes. */
+interface SecondFactor {
+  enabled: boolean;
+  credentialId: string | null;
+}
 
 /**
  * A page Keycloak shows to a signed-in person before returning: changing the password, setting up the second factor, or

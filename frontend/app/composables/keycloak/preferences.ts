@@ -3,7 +3,8 @@ const ONE_YEAR = 60 * 60 * 24 * 365;
 /**
  * The language the reader last chose, in SnapTale or on Keycloak's pages, which both write: a shared record rather than
  * a message, so the two agree however the reader moves between them. It lives under the domain SnapTale shares with
- * Keycloak, the parent of this host; on localhost and an IP address every port already shares cookies.
+ * Keycloak, the parent of this host; on localhost and an IP address every port already shares cookies. Its name ends in
+ * the realm's, as Keycloak's theme builds it: `realm` in `keycloak/realm-export.json`.
  */
 const SHARED_LOCALE_COOKIE = "ui_locale_snaptale";
 

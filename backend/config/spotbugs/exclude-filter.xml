@@ -40,20 +40,14 @@
 
     <!-- FindSecBugs: the language cookie only picks ui_locales, and Language.of accepts nothing but pl or en -->
     <Match>
-        <Class name="com.vertyll.snaptale.security.LocalizedAuthorizationRequestResolver"/>
+        <Class name="com.vertyll.snaptale.security.RequestLanguage"/>
         <Bug pattern="COOKIE_USAGE"/>
     </Match>
 
-    <!-- FindSecBugs: kc_action is passed on only when it is one of the two Keycloak actions the resolver allows -->
+    <!-- FindSecBugs: kc_action is passed on only when it names an account action a signed-in person may start -->
     <Match>
-        <Class name="com.vertyll.snaptale.security.LocalizedAuthorizationRequestResolver"/>
+        <Class name="com.vertyll.snaptale.keycloak.KeycloakAccounts"/>
         <Bug pattern="SERVLET_PARAMETER"/>
-    </Match>
-
-    <!-- FindSecBugs: the language cookie holds a language tag only, and kc_action is only checked for presence -->
-    <Match>
-        <Class name="com.vertyll.snaptale.security.KeycloakLanguageFilter"/>
-        <Bug pattern="COOKIE_USAGE,SERVLET_PARAMETER"/>
     </Match>
 
     <!-- Exclude exposure of internal representation issues -->
