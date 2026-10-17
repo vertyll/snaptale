@@ -16,6 +16,11 @@ record KeycloakProperties(
     @NotBlank String audience
 ) {
 
+    /** The realm's name, the last segment of {@code realmUrl}. */
+    String realm() {
+        return realmUrl.substring(realmUrl.lastIndexOf('/') + 1);
+    }
+
     String backchannel() {
         return backchannelRealmUrl == null || backchannelRealmUrl.isBlank() ? realmUrl : backchannelRealmUrl;
     }

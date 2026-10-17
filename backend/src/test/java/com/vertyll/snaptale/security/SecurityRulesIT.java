@@ -16,6 +16,7 @@ import com.vertyll.snaptale.TestUsers;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -117,6 +118,24 @@ class SecurityRulesIT {
             mvc.perform(get("/oauth2/authorization/keycloak").param("kc_action", action))
                 .andExpect(header().string("Location", not(containsString("kc_action"))));
         }
+    }
+
+    @Test
+    void aLanguageChosenOnKeycloaksPagesIsTakenOverOnTheWayBack() throws Exception {
+        mvc.perform(get("/login/oauth2/code/keycloak").cookie(new Cookie("ui_locale_snaptale", "en")))
+            .andExpect(header().stringValues("Set-Cookie", hasItem(startsWith("lang=en;"))))
+            .andExpect(
+                header().stringValues(
+                    "Set-Cookie",
+                    hasItem(allOf(startsWith("ui_locale_snaptale=;"), containsString("Max-Age=0")))
+                )
+            );
+    }
+
+    @Test
+    void aLanguageSnapTaleDoesNotHaveIsNotTakenOver() throws Exception {
+        mvc.perform(get("/login/oauth2/code/keycloak").cookie(new Cookie("ui_locale_snaptale", "de")))
+            .andExpect(header().stringValues("Set-Cookie", not(hasItem(startsWith("lang=")))));
     }
 
     @Test

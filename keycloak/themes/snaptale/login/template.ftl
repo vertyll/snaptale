@@ -92,6 +92,8 @@
     <#if darkMode>
       <script src="${url.resourcesPath}/js/theme.js"></script>
     </#if>
+    <#-- Changed from keycloak.v2: a language chosen here goes back to the app. -->
+    <script src="${url.resourcesPath}/js/language.js" defer></script>
     <#if themeResources?? && themeResources.scripts?has_content>
         <@themeResourceTags.renderScripts themeResources.scripts url.resourcesPath "text/javascript" />
     <#elseif properties.scripts?has_content>
