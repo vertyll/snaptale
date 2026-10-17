@@ -33,12 +33,24 @@ final class KeycloakLanguageFilter extends OncePerRequestFilter {
     private static final Duration ONE_YEAR = Duration.ofDays(365);
 
     private final String signInLanguageCookie;
+    private final @Nullable String cookieDomain;
     private final SessionAccessTokens sessionAccessTokens;
     private final KeycloakAccount account;
 
-    KeycloakLanguageFilter(String realm, SessionAccessTokens sessionAccessTokens, KeycloakAccount account) {
+    /**
+     * @param cookieDomain the domain {@code language.js} sets the hand-back cookie under, from Keycloak's own host, or
+     *     null on a host without one; this application's host is no guide, as its proxy does not pass the browser's
+     *     {@code Host} on
+     */
+    KeycloakLanguageFilter(
+        String realm,
+        @Nullable String cookieDomain,
+        SessionAccessTokens sessionAccessTokens,
+        KeycloakAccount account
+    ) {
         super();
         this.signInLanguageCookie = "ui_locale_" + realm;
+        this.cookieDomain = cookieDomain;
         this.sessionAccessTokens = sessionAccessTokens;
         this.account = account;
     }
@@ -80,12 +92,14 @@ final class KeycloakLanguageFilter extends OncePerRequestFilter {
         });
         ResponseCookie.ResponseCookieBuilder removal =
                 ResponseCookie.from(signInLanguageCookie, "").path("/").maxAge(0);
-        sharedDomain(request.getServerName()).ifPresent(removal::domain);
+        if (cookieDomain != null) {
+            removal.domain(cookieDomain);
+        }
         response.addHeader(HttpHeaders.SET_COOKIE, removal.build().toString());
     }
 
     /**
-     * The domain a cookie shared with Keycloak lives under: the parent of this host. {@code localhost} and an IP
+     * The domain a cookie shared with Keycloak lives under: the parent of Keycloak's host. {@code localhost} and an IP
      * address have none, as every port there already shares cookies.
      */
     static Optional<String> sharedDomain(String host) {

@@ -50,11 +50,10 @@
         <Bug pattern="SERVLET_PARAMETER"/>
     </Match>
 
-    <!-- FindSecBugs: the language cookies hold a language tag only, kc_action is only checked for presence, and the host
-         only picks the domain of a cookie removed in the answer to the same browser -->
+    <!-- FindSecBugs: the language cookies hold a language tag only, and kc_action is only checked for presence -->
     <Match>
         <Class name="com.vertyll.snaptale.security.KeycloakLanguageFilter"/>
-        <Bug pattern="COOKIE_USAGE,SERVLET_PARAMETER,SERVLET_SERVER_NAME"/>
+        <Bug pattern="COOKIE_USAGE,SERVLET_PARAMETER"/>
     </Match>
 
     <!-- Exclude exposure of internal representation issues -->

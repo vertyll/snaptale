@@ -1,5 +1,6 @@
 package com.vertyll.snaptale.security;
 
+import java.net.URI;
 import java.time.Clock;
 import java.util.List;
 import java.util.Map;
@@ -121,7 +122,12 @@ class SecurityConfig {
             .requestCache(RequestCacheConfigurer::disable)
             .addFilterBefore(new SessionAccessTokenFilter(sessionAccessTokens), AnonymousAuthenticationFilter.class)
             .addFilterBefore(
-                new KeycloakLanguageFilter(keycloak.realm(), sessionAccessTokens, keycloakAccount),
+                new KeycloakLanguageFilter(
+                    keycloak.realm(),
+                    KeycloakLanguageFilter.sharedDomain(URI.create(keycloak.realmUrl()).getHost()).orElse(null),
+                    sessionAccessTokens,
+                    keycloakAccount
+                ),
                 OAuth2AuthorizationRequestRedirectFilter.class
             );
         return http.build();
