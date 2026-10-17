@@ -30,8 +30,11 @@ class KeycloakUserService implements OAuth2UserService<OidcUserRequest, OidcUser
         if (email == null || email.isBlank()) {
             throw new OAuth2AuthenticationException(new OAuth2Error("missing_email"));
         }
-        long id = accounts
-            .signIn(user.getName(), email, DisplayNames.of(user.getFullName(), user.getPreferredUsername(), email));
+        String username = user.getPreferredUsername();
+        if (username == null || username.isBlank()) {
+            throw new OAuth2AuthenticationException(new OAuth2Error("missing_username"));
+        }
+        long id = accounts.signIn(user.getName(), email, username);
         return new AuthenticatedUser(id, user);
     }
 }

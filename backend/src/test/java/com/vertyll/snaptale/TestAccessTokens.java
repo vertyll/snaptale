@@ -31,6 +31,7 @@ public class TestAccessTokens {
                 .header("alg", "none")
                 .subject(keycloakId)
                 .claim("email", keycloakId + "@example.com")
+                .claim("preferred_username", keycloakId)
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(300))
                 .build();

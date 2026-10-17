@@ -27,12 +27,11 @@ class BearerTokenAccounts implements Converter<Jwt, AbstractAuthenticationToken>
         if (email == null || email.isBlank()) {
             throw new InvalidBearerTokenException("The access token carries no email");
         }
-        String name = DisplayNames.of(
-            token.getClaimAsString(StandardClaimNames.NAME),
-            token.getClaimAsString(StandardClaimNames.PREFERRED_USERNAME),
-            email
-        );
-        long id = accounts.signIn(Objects.requireNonNull(token.getSubject()), email, name);
+        String username = token.getClaimAsString(StandardClaimNames.PREFERRED_USERNAME);
+        if (username == null || username.isBlank()) {
+            throw new InvalidBearerTokenException("The access token carries no username");
+        }
+        long id = accounts.signIn(Objects.requireNonNull(token.getSubject()), email, username);
         return new AccountTokenAuthentication(id, token);
     }
 }
