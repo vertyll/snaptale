@@ -119,7 +119,7 @@
   "legal.privacy.h1": "1. Data controller",
   "legal.privacy.p1": "The data controller is Mikołaj Gawron, the author of SnapTale, a demo project built for learning and as a portfolio piece. Contact: gawrmiko@gmail.com.",
   "legal.privacy.h2": "2. What we process",
-  "legal.privacy.p2": "We process your account data (email address, name, and a password stored only as a hash in Keycloak), your profile (name, bio, picture), the videos, captions and comments you post, and your likes and follows.",
+  "legal.privacy.p2": "We process your account data (email address, username, and a password stored only as a hash in Keycloak), your profile (name, bio, picture), the videos, captions and comments you post, and your likes and follows.",
   "legal.privacy.h3": "3. Purpose and legal basis",
   "legal.privacy.p3": "We process the data only to run the application, under Article 6(1)(b) GDPR, that is to provide the service you use.",
   "legal.privacy.h4": "4. Where the data is and who receives it",
