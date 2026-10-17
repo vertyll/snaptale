@@ -44,6 +44,12 @@
         <Bug pattern="COOKIE_USAGE"/>
     </Match>
 
+    <!-- FindSecBugs: kc_action is passed on only when it is one of the two Keycloak actions the resolver allows -->
+    <Match>
+        <Class name="com.vertyll.snaptale.security.LocalizedAuthorizationRequestResolver"/>
+        <Bug pattern="SERVLET_PARAMETER"/>
+    </Match>
+
     <!-- Exclude exposure of internal representation issues -->
     <Match>
         <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>

@@ -32,7 +32,7 @@ npm run dev
 ```
 
 The application is at `http://localhost:3000`. `.env.development` sets `NUXT_BACKEND_INTERNAL_URL`, the back-end the
-server proxies to, and `NUXT_PUBLIC_KEYCLOAK_ACCOUNT_URL`, the Keycloak account page the profile links to.
+server proxies to.
 
 ## Checks
 
@@ -44,4 +44,4 @@ npm run typecheck
 
 ## Production
 
-The image takes `NUXT_BACKEND_INTERNAL_URL` and `NUXT_PUBLIC_KEYCLOAK_ACCOUNT_URL` from the environment.
+The image takes `NUXT_BACKEND_INTERNAL_URL` from the environment.

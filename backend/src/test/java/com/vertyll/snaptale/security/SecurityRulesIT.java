@@ -14,6 +14,7 @@ import com.vertyll.snaptale.TestUsers;
 
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
@@ -93,6 +94,18 @@ class SecurityRulesIT {
     void unknownLanguageFallsBackToPolish() throws Exception {
         mvc.perform(get("/oauth2/authorization/keycloak").cookie(new Cookie("lang", "xx")))
             .andExpect(header().string("Location", containsString("ui_locales=pl")));
+    }
+
+    @Test
+    void anAccountActionIsPassedOnToKeycloak() throws Exception {
+        mvc.perform(get("/oauth2/authorization/keycloak").param("kc_action", "CONFIGURE_TOTP"))
+            .andExpect(header().string("Location", containsString("kc_action=CONFIGURE_TOTP")));
+    }
+
+    @Test
+    void anUnknownAccountActionIsDropped() throws Exception {
+        mvc.perform(get("/oauth2/authorization/keycloak").param("kc_action", "delete_account"))
+            .andExpect(header().string("Location", not(containsString("kc_action"))));
     }
 
     @Test

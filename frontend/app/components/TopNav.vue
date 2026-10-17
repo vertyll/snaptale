@@ -1,9 +1,7 @@
 <script setup lang="ts">
 const { t } = useMessages();
-const { locale } = useLocale();
-const { me, signIn, logout } = useSession();
+const { me, signIn, startAccountAction, logout } = useSession();
 const { whenSignedIn } = useOverlays();
-const accountUrl = useRuntimeConfig().public.keycloakAccountUrl;
 const route = useRoute();
 const menuOpen = ref(false);
 const menu = useTemplateRef<HTMLElement>("menu");
@@ -72,18 +70,25 @@ async function signOut() {
               <Icon name="mdi:account-outline" size="20" />
               <span class="pl-2 text-sm font-semibold">{{ t("nav.profile") }}</span>
             </NuxtLink>
-            <a
-              v-if="accountUrl"
-              :href="`${accountUrl}?kc_locale=${locale}`"
-              class="flex items-center px-2 py-3 hover:bg-gray-100"
-              @click="menuOpen = false"
-            >
-              <Icon name="mdi:cog-outline" size="20" />
-              <span class="pl-2 text-sm font-semibold">{{ t("nav.account") }}</span>
-            </a>
             <button
               type="button"
-              class="flex w-full items-center border-t border-gray-200 px-2 py-3 hover:bg-gray-100"
+              class="flex w-full items-center px-2 py-3 text-left hover:bg-gray-100"
+              @click="startAccountAction('UPDATE_PASSWORD')"
+            >
+              <Icon name="mdi:lock-outline" size="20" />
+              <span class="pl-2 text-sm font-semibold">{{ t("nav.password") }}</span>
+            </button>
+            <button
+              type="button"
+              class="flex w-full items-center px-2 py-3 text-left hover:bg-gray-100"
+              @click="startAccountAction('CONFIGURE_TOTP')"
+            >
+              <Icon name="mdi:shield-key-outline" size="20" />
+              <span class="pl-2 text-sm font-semibold">{{ t("nav.twoFactor") }}</span>
+            </button>
+            <button
+              type="button"
+              class="flex w-full items-center border-t border-gray-200 px-2 py-3 text-left hover:bg-gray-100"
               @click="signOut"
             >
               <Icon name="mdi:logout" size="20" />

@@ -16,9 +16,6 @@ export default defineNuxtConfig({
   icon: { serverBundle: { collections: ["mdi"] } },
   runtimeConfig: {
     backendInternalUrl: "",
-    public: {
-      keycloakAccountUrl: "",
-    },
   },
   typescript: { strict: true, typeCheck: false },
 });

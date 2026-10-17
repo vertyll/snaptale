@@ -1,6 +1,7 @@
 package com.vertyll.snaptale.security;
 
 import java.util.Arrays;
+import java.util.Set;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +19,14 @@ import com.vertyll.snaptale.common.Language;
 final class LocalizedAuthorizationRequestResolver implements OAuth2AuthorizationRequestResolver {
 
     static final String LANGUAGE_COOKIE = "lang";
+
+    /**
+     * The Keycloak action a signed-in person starts from the account menu, passed on so Keycloak shows only that page and
+     * returns: changing the password or setting up the second factor, which no secret of passes through the application.
+     */
+    static final String ACCOUNT_ACTION_PARAMETER = "kc_action";
+
+    private static final Set<String> ACCOUNT_ACTIONS = Set.of("UPDATE_PASSWORD", "CONFIGURE_TOTP");
 
     private final DefaultOAuth2AuthorizationRequestResolver delegate;
 
@@ -47,9 +56,13 @@ final class LocalizedAuthorizationRequestResolver implements OAuth2Authorization
             return null;
         }
         String language = Language.of(languageCookie(request)).tag();
-        return OAuth2AuthorizationRequest.from(authorization)
-            .additionalParameters(parameters -> parameters.put("ui_locales", language))
-            .build();
+        String action = request.getParameter(ACCOUNT_ACTION_PARAMETER);
+        return OAuth2AuthorizationRequest.from(authorization).additionalParameters(parameters -> {
+            parameters.put("ui_locales", language);
+            if (action != null && ACCOUNT_ACTIONS.contains(action)) {
+                parameters.put(ACCOUNT_ACTION_PARAMETER, action);
+            }
+        }).build();
     }
 
     private static @Nullable String languageCookie(HttpServletRequest request) {

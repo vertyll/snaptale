@@ -41,6 +41,14 @@ sequenceDiagram
 The browser holds only the `SNAPTALE_SESSION` cookie (`HttpOnly`, `SameSite=Lax`, `Secure` in production) and the
 `XSRF-TOKEN` cookie.
 
+## Account actions
+
+The account menu changes the password and sets up the second factor on Keycloak's own pages, so no password and no TOTP
+secret passes through SnapTale. It sends the signed-in browser to `/oauth2/authorization/keycloak?kc_action=…`, and
+`LocalizedAuthorizationRequestResolver` passes `kc_action` on to Keycloak when it is `UPDATE_PASSWORD` or
+`CONFIGURE_TOTP`, and drops any other value. Keycloak shows only that page, then returns through the usual sign-in to
+`/`.
+
 ## Every API request is authorized by a token
 
 For a request to `/api/*` with a session, `SessionAccessTokenFilter` takes the access token from the session,
