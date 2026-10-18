@@ -26,7 +26,6 @@ final class ReturnPage {
     private ReturnPage() {
     }
 
-    /** Spring Security's request cache, in the session, under the name this class saves the page under. */
     static RequestCache requestCache() {
         HttpSessionRequestCache cache = new HttpSessionRequestCache();
         cache.setSessionAttrName(ATTRIBUTE);
@@ -49,7 +48,6 @@ final class ReturnPage {
         }
     }
 
-    /** A path that starts with a single {@code /}, with no backslash and no control character. */
     static Optional<String> onThisSite(@Nullable String path) {
         return Optional.ofNullable(path)
             .filter(

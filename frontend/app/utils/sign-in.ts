@@ -1,4 +1,3 @@
-/** Where the browser starts a sign-in, through the back-end. */
 const SIGN_IN_PATH = "/oauth2/authorization/keycloak";
 
 /**

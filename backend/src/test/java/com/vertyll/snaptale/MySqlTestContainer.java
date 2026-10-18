@@ -1,5 +1,7 @@
 package com.vertyll.snaptale;
 
+import java.time.Duration;
+
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +13,8 @@ public class MySqlTestContainer {
     @Bean
     @ServiceConnection
     MySQLContainer mySqlContainer() {
-        return new MySQLContainer("mysql:9.7.1").withDatabaseName("snaptale");
+        return new MySQLContainer("mysql:9.7.1").withStartupTimeout(Duration.ofMinutes(2))
+            .withStartupAttempts(3)
+            .withDatabaseName("snaptale");
     }
 }
