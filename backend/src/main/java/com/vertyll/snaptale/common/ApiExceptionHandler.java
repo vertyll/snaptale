@@ -42,7 +42,7 @@ class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     ProblemDetail handleDataIntegrityViolation(DataIntegrityViolationException exception) {
-        log.debug("[DEBUG] Database constraint violation", exception);
+        log.debug("Database constraint violation", exception);
         return problem(HttpStatus.CONFLICT, MessageKeys.DUPLICATE_ENTRY, Map.of());
     }
 

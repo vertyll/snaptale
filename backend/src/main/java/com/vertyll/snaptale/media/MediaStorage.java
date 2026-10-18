@@ -124,7 +124,7 @@ public class MediaStorage {
         try {
             Files.deleteIfExists(resolve(path));
         } catch (IOException e) {
-            log.warn("[WARN] Failed to delete media file {}", path, e);
+            log.warn("Failed to delete media file {}", path, e);
         }
     }
 
