@@ -10,7 +10,9 @@ import org.testcontainers.containers.GenericContainer;
 @TestConfiguration(proxyBeanMethods = false)
 public class RedisTestContainer {
 
+    // Spring stops the container when the test context closes.
     @Bean
+    @SuppressWarnings("resource")
     @ServiceConnection(name = "redis")
     GenericContainer<?> redisContainer() {
         return new GenericContainer<>("redis:8-alpine").withStartupTimeout(Duration.ofMinutes(2))

@@ -10,7 +10,9 @@ import org.testcontainers.mysql.MySQLContainer;
 @TestConfiguration(proxyBeanMethods = false)
 public class MySqlTestContainer {
 
+    // Spring stops the container when the test context closes.
     @Bean
+    @SuppressWarnings("resource")
     @ServiceConnection
     MySQLContainer mySqlContainer() {
         return new MySQLContainer("mysql:9.7.1").withStartupTimeout(Duration.ofMinutes(2))

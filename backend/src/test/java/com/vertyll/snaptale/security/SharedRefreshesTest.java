@@ -22,6 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SharedRefreshesTest {
+    // The @AfterAll method stops the container.
+    @SuppressWarnings("resource")
     private static final GenericContainer<?> REDIS =
             new GenericContainer<>("redis:8-alpine").withStartupTimeout(Duration.ofMinutes(2))
                 .withStartupAttempts(3)
