@@ -1,3 +1,4 @@
+import stylistic from "@stylistic/eslint-plugin";
 import prettier from "eslint-config-prettier/flat";
 import withNuxt from "./.nuxt/eslint.config.mjs";
 
@@ -31,5 +32,13 @@ export default withNuxt(
       ],
     },
   },
-  prettier
+  prettier,
+  {
+    // Comments only, as Prettier keeps code to its width but never wraps a comment; last, as the Prettier config
+    // turns line length off.
+    plugins: { "@stylistic": stylistic },
+    rules: {
+      "@stylistic/max-len": ["error", { code: Number.MAX_SAFE_INTEGER, comments: 120, ignoreUrls: true }],
+    },
+  }
 );

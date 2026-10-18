@@ -44,8 +44,8 @@ public final class KeycloakAccounts {
     }
 
     /**
-     * Changing the password, setting up the second factor, or removing a credential named by its id, which Keycloak asks
-     * to confirm and removes only when it is the person's own.
+     * Changing the password, setting up the second factor, or removing a credential named by its id, which Keycloak
+     * asks to confirm and removes only when it is the person's own.
      */
     private static Optional<String> accountAction(HttpServletRequest request) {
         return Optional.ofNullable(request.getParameter(ACCOUNT_ACTION_PARAMETER))

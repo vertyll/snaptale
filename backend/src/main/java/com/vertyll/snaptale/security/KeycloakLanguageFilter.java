@@ -17,8 +17,8 @@ import com.vertyll.snaptale.keycloak.KeycloakAccounts;
 
 /**
  * Before an account action, stores SnapTale's language on the account, as Keycloak shows a signed-in person their
- * account's language rather than the one asked for. The language comes from the {@code lang} cookie, which the front-end
- * keeps in step with the one chosen on Keycloak's pages.
+ * account's language rather than the one asked for. The language comes from the {@code lang} cookie, which the
+ * front-end keeps in step with the one chosen on Keycloak's pages.
  */
 final class KeycloakLanguageFilter extends OncePerRequestFilter {
 
