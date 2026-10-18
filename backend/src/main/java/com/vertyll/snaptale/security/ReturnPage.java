@@ -6,11 +6,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import org.jspecify.annotations.Nullable;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SimpleSavedRequest;
 
 /**
- * The page a sign-in returns to, named by the front-end in {@code return_to} and kept in the session while Keycloak
- * signs the person in. Only a path on the front-end's own site is kept, so the sign-in cannot send the browser
- * elsewhere.
+ * The page a sign-in returns to, named by the front-end in {@code return_to}. It is kept as Spring Security's saved
+ * request, so Spring's own success handler returns there; only a path on the front-end's own site is kept, so the sign-in cannot
+ * send the browser elsewhere.
  */
 final class ReturnPage {
 
@@ -23,28 +26,27 @@ final class ReturnPage {
     private ReturnPage() {
     }
 
-    /** Keeps the page this sign-in names, or forgets an earlier one when it names none on this site. */
+    /** Spring Security's request cache, in the session, under the name this class saves the page under. */
+    static RequestCache requestCache() {
+        HttpSessionRequestCache cache = new HttpSessionRequestCache();
+        cache.setSessionAttrName(ATTRIBUTE);
+        return cache;
+    }
+
+    /**
+     * Saves the page this sign-in names as the request it returns to. A sign-in that names none forgets a page an
+     * earlier one named, and leaves a request Spring Security saved itself.
+     */
     static void remember(HttpServletRequest request) {
         Optional<String> page = onThisSite(request.getParameter(PARAMETER));
         if (page.isPresent()) {
-            request.getSession().setAttribute(ATTRIBUTE, page.get());
+            request.getSession().setAttribute(ATTRIBUTE, new SimpleSavedRequest(page.get()));
             return;
         }
         HttpSession session = request.getSession(false);
-        if (session != null) {
+        if (session != null && session.getAttribute(ATTRIBUTE) instanceof SimpleSavedRequest) {
             session.removeAttribute(ATTRIBUTE);
         }
-    }
-
-    /** The page the completed sign-in returns to, once. */
-    static Optional<String> take(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            return Optional.empty();
-        }
-        Object page = session.getAttribute(ATTRIBUTE);
-        session.removeAttribute(ATTRIBUTE);
-        return page instanceof String path ? onThisSite(path) : Optional.empty();
     }
 
     /** A path that starts with a single {@code /}, with no backslash and no control character. */
