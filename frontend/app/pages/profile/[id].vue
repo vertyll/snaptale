@@ -57,7 +57,9 @@ function toggleFollow() {
       <UserAvatar :url="profile.user.avatarUrl" :size="120" :alt="profile.user.name" />
       <div class="ml-5 min-w-0">
         <h1 class="truncate text-[30px] font-bold">{{ handleOf(profile.user.name) }}</h1>
-        <div class="truncate text-[18px]">{{ profile.user.name }}</div>
+        <div v-if="profile.user.name !== handleOf(profile.user.name)" class="truncate text-[18px]">
+          {{ profile.user.name }}
+        </div>
       </div>
     </div>
 
