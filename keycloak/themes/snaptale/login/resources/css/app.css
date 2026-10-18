@@ -104,16 +104,18 @@
 #keycloak-bg {
   display: flex;
   flex-direction: column;
+  height: auto;
   min-height: 100vh;
   background: var(--app-page-background);
   color: var(--foreground);
   font-family: var(--pf-v5-global--FontFamily--text);
 }
 
-/* The card's column: centered, with the app's 16 px gutter on a phone, so the card never meets the screen's edge. */
+/* The card's column: centered, with the app's 16 px gutter on a phone, so the card never meets the screen's edge. It
+   grows with the card rather than shrinking below it, so the footer stays under the card on a tall page. */
 .pf-v5-c-login {
   display: block;
-  flex: 1;
+  flex: 1 0 auto;
   min-height: 0;
   padding: 1.5rem 1rem;
 }
