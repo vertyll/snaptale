@@ -438,3 +438,20 @@
 .pf-v5-u-mb-md-on-md > ul > li + li {
   margin-top: 0.25rem;
 }
+
+/* Keycloak's own stylesheet puts the restart-sign-in tooltip to the right of its button, hidden but still laid out, so on
+   a phone it widens the page past the screen and the browser zooms the page out. It opens above the button instead,
+   aligned to the button's right edge, inside the card. */
+.kc-login-tooltip .kc-tooltip-text {
+  top: auto;
+  right: 0;
+  bottom: calc(100% + 0.5rem);
+  left: auto;
+}
+
+.kc-login-tooltip .kc-tooltip-text::after {
+  top: 100%;
+  right: 0.75rem;
+  margin-top: 0;
+  border-color: black transparent transparent transparent;
+}

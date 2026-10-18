@@ -27,12 +27,12 @@ async function choose(next: Locale) {
       @click="open = !open"
     >
       <span>{{ locale.toUpperCase() }}</span>
-      <Icon :name="open ? 'mdi:chevron-up' : 'mdi:chevron-down'" size="18" />
+      <Icon name="mdi:chevron-down" size="18" class="transition-transform" :class="{ 'rotate-180': open }" />
     </button>
     <div
       v-if="open"
       role="menu"
-      class="absolute top-[43px] right-0 w-[80px] rounded-lg border border-gray-200 bg-white py-1.5 shadow-xl"
+      class="absolute top-[43px] right-0 min-w-full rounded-lg border border-gray-200 bg-white py-1.5 shadow-xl"
     >
       <button
         v-for="option in LOCALES"
@@ -41,7 +41,7 @@ async function choose(next: Locale) {
         role="menuitemradio"
         :aria-checked="option === locale"
         :class="option === locale ? 'text-brand' : ''"
-        class="block w-full px-3 py-2 text-left text-sm font-semibold hover:bg-gray-100"
+        class="block w-full px-3 py-2 text-center text-sm font-semibold hover:bg-gray-100"
         @click="choose(option)"
       >
         {{ option.toUpperCase() }}

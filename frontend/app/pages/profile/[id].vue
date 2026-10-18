@@ -82,7 +82,7 @@ function toggleFollow() {
     </div>
     <p v-if="followError" class="pt-2 font-semibold text-red-500" role="alert">{{ followError }}</p>
 
-    <div class="flex items-center gap-4 pt-4">
+    <div class="flex flex-col gap-1 pt-4 sm:flex-row sm:items-center sm:gap-4">
       <div>
         <span class="font-bold">{{ profile.follows.following }}</span>
         <span class="pl-1.5 text-[15px] font-light text-gray-500">{{
@@ -105,7 +105,7 @@ function toggleFollow() {
     </p>
 
     <div class="flex w-full items-center border-b border-gray-200 pt-4">
-      <div class="w-60 border-b-2 border-black py-2 text-center text-[17px] font-semibold">
+      <div class="w-full max-w-60 border-b-2 border-black py-2 text-center text-[17px] font-semibold">
         {{ t("profile.videos") }}
       </div>
     </div>
