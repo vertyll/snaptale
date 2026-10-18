@@ -67,42 +67,42 @@ async function signOut() {
           </button>
           <div
             v-if="menuOpen"
-            class="absolute top-[43px] -right-2 w-[200px] rounded-lg border border-gray-200 bg-white py-1.5 shadow-xl"
+            class="absolute top-[43px] -right-2 w-max min-w-[200px] rounded-lg border border-gray-200 bg-white py-1.5 shadow-xl"
           >
             <NuxtLink
               :to="`/profile/${me.id}`"
-              class="flex items-center px-2 py-3 hover:bg-gray-100"
+              class="flex items-center py-3 pr-4 pl-2 hover:bg-gray-100"
               @click="menuOpen = false"
             >
               <Icon name="mdi:account-outline" size="20" />
-              <span class="pl-2 text-sm font-semibold">{{ t("nav.profile") }}</span>
+              <span class="pl-2 text-sm font-semibold whitespace-nowrap">{{ t("nav.profile") }}</span>
             </NuxtLink>
             <button
               type="button"
-              class="flex w-full items-center px-2 py-3 text-left hover:bg-gray-100"
+              class="flex w-full items-center py-3 pr-4 pl-2 text-left hover:bg-gray-100"
               @click="changePassword()"
             >
               <Icon name="mdi:lock-outline" size="20" />
-              <span class="pl-2 text-sm font-semibold">{{ t("nav.password") }}</span>
+              <span class="pl-2 text-sm font-semibold whitespace-nowrap">{{ t("nav.password") }}</span>
             </button>
             <button
               v-if="secondFactor"
               type="button"
-              class="flex w-full items-center px-2 py-3 text-left hover:bg-gray-100"
+              class="flex w-full items-center py-3 pr-4 pl-2 text-left hover:bg-gray-100"
               @click="toggleSecondFactor(secondFactor)"
             >
               <Icon :name="secondFactor.enabled ? 'mdi:shield-off-outline' : 'mdi:shield-key-outline'" size="20" />
-              <span class="pl-2 text-sm font-semibold">
+              <span class="pl-2 text-sm font-semibold whitespace-nowrap">
                 {{ secondFactor.enabled ? t("nav.twoFactorOff") : t("nav.twoFactorOn") }}
               </span>
             </button>
             <button
               type="button"
-              class="flex w-full items-center border-t border-gray-200 px-2 py-3 text-left hover:bg-gray-100"
+              class="flex w-full items-center border-t border-gray-200 py-3 pr-4 pl-2 text-left hover:bg-gray-100"
               @click="signOut"
             >
               <Icon name="mdi:logout" size="20" />
-              <span class="pl-2 text-sm font-semibold">{{ t("nav.logout") }}</span>
+              <span class="pl-2 text-sm font-semibold whitespace-nowrap">{{ t("nav.logout") }}</span>
             </button>
           </div>
         </div>
