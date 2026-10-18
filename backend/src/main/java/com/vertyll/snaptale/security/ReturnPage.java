@@ -12,8 +12,8 @@ import org.springframework.security.web.savedrequest.SimpleSavedRequest;
 
 /**
  * The page a sign-in returns to, named by the front-end in {@code return_to}. It is kept as Spring Security's saved
- * request, so Spring's own success handler returns there; only a path on the front-end's own site is kept, so the sign-in cannot
- * send the browser elsewhere.
+ * request, so Spring's own success handler returns there; only a path on the front-end's own site is kept, so the
+ * sign-in cannot send the browser elsewhere.
  */
 final class ReturnPage {
 
