@@ -36,7 +36,10 @@ sequenceDiagram
 2. Keycloak returns to `/login/oauth2/code/keycloak` on the front-end's address. Spring Security exchanges the code,
    using the confidential client `snaptale-backend` and its secret, and keeps the tokens in the HTTP session.
 3. `KeycloakUserService` links the Keycloak identity to a SnapTale account, creating it at the first sign-in, and the
-   browser lands on `/`. A sign-in without an email address is refused and lands on `/?login=failed`.
+   browser lands on the page the sign-in was started from, named by the front-end in `return_to` and kept in the
+   session by `ReturnPage` (a path on this site only), or on `/`. A sign-in without an email address is refused and
+   lands on `/?login=failed`. A page that needs a session, and an API call whose session has ended, send the reader
+   to sign in with the page they are on.
 
 The browser holds only the `SNAPTALE_SESSION` cookie (`HttpOnly`, `SameSite=Lax`, `Secure` in production) and the
 `XSRF-TOKEN` cookie.

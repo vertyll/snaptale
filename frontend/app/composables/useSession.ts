@@ -1,10 +1,8 @@
 import type { Me } from "~/utils/types";
 
-/** Where the browser starts a sign-in, through the back-end. */
-export const SIGN_IN_PATH = "/oauth2/authorization/keycloak";
-
-function signIn() {
-  return navigateTo(SIGN_IN_PATH, { external: true });
+/** Signs the person in, and brings them back to `returnTo`, the page they were on. */
+function signIn(returnTo: string) {
+  return navigateTo(signInUrl(returnTo), { external: true });
 }
 
 export function useSession() {

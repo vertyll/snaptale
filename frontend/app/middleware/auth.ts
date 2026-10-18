@@ -1,6 +1,6 @@
-export default defineNuxtRouteMiddleware(() => {
+export default defineNuxtRouteMiddleware((to) => {
   const { isSignedIn, signIn } = useSession();
   if (!isSignedIn.value) {
-    return signIn();
+    return signIn(to.fullPath);
   }
 });

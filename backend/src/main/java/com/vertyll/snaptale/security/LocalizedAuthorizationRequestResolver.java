@@ -41,6 +41,7 @@ final class LocalizedAuthorizationRequestResolver implements OAuth2Authorization
         if (authorization == null) {
             return null;
         }
+        ReturnPage.remember(request);
         String language = RequestLanguage.of(request).tag();
         return OAuth2AuthorizationRequest.from(authorization).additionalParameters(parameters -> {
             parameters.put("ui_locales", language);

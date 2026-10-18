@@ -51,7 +51,7 @@ async function signOut() {
           v-if="!me"
           type="button"
           class="bg-brand rounded-md px-4 py-[6px] text-[15px] font-medium whitespace-nowrap text-white sm:px-7"
-          @click="signIn"
+          @click="signIn(route.fullPath)"
         >
           {{ t("nav.signIn") }}
         </button>

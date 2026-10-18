@@ -54,4 +54,10 @@
     <Match>
         <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
     </Match>
+
+    <!-- FindSecBugs: return_to is kept only when it is a path on the front-end's own site, see ReturnPage.onThisSite -->
+    <Match>
+        <Class name="com.vertyll.snaptale.security.ReturnPage"/>
+        <Bug pattern="SERVLET_PARAMETER"/>
+    </Match>
 </FindBugsFilter>

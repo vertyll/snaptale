@@ -24,7 +24,12 @@ async function call<T>(method: Method, path: string, body?: BodyInit | Record<st
   try {
     return await $fetch<T>(path, { method, body, headers, credentials: "same-origin" });
   } catch (error: unknown) {
-    throw toApiError(error);
+    const apiError = toApiError(error);
+    // A session that ended while the page was open: sign in again, and come back to this page.
+    if (apiError.status === 401 && import.meta.client) {
+      await navigateTo(signInUrl(window.location.pathname + window.location.search), { external: true });
+    }
+    throw apiError;
   }
 }
 

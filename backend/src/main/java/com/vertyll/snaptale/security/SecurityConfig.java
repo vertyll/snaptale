@@ -100,7 +100,7 @@ class SecurityConfig {
                     )
                     .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService))
                     .authorizedClientRepository(authorizedClients)
-                    .defaultSuccessUrl("/", true)
+                    .successHandler(new SignInLanding())
                     .failureUrl("/?login=failed")
             )
             .logout(
