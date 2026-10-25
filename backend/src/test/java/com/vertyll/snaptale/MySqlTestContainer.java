@@ -15,7 +15,7 @@ public class MySqlTestContainer {
     @SuppressWarnings("resource")
     @ServiceConnection
     MySQLContainer mySqlContainer() {
-        return new MySQLContainer("mysql:9.7.1").withStartupTimeout(Duration.ofMinutes(2))
+        return new MySQLContainer("mysql:9.7.4").withStartupTimeout(Duration.ofMinutes(2))
             .withStartupAttempts(3)
             .withDatabaseName("snaptale");
     }
