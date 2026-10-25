@@ -24,7 +24,7 @@ jobs:
 
       - name: Fetch markright
         env:
-          VERSION: v0.2.1
+          VERSION: v0.2.2
           TARGET: x86_64-unknown-linux-musl
         run: |
           base="https://github.com/vertyll/markright/releases/download/$VERSION"
