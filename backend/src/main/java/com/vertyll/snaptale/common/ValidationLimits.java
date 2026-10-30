@@ -1,6 +1,5 @@
 package com.vertyll.snaptale.common;
 
-@SuppressWarnings("PMD.DataClass")
 public final class ValidationLimits {
 
     public static final int NAME_MAX_LENGTH = 50;

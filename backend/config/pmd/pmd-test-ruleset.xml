@@ -47,6 +47,7 @@
         <exclude name="CouplingBetweenObjects"/>
         <exclude name="LoosePackageCoupling"/>
         <exclude name="TooManyFields"/>
+        <exclude name="DataClass"/>
     </rule>
 
     <!-- Documentation -->
@@ -71,6 +72,9 @@
     <rule ref="category/java/multithreading.xml">
         <exclude name="UseConcurrentHashMap"/>
         <exclude name="DoNotUseThreads"/>
+        <exclude name="AvoidSynchronizedAtMethodLevel"/>
+        <exclude name="AvoidSynchronizedStatement"/>
+        <exclude name="AvoidUsingVolatile"/>
     </rule>
 
     <!-- Performance -->
