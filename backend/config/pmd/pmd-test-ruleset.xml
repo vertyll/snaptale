@@ -32,6 +32,7 @@
         <exclude name="TooManyStaticImports"/>
         <exclude name="MethodArgumentCouldBeFinal"/>
         <exclude name="LocalVariableCouldBeFinal"/>
+        <exclude name="LocalVariableDeclarationShouldBeAtStartOfBlock"/>
         <exclude name="MethodNamingConventions"/>
         <exclude name="LinguisticNaming"/>
     </rule>
