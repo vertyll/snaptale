@@ -11,10 +11,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 final class SessionAccessTokenFilter extends OncePerRequestFilter {
-    private static final String API_PATH = "/api/";
+    private static final RequestMatcher API = PathPatternRequestMatcher.withDefaults().matcher("/api/**");
 
     private final SessionAccessTokens accessTokens;
 
@@ -25,7 +27,7 @@ final class SessionAccessTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return !request.getRequestURI().startsWith(request.getContextPath() + API_PATH);
+        return !API.matches(request);
     }
 
     @Override
@@ -38,9 +40,7 @@ final class SessionAccessTokenFilter extends OncePerRequestFilter {
         if (current instanceof OAuth2AuthenticationToken session) {
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             accessTokens.current(session, request, response)
-                .ifPresent(
-                    token -> context.setAuthentication(new AccessTokenAuthentication(session.getPrincipal(), token))
-                );
+                .ifPresent(token -> context.setAuthentication(new AccessTokenAuthentication(session, token)));
             SecurityContextHolder.setContext(context);
         }
         chain.doFilter(request, response);
