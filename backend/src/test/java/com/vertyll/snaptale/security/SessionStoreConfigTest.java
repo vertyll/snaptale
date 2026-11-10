@@ -1,5 +1,7 @@
 package com.vertyll.snaptale.security;
 
+import java.net.MalformedURLException;
+import java.net.URI;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
@@ -56,8 +58,13 @@ class SessionStoreConfigTest {
     }
 
     @Test
-    void theSignedInUserWithItsIdSurvivesARoundTripThroughTheStore() {
-        OidcIdToken idToken = new OidcIdToken("id-token", ISSUED, EXPIRES, Map.of("sub", "ada", "iss", "https://kc"));
+    void theSignedInUserWithItsIdSurvivesARoundTripThroughTheStore() throws MalformedURLException {
+        OidcIdToken idToken = new OidcIdToken(
+            "id-token",
+            ISSUED,
+            EXPIRES,
+            Map.of("sub", "ada", "iss", URI.create("https://kc").toURL())
+        );
         AuthenticatedUser user = new AuthenticatedUser(
             42,
             new DefaultOidcUser(List.of(new SimpleGrantedAuthority("OIDC_USER")), idToken)

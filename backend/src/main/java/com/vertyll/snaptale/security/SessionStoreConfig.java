@@ -1,5 +1,6 @@
 package com.vertyll.snaptale.security;
 
+import java.net.URL;
 import java.util.Collection;
 
 import org.jspecify.annotations.Nullable;
@@ -58,6 +59,7 @@ class SessionStoreConfig {
                         Thread.currentThread().getContextClassLoader(),
                         BasicPolymorphicTypeValidator.builder()
                             .allowIfSubType(JDK_IMMUTABLE_COLLECTIONS)
+                            .allowIfSubType(URL.class)
                             .allowIfSubType(AuthenticatedUser.class)
                             .allowIfSubType(SimpleSavedRequest.class)
                     )
