@@ -26,7 +26,7 @@ final class BearerTokenRequests implements RequestMatcher {
     public boolean matches(HttpServletRequest request) {
         try {
             return bearerTokens.resolve(request) != null;
-        } catch (OAuth2AuthenticationException malformed) {
+        } catch (OAuth2AuthenticationException _) {
             return true;
         }
     }
