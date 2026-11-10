@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
@@ -71,7 +70,6 @@ class SessionStoreConfig {
     }
 
     /** The signed-in user, as Spring Security's modules store the OIDC user it extends, with SnapTale's id beside. */
-    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
     @JsonAutoDetect(
         fieldVisibility = JsonAutoDetect.Visibility.ANY,
         getterVisibility = JsonAutoDetect.Visibility.NONE,
@@ -99,7 +97,6 @@ class SessionStoreConfig {
     }
 
     /** The page a sign-in returns to, which Spring Security's modules leave out, read and written field by field. */
-    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
     @JsonAutoDetect(
         fieldVisibility = JsonAutoDetect.Visibility.ANY,
         getterVisibility = JsonAutoDetect.Visibility.NONE,
