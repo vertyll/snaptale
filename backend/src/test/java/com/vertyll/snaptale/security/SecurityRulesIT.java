@@ -6,6 +6,7 @@ import jakarta.servlet.http.Cookie;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -63,7 +65,11 @@ class SecurityRulesIT {
             .andExpect(jsonPath("$['errors.status.401']").isString());
         mvc.perform(get("/actuator/health/readiness")).andExpect(status().isOk());
 
-        mvc.perform(get("/api/me/following")).andExpect(status().isUnauthorized());
+        mvc.perform(get("/api/me/following"))
+            .andExpect(status().isUnauthorized())
+            .andExpect(header().doesNotExist(HttpHeaders.WWW_AUTHENTICATE))
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+            .andExpect(jsonPath("$.code").value("errors.status.401"));
         mvc.perform(patch("/api/me").with(csrf()).contentType(MediaType.APPLICATION_JSON).content("{}"))
             .andExpect(status().isUnauthorized());
         mvc.perform(put("/api/posts/1/like").with(csrf())).andExpect(status().isUnauthorized());
@@ -71,7 +77,11 @@ class SecurityRulesIT {
 
     @Test
     void writesNeedTheCsrfToken() throws Exception {
-        mvc.perform(post("/api/auth/logout")).andExpect(status().isForbidden());
+        mvc.perform(post("/api/auth/logout"))
+            .andExpect(status().isForbidden())
+            .andExpect(header().doesNotExist(HttpHeaders.WWW_AUTHENTICATE))
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+            .andExpect(jsonPath("$.code").value("errors.status.403"));
     }
 
     @Test
@@ -173,6 +183,20 @@ class SecurityRulesIT {
     @Test
     void anUnknownBearerTokenIsRejected() throws Exception {
         mvc.perform(get("/api/me/following").header("Authorization", "Bearer forged"))
-            .andExpect(status().isUnauthorized());
+            .andExpect(status().isUnauthorized())
+            .andExpect(header().string(HttpHeaders.WWW_AUTHENTICATE, startsWith("Bearer error=\"invalid_token\"")))
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+            .andExpect(jsonPath("$.code").value("errors.status.401"));
+    }
+
+    @Test
+    void aBearerTokenRefusedAPathIsToldItLacksTheScope() throws Exception {
+        TestUsers.TestUser user = users.create("Klient bez prawa");
+
+        mvc.perform(get("/index.php").header("Authorization", "Bearer " + TestAccessTokens.of(user.keycloakId())))
+            .andExpect(status().isForbidden())
+            .andExpect(header().string(HttpHeaders.WWW_AUTHENTICATE, "Bearer error=\"insufficient_scope\""))
+            .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+            .andExpect(jsonPath("$.code").value("errors.status.403"));
     }
 }

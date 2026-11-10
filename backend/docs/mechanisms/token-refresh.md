@@ -2,7 +2,8 @@
 
 How the session keeps a valid access token without signing the user out when requests race.
 
-The session lives in Redis (Spring Session, namespace `snaptale:session`) and lasts ten hours. Access tokens live five
+The session lives in Redis (Spring Session, namespace `snaptale:session`, its attributes stored as JSON through Spring
+Security's Jackson modules, never by Java serialization) and lasts ten hours. Access tokens live five
 minutes.
 
 > [!IMPORTANT]

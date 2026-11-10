@@ -12,7 +12,7 @@ flowchart LR
     mysql[(MySQL)]
     media[("Media directory<br/>videos, avatars")]
 
-    browser -- "SNAPTALE_SESSION cookie" --> nuxt
+    browser -- "__Host-SNAPTALE_SESSION cookie" --> nuxt
     nuxt -- "/api, /oauth2, /media forwarded" --> back
     back -- "sign-in, refresh, token keys" --> kc
     back --> redis

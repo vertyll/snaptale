@@ -134,5 +134,6 @@
   "legal.privacy.p7": "Podanie danych jest dobrowolne, ale bez nich nie da się założyć konta. Nie podejmujemy wobec Ciebie decyzji opartych wyłącznie na zautomatyzowanym przetwarzaniu, w tym profilowania.",
   "legal.privacy.h8": "8. Pliki cookie i pamięć przeglądarki",
   "legal.privacy.p8": "Aplikacja używa wyłącznie niezbędnych plików cookie: sesji, ochrony formularzy przed atakami CSRF i zapamiętania wybranego języka, który dzieli ze stroną logowania, żeby obie mówiły tym samym językiem. Nie używamy analityki ani reklam.",
-  "legal.privacy.lastModified": "17.10.2026"
+  "legal.privacy.lastModified": "17.10.2026",
+  "app.description": "SnapTale - krótkie filmy od ludzi, których lubisz."
 }

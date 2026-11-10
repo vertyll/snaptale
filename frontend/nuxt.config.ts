@@ -9,8 +9,18 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: "pl" },
       title: "SnapTale",
-      meta: [{ name: "description", content: "SnapTale - krótkie filmy od ludzi, których lubisz." }],
       link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+    },
+  },
+  // The Content-Security-Policy, which needs a nonce for each page, is sent by server/plugins.
+  routeRules: {
+    "/**": {
+      headers: {
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
+      },
     },
   },
   icon: { serverBundle: { collections: ["mdi"] } },

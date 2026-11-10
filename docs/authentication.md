@@ -24,7 +24,7 @@ sequenceDiagram
     A->>K: code + client secret + PKCE verifier
     K-->>A: access, refresh and ID token
     A->>R: store the tokens in the session
-    A-->>B: 302 to /, SNAPTALE_SESSION and XSRF-TOKEN cookies
+    A-->>B: 302 to /, __Host-SNAPTALE_SESSION and XSRF-TOKEN cookies
     B->>N: /api/... + cookies
     N->>A: forwarded
     Note over A: the request is authorized by the session's access token
@@ -41,8 +41,9 @@ sequenceDiagram
    refused and lands on `/?login=failed`. A page that needs a session, and an API call whose session has ended, send the
    reader to sign in with the page they are on.
 
-The browser holds only the `SNAPTALE_SESSION` cookie (`HttpOnly`, `SameSite=Lax`, `Secure` in production) and the
-`XSRF-TOKEN` cookie.
+The browser holds only the `__Host-SNAPTALE_SESSION` cookie (`HttpOnly`, `SameSite=Lax`, `Secure`, `Path=/`, no
+`Domain`) and the `Secure` `XSRF-TOKEN` cookie. The local profile runs on plain HTTP, so there the session cookie is
+`SNAPTALE_SESSION` and neither cookie is `Secure`, as the `__Host-` prefix requires `Secure`.
 
 ## Account actions
 
@@ -64,7 +65,12 @@ token is verified like any resource server's: the signature against Keycloak's p
 and the audience (`snaptale-api`). The request's identity comes from the token, not from the session.
 
 A client without a browser calls the same API with `Authorization: Bearer` and its own Keycloak token: the same checks
-apply, and `BearerTokenAccounts` links its account exactly as a sign-in does.
+apply, and `BearerTokenAccounts` links its account exactly as a sign-in does. A token it refuses is answered `401` with
+`WWW-Authenticate: Bearer error="invalid_token"`, and a path the token's account may not reach `403` with
+`WWW-Authenticate: Bearer error="insufficient_scope"` ([Error responses](mechanisms/error-responses.md)).
+
+Keycloak, for its keys and its tokens as for its account API, is called with a ten-second timeout to connect and to
+answer.
 
 ## Sessions and refreshing
 

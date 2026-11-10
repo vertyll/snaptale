@@ -12,6 +12,11 @@ The back-end never sends a sentence a person reads. Every refusal is an RFC 9457
 | `args`   | the ICU arguments for that key                                                             |
 | `errors` | in a validation error, one `{ code, args }` per invalid field                              |
 
+A refusal of the security filter chain, which no controller sees, is the same document, `errors.status.401` or
+`errors.status.403` (`security/ProblemSecurityHandlers`). A request that came with a bearer token also gets the
+challenge RFC 6750 asks for, `WWW-Authenticate: Bearer` with `error="invalid_token"` or `error="insufficient_scope"`;
+a browser's session cookie has no scheme to challenge for, so its refusals carry none.
+
 The catalog is the back-end's: it ships in `backend/src/main/resources/messages` (`pl.json`, `en.json`, ICU
 MessageFormat) and `GET /api/messages?lang=pl|en` serves it, cached for an hour. It is not editable at runtime.
 

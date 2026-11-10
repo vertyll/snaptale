@@ -7,6 +7,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,13 +37,16 @@ class CsrfCookieIT {
     @LocalServerPort
     int port;
 
+    // The cookies are Secure, which a cookie handler keeps from a plain-HTTP test server, so they are sent by hand.
     private final CookieManager cookies = new CookieManager();
-    private final HttpClient client = HttpClient.newBuilder().cookieHandler(cookies).build();
+    private final HttpClient client = HttpClient.newHttpClient();
 
     @Test
     void meIssuesCsrfCookieThatUnlocksWrites() throws IOException, InterruptedException {
         assertThat(send(HttpRequest.newBuilder(uri("/api/me")).GET()).statusCode()).isEqualTo(200);
-        String token = csrfCookie();
+        HttpCookie csrfCookie = csrfCookie();
+        assertThat(csrfCookie.getSecure()).isTrue();
+        String token = csrfCookie.getValue();
 
         assertThat(
             send(HttpRequest.newBuilder(uri("/api/auth/logout")).POST(HttpRequest.BodyPublishers.noBody())).statusCode()
@@ -56,15 +61,25 @@ class CsrfCookieIT {
     }
 
     private HttpResponse<String> send(HttpRequest.Builder request) throws IOException, InterruptedException {
-        return client.send(request.build(), HttpResponse.BodyHandlers.ofString());
+        List<HttpCookie> stored = cookies.getCookieStore().getCookies();
+        if (!stored.isEmpty()) {
+            request.header(
+                "Cookie",
+                stored.stream()
+                    .map(cookie -> cookie.getName() + "=" + cookie.getValue())
+                    .collect(Collectors.joining("; "))
+            );
+        }
+        HttpResponse<String> response = client.send(request.build(), HttpResponse.BodyHandlers.ofString());
+        cookies.put(response.uri(), response.headers().map());
+        return response;
     }
 
-    private String csrfCookie() {
+    private HttpCookie csrfCookie() {
         return cookies.getCookieStore()
             .getCookies()
             .stream()
             .filter(cookie -> CSRF_COOKIE.equals(cookie.getName()))
-            .map(HttpCookie::getValue)
             .findFirst()
             .orElseThrow();
     }

@@ -9,7 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,6 +18,12 @@ import org.springframework.security.config.annotation.web.configurers.RequestCac
 import org.springframework.security.oauth2.client.DelegatingOAuth2AuthorizedClientProvider;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
+import org.springframework.security.oauth2.client.endpoint.OAuth2RefreshTokenGrantRequest;
+import org.springframework.security.oauth2.client.endpoint.RestClientAuthorizationCodeTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.RestClientRefreshTokenTokenResponseClient;
+import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -29,6 +36,7 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepo
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
 import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -40,9 +48,10 @@ import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.RequestHeaderRequestMatcher;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
 
 import com.vertyll.snaptale.keycloak.KeycloakAccounts;
 import com.vertyll.snaptale.keycloak.KeycloakProperties;
@@ -75,12 +84,14 @@ class SecurityConfig {
         ClientRegistrationRepository clientRegistrations,
         OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService,
         OAuth2AuthorizedClientRepository authorizedClients,
+        OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> authorizationCodeTokens,
         SessionAccessTokens sessionAccessTokens,
         Converter<Jwt, AbstractAuthenticationToken> bearerTokenAccounts,
         SnaptaleSecurityProperties properties,
         KeycloakAccounts keycloakAccounts,
         ObjectMapper objectMapper
     ) {
+        ProblemSecurityHandlers problems = new ProblemSecurityHandlers(objectMapper);
         http.authorizeHttpRequests(
             authorize -> authorize.requestMatchers(HttpMethod.GET, PUBLIC_READ_ENDPOINTS)
                 .permitAll()
@@ -98,6 +109,7 @@ class SecurityConfig {
                             new LocalizedAuthorizationRequestResolver(clientRegistrations)
                         )
                     )
+                    .tokenEndpoint(token -> token.accessTokenResponseClient(authorizationCodeTokens))
                     .userInfoEndpoint(userInfo -> userInfo.oidcUserService(oidcUserService))
                     .authorizedClientRepository(authorizedClients)
                     .successHandler(new SignInLanding())
@@ -111,6 +123,8 @@ class SecurityConfig {
             )
             .oauth2ResourceServer(
                 resourceServer -> resourceServer.jwt(jwt -> jwt.jwtAuthenticationConverter(bearerTokenAccounts))
+                    .authenticationEntryPoint(problems)
+                    .accessDeniedHandler(problems)
             )
             .csrf(
                 csrf -> csrf.spa()
@@ -118,7 +132,7 @@ class SecurityConfig {
                     .ignoringRequestMatchers(new RequestHeaderRequestMatcher(HttpHeaders.AUTHORIZATION))
             )
             .exceptionHandling(
-                exceptions -> exceptions.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                exceptions -> exceptions.authenticationEntryPoint(problems).accessDeniedHandler(problems)
             )
             .requestCache(RequestCacheConfigurer::disable)
             .addFilterBefore(new SessionAccessTokenFilter(sessionAccessTokens), AnonymousAuthenticationFilter.class)
@@ -135,9 +149,28 @@ class SecurityConfig {
     }
 
     @Bean
+    OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> authorizationCodeTokenResponseClient(
+        ClientHttpRequestFactory keycloakRequests
+    ) {
+        RestClientAuthorizationCodeTokenResponseClient client = new RestClientAuthorizationCodeTokenResponseClient();
+        client.setRestClient(tokenEndpointClient(keycloakRequests));
+        return client;
+    }
+
+    @Bean
+    OAuth2AccessTokenResponseClient<OAuth2RefreshTokenGrantRequest> refreshTokenResponseClient(
+        ClientHttpRequestFactory keycloakRequests
+    ) {
+        RestClientRefreshTokenTokenResponseClient client = new RestClientRefreshTokenTokenResponseClient();
+        client.setRestClient(tokenEndpointClient(keycloakRequests));
+        return client;
+    }
+
+    @Bean
     OAuth2AuthorizedClientManager authorizedClientManager(
         ClientRegistrationRepository clientRegistrations,
         OAuth2AuthorizedClientRepository authorizedClients,
+        OAuth2AccessTokenResponseClient<OAuth2RefreshTokenGrantRequest> refreshTokens,
         SharedRefreshes sharedRefreshes
     ) {
         DefaultOAuth2AuthorizedClientManager manager =
@@ -146,7 +179,9 @@ class SecurityConfig {
             new DelegatingOAuth2AuthorizedClientProvider(
                 OAuth2AuthorizedClientProviderBuilder.builder().authorizationCode().build(),
                 new SingleFlightRefreshTokenProvider(
-                    OAuth2AuthorizedClientProviderBuilder.builder().refreshToken().build(),
+                    OAuth2AuthorizedClientProviderBuilder.builder()
+                        .refreshToken(refresh -> refresh.accessTokenResponseClient(refreshTokens))
+                        .build(),
                     sharedRefreshes,
                     Clock.systemUTC()
                 )
@@ -156,9 +191,11 @@ class SecurityConfig {
     }
 
     @Bean
-    JwtDecoder accessTokenDecoder(KeycloakProperties keycloak) {
+    JwtDecoder accessTokenDecoder(KeycloakProperties keycloak, ClientHttpRequestFactory keycloakRequests) {
         NimbusJwtDecoder decoder =
-                NimbusJwtDecoder.withJwkSetUri(keycloak.backchannel() + "/protocol/openid-connect/certs").build();
+                NimbusJwtDecoder.withJwkSetUri(keycloak.backchannel() + "/protocol/openid-connect/certs")
+                    .restOperations(new RestTemplate(keycloakRequests))
+                    .build();
         decoder.setJwtValidator(
             new DelegatingOAuth2TokenValidator<>(
                 JwtValidators.createDefaultWithIssuer(keycloak.realmUrl()),
@@ -202,5 +239,16 @@ class SecurityConfig {
         CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
         repository.setCookieCustomizer(cookie -> cookie.secure(properties.secureCookies()).sameSite("Lax"));
         return repository;
+    }
+
+    /**
+     * The client Spring Security's token response clients build for themselves, its converters and error handler, with
+     * the timeouts every call to Keycloak has.
+     */
+    private static RestClient tokenEndpointClient(ClientHttpRequestFactory keycloakRequests) {
+        return RestClient.builder().requestFactory(keycloakRequests).configureMessageConverters(converters -> {
+            converters.addCustomConverter(new FormHttpMessageConverter());
+            converters.addCustomConverter(new OAuth2AccessTokenResponseHttpMessageConverter());
+        }).defaultStatusHandler(new OAuth2ErrorResponseErrorHandler()).build();
     }
 }

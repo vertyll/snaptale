@@ -46,3 +46,10 @@ npm run typecheck
 ## Production
 
 The image takes `NUXT_BACKEND_INTERNAL_URL` from the environment.
+
+## Security headers
+
+Every response carries `Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options` and `Referrer-Policy`
+(`routeRules` in `nuxt.config.ts`). Each page also carries a `Content-Security-Policy` with a nonce of its own,
+which `server/plugins/content-security-policy.ts` puts on the scripts Nuxt writes; no other inline script runs. The
+development server goes without it.

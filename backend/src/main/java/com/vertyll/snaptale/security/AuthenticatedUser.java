@@ -1,9 +1,13 @@
 package com.vertyll.snaptale.security;
 
 import java.io.Serial;
+import java.util.Collection;
 import java.util.Objects;
 
 import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -16,7 +20,17 @@ public final class AuthenticatedUser extends DefaultOidcUser {
     private final long id;
 
     public AuthenticatedUser(long id, OidcUser user) {
-        super(user.getAuthorities(), user.getIdToken(), user.getUserInfo(), StandardClaimNames.SUB);
+        this(id, user.getAuthorities(), user.getIdToken(), user.getUserInfo());
+    }
+
+    /** The parts a session stores, which {@link SessionStoreConfig} reads the user back from. */
+    AuthenticatedUser(
+        long id,
+        Collection<? extends GrantedAuthority> authorities,
+        OidcIdToken idToken,
+        @Nullable OidcUserInfo userInfo
+    ) {
+        super(authorities, idToken, userInfo, StandardClaimNames.SUB);
         this.id = id;
     }
 
