@@ -60,6 +60,19 @@ class CsrfCookieIT {
         ).isEqualTo(200);
     }
 
+    @Test
+    void aWriteWithAnotherAuthorizationSchemeStillNeedsTheCsrfToken() throws IOException, InterruptedException {
+        send(HttpRequest.newBuilder(uri("/api/me")).GET());
+
+        HttpResponse<String> response = send(
+            HttpRequest.newBuilder(uri("/api/auth/logout"))
+                .header("Authorization", "Basic YWRhOnNlY3JldA==")
+                .POST(HttpRequest.BodyPublishers.noBody())
+        );
+
+        assertThat(response.statusCode()).isEqualTo(403);
+    }
+
     private HttpResponse<String> send(HttpRequest.Builder request) throws IOException, InterruptedException {
         List<HttpCookie> stored = cookies.getCookieStore().getCookies();
         if (!stored.isEmpty()) {
