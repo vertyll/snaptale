@@ -24,7 +24,7 @@ const { data: following } = await useAsyncData(
   >
     <div class="w-full pl-2 lg:pl-0">
       <NuxtLink to="/" class="flex w-full items-center rounded-md p-2.5 hover:bg-gray-100 lg:ml-2">
-        <Icon name="mdi:home" size="30" class="text-brand mx-auto lg:mx-0" />
+        <span class="icon-[mdi--home] text-[30px] text-brand mx-auto lg:mx-0" aria-hidden="true" />
         <span class="text-brand hidden pl-[9px] text-[17px] font-semibold lg:block">{{ t("nav.forYou") }}</span>
       </NuxtLink>
 

@@ -17,7 +17,7 @@ const loaded = ref(false);
       v-if="!loaded"
       class="absolute top-0 left-0 flex aspect-[3/4] w-full items-center justify-center rounded-md bg-black"
     >
-      <Icon name="mdi:loading" size="60" class="animate-spin text-white" />
+      <span class="icon-[mdi--loading] text-[60px] animate-spin text-white" aria-hidden="true" />
     </div>
     <video
       ref="video"
@@ -31,8 +31,8 @@ const loaded = ref(false);
     />
     <div class="px-1 pt-1 text-[15px] break-words text-gray-700">{{ post.text }}</div>
     <div class="flex items-center gap-1 px-1 text-xs font-bold text-gray-600">
-      <Icon name="mdi:heart" size="14" />{{ post.likeCount }}
-      <Icon name="mdi:comment-processing" size="14" class="ml-2" />{{ post.commentCount }}
+      <span class="icon-[mdi--heart] text-[14px]" aria-hidden="true" />{{ post.likeCount }}
+      <span class="icon-[mdi--comment-processing] text-[14px] ml-2" aria-hidden="true" />{{ post.commentCount }}
     </div>
   </NuxtLink>
 </template>

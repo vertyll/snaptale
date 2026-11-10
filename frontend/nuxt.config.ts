@@ -2,7 +2,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineNuxtConfig({
   compatibilityDate: "2026-09-26",
-  modules: ["@nuxt/icon", "@nuxt/eslint"],
+  modules: ["@nuxt/eslint"],
   css: ["~/assets/css/main.css"],
   vite: { plugins: [tailwindcss()] },
   app: {
@@ -23,7 +23,6 @@ export default defineNuxtConfig({
       },
     },
   },
-  icon: { serverBundle: { collections: ["mdi"] } },
   // A module folder exposes only its index; its other files are its own.
   imports: { dirs: ["composables/keycloak/index.ts"] },
   runtimeConfig: {

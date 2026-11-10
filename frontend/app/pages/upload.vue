@@ -70,7 +70,7 @@ onBeforeUnmount(clearVideo);
       class="fixed top-0 left-0 z-50 flex h-screen w-full items-center justify-center bg-black/50"
       :aria-label="t('upload.uploading')"
     >
-      <Icon name="mdi:loading" size="100" class="animate-spin text-white" />
+      <span class="icon-[mdi--loading] text-[100px] animate-spin text-white" aria-hidden="true" />
     </output>
     <main class="mt-[80px] mb-[40px] w-full rounded-md bg-white px-4 py-6 shadow-lg md:px-10">
       <h1 class="text-[23px] font-semibold">{{ t("upload.title") }}</h1>
@@ -83,7 +83,7 @@ onBeforeUnmount(clearVideo);
           @drop.prevent="choose($event.dataTransfer?.files[0])"
           @dragover.prevent
         >
-          <Icon name="mdi:cloud-upload" size="40" class="text-gray-400" />
+          <span class="icon-[mdi--cloud-upload] text-[40px] text-gray-400" aria-hidden="true" />
           <span class="mt-4 text-[17px]">{{ t("upload.choose") }}</span>
           <span class="mt-1.5 text-[13px] text-gray-500">{{ t("upload.drop") }}</span>
           <span class="mt-12 text-sm text-gray-400">MP4</span>
@@ -121,7 +121,7 @@ onBeforeUnmount(clearVideo);
             class="absolute -bottom-12 z-50 flex w-full items-center justify-between rounded-xl border border-gray-300 p-2"
           >
             <div class="flex items-center truncate text-[11px]">
-              <Icon name="mdi:check-circle-outline" size="16" class="min-w-[16px]" />
+              <span class="icon-[mdi--check-circle-outline] text-[16px] min-w-[16px]" aria-hidden="true" />
               <span class="truncate pl-1">{{ file?.name }}</span>
             </div>
             <button type="button" class="ml-2 text-[11px] font-semibold" @click="clearVideo">

@@ -42,7 +42,7 @@ onBeforeUnmount(() => {
       </NuxtLink>
       <p class="max-w-[300px] pb-0.5 text-[15px] break-words md:max-w-[400px]">{{ props.post.text }}</p>
       <div class="flex items-center pb-0.5 text-[14px] font-semibold">
-        <Icon name="mdi:music" size="17" />
+        <span class="icon-[mdi--music] text-[17px]" aria-hidden="true" />
         <span class="px-1">{{ t("common.originalSound", { handle: handleOf(props.post.author.name) }) }}</span>
       </div>
 
@@ -79,13 +79,17 @@ onBeforeUnmount(() => {
                 :aria-label="t('post.like')"
                 @click="toggle(props.post)"
               >
-                <Icon name="mdi:heart" size="25" :class="props.post.likedByMe ? 'text-like' : ''" />
+                <span
+                  class="icon-[mdi--heart] text-[25px]"
+                  :class="props.post.likedByMe ? 'text-like' : ''"
+                  aria-hidden="true"
+                />
               </button>
               <span class="block text-xs font-semibold text-gray-800">{{ props.post.likeCount }}</span>
             </div>
             <NuxtLink :to="`/post/${props.post.id}`" class="block pb-4 text-center" :aria-label="t('post.comments')">
               <span class="inline-block rounded-full bg-gray-200 p-2"
-                ><Icon name="mdi:comment-processing" size="25"
+                ><span class="icon-[mdi--comment-processing] text-[25px]" aria-hidden="true"
               /></span>
               <span class="block text-xs font-semibold text-gray-800">{{ props.post.commentCount }}</span>
             </NuxtLink>

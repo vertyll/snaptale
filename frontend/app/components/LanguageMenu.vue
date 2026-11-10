@@ -27,7 +27,11 @@ async function choose(next: Locale) {
       @click="open = !open"
     >
       <span>{{ locale.toUpperCase() }}</span>
-      <Icon name="mdi:chevron-down" size="18" class="transition-transform" :class="{ 'rotate-180': open }" />
+      <span
+        class="icon-[mdi--chevron-down] text-[18px] transition-transform"
+        :class="{ 'rotate-180': open }"
+        aria-hidden="true"
+      />
     </button>
     <div
       v-if="open"

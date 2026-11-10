@@ -62,7 +62,7 @@ onBeforeUnmount(() => observer?.disconnect());
     <p v-if="posts.length === 0" class="pt-10 text-center text-gray-500">{{ t("feed.empty") }}</p>
     <p v-if="error" class="py-4 text-center font-semibold text-red-500" role="alert">{{ error }}</p>
     <div ref="sentinel" class="flex justify-center py-6">
-      <Icon v-if="loading" name="mdi:loading" size="40" class="text-brand animate-spin" />
+      <span v-if="loading" class="icon-[mdi--loading] text-[40px] text-brand animate-spin" aria-hidden="true" />
     </div>
   </main>
 </template>

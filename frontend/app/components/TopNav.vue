@@ -43,7 +43,7 @@ async function signOut() {
           :aria-label="t('nav.upload')"
           @click="upload"
         >
-          <Icon name="mdi:plus" size="22" />
+          <span class="icon-[mdi--plus] text-[22px]" aria-hidden="true" />
           <span class="hidden px-2 text-[15px] font-medium sm:inline">{{ t("nav.upload") }}</span>
         </button>
 
@@ -74,7 +74,7 @@ async function signOut() {
               class="flex items-center py-3 pr-4 pl-2 hover:bg-gray-100"
               @click="menuOpen = false"
             >
-              <Icon name="mdi:account-outline" size="20" />
+              <span class="icon-[mdi--account-outline] text-[20px]" aria-hidden="true" />
               <span class="pl-2 text-sm font-semibold whitespace-nowrap">{{ t("nav.profile") }}</span>
             </NuxtLink>
             <button
@@ -82,7 +82,7 @@ async function signOut() {
               class="flex w-full items-center py-3 pr-4 pl-2 text-left hover:bg-gray-100"
               @click="changePassword()"
             >
-              <Icon name="mdi:lock-outline" size="20" />
+              <span class="icon-[mdi--lock-outline] text-[20px]" aria-hidden="true" />
               <span class="pl-2 text-sm font-semibold whitespace-nowrap">{{ t("nav.password") }}</span>
             </button>
             <button
@@ -91,7 +91,11 @@ async function signOut() {
               class="flex w-full items-center py-3 pr-4 pl-2 text-left hover:bg-gray-100"
               @click="toggleSecondFactor(secondFactor)"
             >
-              <Icon :name="secondFactor.enabled ? 'mdi:shield-off-outline' : 'mdi:shield-key-outline'" size="20" />
+              <span
+                :class="secondFactor.enabled ? 'icon-[mdi--shield-off-outline]' : 'icon-[mdi--shield-key-outline]'"
+                class="text-[20px]"
+                aria-hidden="true"
+              />
               <span class="pl-2 text-sm font-semibold whitespace-nowrap">
                 {{ secondFactor.enabled ? t("nav.twoFactorOff") : t("nav.twoFactorOn") }}
               </span>
@@ -101,7 +105,7 @@ async function signOut() {
               class="flex w-full items-center border-t border-gray-200 py-3 pr-4 pl-2 text-left hover:bg-gray-100"
               @click="signOut"
             >
-              <Icon name="mdi:logout" size="20" />
+              <span class="icon-[mdi--logout] text-[20px]" aria-hidden="true" />
               <span class="pl-2 text-sm font-semibold whitespace-nowrap">{{ t("nav.logout") }}</span>
             </button>
           </div>

@@ -131,7 +131,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
         :aria-label="t('common.close')"
         @click="back"
       >
-        <Icon name="mdi:close" size="27" class="text-white" />
+        <span class="icon-[mdi--close] text-[27px] text-white" aria-hidden="true" />
       </button>
       <div class="absolute top-4 right-4 z-20 flex flex-col gap-3">
         <button
@@ -141,7 +141,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
           :aria-label="t('post.newer')"
           @click="goTo(neighbours.newer)"
         >
-          <Icon name="mdi:chevron-up" size="30" class="text-white" />
+          <span class="icon-[mdi--chevron-up] text-[30px] text-white" aria-hidden="true" />
         </button>
         <button
           type="button"
@@ -150,7 +150,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
           :aria-label="t('post.older')"
           @click="goTo(neighbours.older)"
         >
-          <Icon name="mdi:chevron-down" size="30" class="text-white" />
+          <span class="icon-[mdi--chevron-down] text-[30px] text-white" aria-hidden="true" />
         </button>
       </div>
       <img
@@ -161,7 +161,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
         aria-hidden="true"
       />
       <div v-if="!loaded" class="absolute inset-0 z-10 flex items-center justify-center bg-black/70">
-        <Icon name="mdi:loading" size="100" class="animate-spin text-white" />
+        <span class="icon-[mdi--loading] text-[100px] animate-spin text-white" aria-hidden="true" />
       </div>
       <video
         :key="details.post.id"
@@ -194,13 +194,13 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
           :aria-label="t('post.delete')"
           @click="deletePost"
         >
-          <Icon name="mdi:delete-outline" size="25" />
+          <span class="icon-[mdi--delete-outline] text-[25px]" aria-hidden="true" />
         </button>
       </div>
 
       <p class="mt-4 px-8 text-sm break-words">{{ details.post.text }}</p>
       <div class="mt-4 flex items-center px-8 text-sm font-bold">
-        <Icon name="mdi:music" size="17" />
+        <span class="icon-[mdi--music] text-[17px]" aria-hidden="true" />
         <span class="pl-1">{{ t("common.originalSound", { handle: handleOf(details.post.author.name) }) }}</span>
       </div>
 
@@ -212,12 +212,18 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
           @click="toggle(details.post)"
         >
           <span class="rounded-full bg-gray-200 p-2">
-            <Icon name="mdi:heart" size="25" :class="details.post.likedByMe ? 'text-like' : ''" />
+            <span
+              class="icon-[mdi--heart] text-[25px]"
+              :class="details.post.likedByMe ? 'text-like' : ''"
+              aria-hidden="true"
+            />
           </span>
           <span class="pl-2 text-xs font-semibold text-gray-800">{{ details.post.likeCount }}</span>
         </button>
         <div class="flex items-center">
-          <span class="rounded-full bg-gray-200 p-2"><Icon name="mdi:comment-processing" size="25" /></span>
+          <span class="rounded-full bg-gray-200 p-2"
+            ><span class="icon-[mdi--comment-processing] text-[25px]" aria-hidden="true"
+          /></span>
           <span class="pl-2 text-xs font-semibold text-gray-800">{{ details.post.commentCount }}</span>
         </div>
       </div>
@@ -240,7 +246,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
                 :aria-label="t('post.deleteComment')"
                 @click="deleteComment(item)"
               >
-                <Icon name="mdi:delete-outline" size="22" />
+                <span class="icon-[mdi--delete-outline] text-[22px]" aria-hidden="true" />
               </button>
             </div>
             <p class="text-[15px] font-light break-words">{{ item.text }}</p>

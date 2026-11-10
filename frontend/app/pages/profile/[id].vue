@@ -70,7 +70,7 @@ function toggleFollow() {
         class="mt-3 flex items-center rounded-md border border-gray-300 px-3.5 py-1.5 text-[15px] font-semibold hover:bg-gray-100"
         @click="open = 'editProfile'"
       >
-        <Icon name="mdi:pencil" size="18" class="mr-1" />{{ t("profile.edit") }}
+        <span class="icon-[mdi--pencil] text-[18px] mr-1" aria-hidden="true" />{{ t("profile.edit") }}
       </button>
       <button
         v-else

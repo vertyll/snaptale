@@ -89,7 +89,7 @@ async function saveProfile() {
       <div class="flex items-center justify-between border-b border-gray-300 p-5">
         <h2 id="edit-profile-title" class="text-[22px] font-medium">{{ t("profile.edit") }}</h2>
         <button type="button" :aria-label="t('common.close')" @click="close">
-          <Icon name="mdi:close" size="25" />
+          <span class="icon-[mdi--close] text-[25px]" aria-hidden="true" />
         </button>
       </div>
 
@@ -125,7 +125,7 @@ async function saveProfile() {
             <span
               class="absolute right-0 bottom-0 flex size-8 items-center justify-center rounded-full border border-gray-300 bg-white shadow-xl"
             >
-              <Icon name="mdi:pencil" size="17" />
+              <span class="icon-[mdi--pencil] text-[17px]" aria-hidden="true" />
             </span>
             <input class="hidden" type="file" accept="image/png, image/jpeg" @change="pickImage" />
           </label>
