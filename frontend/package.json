@@ -18,6 +18,7 @@
   "dependencies": {
     "intl-messageformat": "12.1.4",
     "nuxt": "4.6.3",
+    "nuxt-security": "2.7.0",
     "vue": "3.5.44",
     "vue-advanced-cropper": "2.8.9",
     "vue-router": "5.4.0"

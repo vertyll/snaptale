@@ -49,8 +49,9 @@ The image takes `NUXT_BACKEND_INTERNAL_URL` from the environment.
 
 ## Security headers
 
-Every response carries `Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options` and `Referrer-Policy`
-(`routeRules` in `nuxt.config.ts`). Each page also carries a `Content-Security-Policy` with a nonce of its own,
-which `server/plugins/content-security-policy.ts` puts on the scripts and style elements Nuxt writes; no other inline
-script, style element or style attribute applies, so a component sizes and styles itself with classes. The development
-server goes without it.
+The security headers come from [`nuxt-security`](https://nuxt-security.vercel.app/), configured under `security` in
+`nuxt.config.ts`. Each page carries a `Content-Security-Policy` with a nonce of its own, which the module puts on the
+scripts and style elements Nuxt writes, and `'strict-dynamic'`, so only those scripts and the chunks they load run; no
+other inline script, style element or style attribute applies, so a component sizes and styles itself with classes. The
+module's rate and request size limits and its XSS validator are off: the back end limits and validates what reaches
+it. The development server goes without the policy.
