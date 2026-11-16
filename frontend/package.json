@@ -16,26 +16,26 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "intl-messageformat": "12.1.4",
-    "nuxt": "4.6.3",
+    "intl-messageformat": "12.1.5",
+    "nuxt": "4.6.4",
     "nuxt-security": "2.7.0",
-    "vue": "3.5.44",
+    "vue": "3.5.45",
     "vue-advanced-cropper": "2.8.9",
-    "vue-router": "5.4.0"
+    "vue-router": "5.5.1"
   },
   "devDependencies": {
     "@iconify-json/mdi": "1.2.3",
     "@iconify/tailwind4": "1.2.3",
     "@nuxt/eslint": "1.17.0",
     "@stylistic/eslint-plugin": "5.10.0",
-    "@tailwindcss/vite": "4.3.3",
-    "eslint": "10.13.0",
+    "@tailwindcss/vite": "4.3.5",
+    "eslint": "10.15.0",
     "eslint-config-prettier": "10.1.8",
     "h3": "1.15.11",
-    "prettier": "3.9.10",
-    "tailwindcss": "4.3.3",
+    "prettier": "3.10.1",
+    "tailwindcss": "4.3.5",
     "typescript": "6.0.3",
-    "vue-tsc": "3.3.13"
+    "vue-tsc": "3.3.14"
   },
   "allowScripts": {
     "unrs-resolver": false,

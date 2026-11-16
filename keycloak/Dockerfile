@@ -1,6 +1,6 @@
 # The Keycloak theme of this application, as an image that a Keycloak shared by several applications copies the
 # JAR from into its providers folder.
-FROM docker.io/library/alpine:3.24.3 AS build
+FROM docker.io/library/alpine:3.24.4 AS build
 RUN apk add --no-cache bash zip
 WORKDIR /keycloak
 COPY build-theme.sh ./

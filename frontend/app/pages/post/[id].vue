@@ -278,8 +278,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKey));
       </form>
       <div v-else class="absolute bottom-0 w-full border-t-2 border-gray-200 bg-white px-8 py-6 text-center text-sm">
         <button type="button" class="text-brand font-semibold" @click="whenSignedIn(() => undefined)">
-          {{ t("post.signInToComment") }}</button
-        >{{ t("post.signInToCommentSuffix") }}
+          {{ t("post.signInToComment") }}</button>{{ t("post.signInToCommentSuffix") }}
       </div>
     </aside>
   </div>
