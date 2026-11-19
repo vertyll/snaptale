@@ -1,5 +1,5 @@
-ARG JDK_IMAGE=azul/zulu-openjdk:25-latest
-ARG JRE_IMAGE=azul/zulu-openjdk:25-jre-headless-latest
+ARG JDK_IMAGE=azul/zulu-openjdk:25.0.5.1-25.38
+ARG JRE_IMAGE=azul/zulu-openjdk:25.0.5.1-25.38-jre-headless
 
 FROM ${JDK_IMAGE} AS deps
 WORKDIR /workspace
