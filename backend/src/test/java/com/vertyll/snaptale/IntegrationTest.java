@@ -17,8 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 @Import(
     {
-        MySqlTestContainer.class,
-        RedisTestContainer.class,
+        TestcontainersConfiguration.class,
         TestAccessTokens.class
     }
 )

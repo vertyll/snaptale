@@ -12,8 +12,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.vertyll.snaptale.MySqlTestContainer;
-import com.vertyll.snaptale.RedisTestContainer;
+import com.vertyll.snaptale.TestcontainersConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,12 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Import(
-    {
-        MySqlTestContainer.class,
-        RedisTestContainer.class
-    }
-)
+@Import(TestcontainersConfiguration.class)
 class SessionCookieIT {
 
     @LocalServerPort
