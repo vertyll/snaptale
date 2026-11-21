@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -189,6 +190,9 @@ class SecurityConfig {
     }
 
     @Bean
+    // Spring Security 7.2 takes only RestOperations for the key set; RestClient follows in
+    // https://github.com/spring-projects/spring-security/issues/19027
+    @SuppressWarnings("removal")
     JwtDecoder accessTokenDecoder(KeycloakProperties keycloak, ClientHttpRequestFactory keycloakRequests) {
         NimbusJwtDecoder decoder =
                 NimbusJwtDecoder.withJwkSetUri(keycloak.backchannel() + "/protocol/openid-connect/certs")
@@ -244,9 +248,15 @@ class SecurityConfig {
      * the timeouts every call to Keycloak has.
      */
     private static RestClient tokenEndpointClient(ClientHttpRequestFactory keycloakRequests) {
+        OAuth2ErrorResponseErrorHandler oauth2Errors = new OAuth2ErrorResponseErrorHandler();
         return RestClient.builder().requestFactory(keycloakRequests).configureMessageConverters(converters -> {
             converters.addCustomConverter(new FormHttpMessageConverter());
             converters.addCustomConverter(new OAuth2AccessTokenResponseHttpMessageConverter());
-        }).defaultStatusHandler(new OAuth2ErrorResponseErrorHandler()).build();
+        })
+            .defaultStatusHandler(
+                HttpStatusCode::isError,
+                (request, response) -> oauth2Errors.handleError(request.getURI(), request.getMethod(), response)
+            )
+            .build();
     }
 }
